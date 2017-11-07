@@ -116,7 +116,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         if (mCurrentInfo != null) {
             if (!ToolUtil.isListEmpty(mDrawedPieInfo)) {
                 for (PieInfoImpl pieInfo : mDrawedPieInfo) {
-                    canvas.drawArc(mDrawRectf, pieInfo.getStartAngle(), pieInfo.getEndAngle(), false, pieInfo.getPaint());
+                    canvas.drawArc(mDrawRectf, pieInfo.getStartAngle(), Math.abs(pieInfo.getEndAngle()) - Math.abs(pieInfo.getStartAngle()), false, pieInfo.getPaint());
                 }
             }
             canvas.drawArc(mDrawRectf, mCurrentInfo.getStartAngle(), angle - mCurrentInfo.getStartAngle(), false, mCurrentInfo.getPaint());
@@ -126,6 +126,12 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
     @Override
     public void onAnimationProcessing(float angle, @NonNull PieInfoImpl infoImpl) {
+        if (mCurrentInfo != null) {
+            if (angle > mCurrentInfo.getEndAngle()) {
+                DebugLogUtil.logAngles("超出角度", mCurrentInfo);
+                mDrawedPieInfo.add(mCurrentInfo);
+            }
+        }
         this.angle = angle;
         this.mCurrentInfo = infoImpl;
         invalidate();

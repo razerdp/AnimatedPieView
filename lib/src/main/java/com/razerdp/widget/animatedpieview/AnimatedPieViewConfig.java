@@ -19,7 +19,7 @@ import java.util.List;
 public class AnimatedPieViewConfig implements Serializable {
     private static final int DEFAULT_STROKE_WIDTH = 30;
     private static final int DEFAULT_STROKE_COLOR = Color.parseColor("#FF82AAFF");
-    private static final float DEFAULT_START_ANGLE = 0.0f;
+    private static final float DEFAULT_START_ANGLE = -90.0f;
     private static final long DEFAULT_ANIMATION_DURATION = 5000;
     private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR = new DecelerateInterpolator(1.2f);
 

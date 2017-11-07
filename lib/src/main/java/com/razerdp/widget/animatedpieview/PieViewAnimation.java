@@ -1,7 +1,6 @@
 package com.razerdp.widget.animatedpieview;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
@@ -25,15 +24,20 @@ class PieViewAnimation extends Animation {
         if (mViewConfig == null) {
             throw new NoViewConfigException("viewConfig为空");
         }
-        Log.i("anima","time  >>  "+interpolatedTime);
         if (interpolatedTime >= 0.0f && interpolatedTime <= 1.0f) {
-            float angle = 360 * interpolatedTime;
-            angle = Math.max(1.0f, angle);
+            float angle = 360 * interpolatedTime + mViewConfig.getStartAngle();
+//            angle = Math.max(1.0f, angle);
             PieInfoImpl info = mViewConfig.getHelper().findPieinfoWithAngle(angle);
             if (mHandler != null && info != null) {
                 mHandler.onAnimationProcessing(angle, info);
             }
         }
+    }
+
+    @Override
+    public void setStartTime(long startTimeMillis) {
+        super.setStartTime(startTimeMillis);
+        DebugLogUtil.logAngles(mViewConfig.getImplDatas());
     }
 
     public void bindAnimationHandler(AnimationHandler animationHandler) {

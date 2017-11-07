@@ -18,7 +18,6 @@ final class PieInfoImpl {
         this.mPieInfo = info;
         if (mPaint == null) mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setColor(info.getColor());
     }
 
