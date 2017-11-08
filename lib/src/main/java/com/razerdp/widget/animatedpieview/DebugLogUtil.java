@@ -33,4 +33,14 @@ public class DebugLogUtil {
             Log.i(TAG, pre + "值： " + pieInfo.getPieInfo().getValue() + "    开始角度: " + pieInfo.getStartAngle() + "    结束角度： " + pieInfo.getEndAngle());
         }
     }
+
+    public static void logTouchInRing(boolean in) {
+        if (!LOG_SHOW) return;
+        Log.i(TAG, "是否点在圆环内: " + in);
+    }
+
+    public static void logTouchAngle(double angle) {
+        if (!LOG_SHOW) return;
+        Log.i(TAG, "点击的角度: " + angle);
+    }
 }

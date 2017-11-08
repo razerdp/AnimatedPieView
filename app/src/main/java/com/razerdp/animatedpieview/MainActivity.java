@@ -26,10 +26,11 @@ public class MainActivity extends AppCompatActivity {
         mButton = findViewById(R.id.start);
         test = (AnimatedPieView) findViewById(R.id.test);
         AnimatedPieViewConfig config = new AnimatedPieViewConfig();
-        config.addData(new SimplePieInfo(15.0f, Color.RED, ""))
-                .addData(new SimplePieInfo(55.0f, Color.GREEN, ""))
-                .addData(new SimplePieInfo(20.0f, Color.BLUE, ""))
-                .addData(new SimplePieInfo(90.0f, Color.BLACK, ""));
+        config.setStartAngle(180)
+                .addData(new SimplePieInfo(15.0f, Color.parseColor("#FFE94543"), ""))
+                .addData(new SimplePieInfo(55.0f, Color.parseColor("#FFF2AE42"), ""))
+                .addData(new SimplePieInfo(20.0f, Color.parseColor("#FF58B957"), ""))
+                .addData(new SimplePieInfo(90.0f, Color.parseColor("#FF4284F4"), ""));
         test.applyConfig(config);
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override

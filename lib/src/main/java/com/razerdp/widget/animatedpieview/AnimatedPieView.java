@@ -8,8 +8,10 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
+import android.widget.Toast;
 
 import com.razerdp.widget.animatedpieview.exception.NoViewConfigException;
 import com.razerdp.widget.animatedpieview.utils.ToolUtil;
@@ -28,6 +30,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
     private AnimatedPieViewConfig mConfig;
     private PieViewAnimation mPieViewAnimation;
+    private TouchHelper mTouchHelper;
 
     private volatile float angle;
     private PieInfoImpl mCurrentInfo;
@@ -61,7 +64,9 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         if (mConfig == null) mConfig = new AnimatedPieViewConfig();
         mDrawRectf = new RectF();
         mDrawedPieInfo = new ArrayList<>();
+        mTouchHelper = new TouchHelper(mConfig);
         applyConfigInternal(mConfig);
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
     private void applyConfigInternal(AnimatedPieViewConfig config) {
@@ -111,6 +116,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         canvas.translate(width / 2, height / 2);
         //半径
         final float radius = (float) (Math.min(width, height) / 2 * 0.85);
+        mTouchHelper.setPieParam(width / 2, height / 2, radius);
         mDrawRectf.set(-radius, -radius, radius, radius);
 
         if (mCurrentInfo != null) {
@@ -122,6 +128,28 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
             canvas.drawArc(mDrawRectf, mCurrentInfo.getStartAngle(), angle - mCurrentInfo.getStartAngle(), false, mCurrentInfo.getPaint());
         }
 
+    }
+
+    float x = 0;
+    float y = 0;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                x = event.getX();
+                y = event.getY();
+                return true;
+            case MotionEvent.ACTION_UP:
+                PieInfoImpl clickedInfo = mTouchHelper.pointToInfo(x, y);
+                if (clickedInfo != null) {
+                    Toast.makeText(getContext(), clickedInfo.toString(), Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                break;
+
+        }
+        return super.onTouchEvent(event);
     }
 
     @Override

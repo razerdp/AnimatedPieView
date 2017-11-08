@@ -1,6 +1,5 @@
 package com.razerdp.widget.animatedpieview;
 
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -18,13 +17,11 @@ import java.util.List;
 
 public class AnimatedPieViewConfig implements Serializable {
     private static final int DEFAULT_STROKE_WIDTH = 60;
-    private static final int DEFAULT_STROKE_COLOR = Color.parseColor("#FF82AAFF");
     private static final float DEFAULT_START_ANGLE = -90.0f;
     private static final long DEFAULT_ANIMATION_DURATION = 2500;
     private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR = new DecelerateInterpolator(1.2f);
 
     private int strokeWidth = DEFAULT_STROKE_WIDTH;
-    private int strokeColor = DEFAULT_STROKE_COLOR;
     private float startAngle = DEFAULT_START_ANGLE;
     private long duration = DEFAULT_ANIMATION_DURATION;
 
@@ -45,15 +42,6 @@ public class AnimatedPieViewConfig implements Serializable {
 
     public AnimatedPieViewConfig setStrokeWidth(int strokeWidth) {
         this.strokeWidth = strokeWidth;
-        return setReApply(true);
-    }
-
-    public int getStrokeColor() {
-        return strokeColor;
-    }
-
-    public AnimatedPieViewConfig setStrokeColor(int strokeColor) {
-        this.strokeColor = strokeColor;
         return setReApply(true);
     }
 
@@ -80,6 +68,7 @@ public class AnimatedPieViewConfig implements Serializable {
     }
 
     public AnimatedPieViewConfig setStartAngle(float startAngle) {
+
         this.startAngle = startAngle;
         return setReApply(true);
     }
@@ -124,7 +113,6 @@ public class AnimatedPieViewConfig implements Serializable {
     public AnimatedPieViewConfig setConfig(AnimatedPieViewConfig config) {
         if (config != null) {
             setStrokeWidth(config.getStrokeWidth())
-                    .setStrokeColor(config.getStrokeColor())
                     .setDuration(config.getDuration())
                     .setInterpolator(config.getInterpolator())
                     .setStartAngle(config.getStartAngle());

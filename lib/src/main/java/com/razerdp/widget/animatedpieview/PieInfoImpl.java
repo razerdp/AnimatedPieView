@@ -1,5 +1,6 @@
 package com.razerdp.widget.animatedpieview;
 
+import android.graphics.BlurMaskFilter;
 import android.graphics.Paint;
 
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
@@ -19,6 +20,8 @@ final class PieInfoImpl {
         if (mPaint == null) mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setColor(info.getColor());
+        BlurMaskFilter maskFilter = new BlurMaskFilter(18, BlurMaskFilter.Blur.SOLID);
+        mPaint.setMaskFilter(maskFilter);
     }
 
     public static PieInfoImpl create(IPieInfo info) {
@@ -64,5 +67,10 @@ final class PieInfoImpl {
 
     public boolean isInAngleRange(float angle) {
         return angle >= startAngle && angle <= endAngle;
+    }
+
+    @Override
+    public String toString() {
+        return "值： " + getPieInfo().getValue() + "    开始角度: " + getStartAngle() + "    结束角度： " + getEndAngle();
     }
 }
