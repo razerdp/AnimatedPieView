@@ -58,6 +58,10 @@ final class PieInfoImpl {
         return this;
     }
 
+    public float getSweepAngle() {
+        return Math.abs(endAngle - startAngle);
+    }
+
     public boolean isInAngleRange(float angle) {
         return angle >= startAngle && angle <= endAngle;
     }

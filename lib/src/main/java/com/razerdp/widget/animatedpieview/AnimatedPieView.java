@@ -116,7 +116,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         if (mCurrentInfo != null) {
             if (!ToolUtil.isListEmpty(mDrawedPieInfo)) {
                 for (PieInfoImpl pieInfo : mDrawedPieInfo) {
-                    canvas.drawArc(mDrawRectf, pieInfo.getStartAngle(), Math.abs(pieInfo.getEndAngle()) - Math.abs(pieInfo.getStartAngle()), false, pieInfo.getPaint());
+                    canvas.drawArc(mDrawRectf, pieInfo.getStartAngle(), pieInfo.getSweepAngle(), false, pieInfo.getPaint());
                 }
             }
             canvas.drawArc(mDrawRectf, mCurrentInfo.getStartAngle(), angle - mCurrentInfo.getStartAngle(), false, mCurrentInfo.getPaint());
