@@ -41,6 +41,11 @@ public class DebugLogUtil {
 
     public static void logTouchAngle(double angle) {
         if (!LOG_SHOW) return;
-        Log.i(TAG, "点击的角度: " + angle);
+        logTouchAngle("点击角度： ",angle);
+    }
+
+    public static void logTouchAngle(String pre, double angle) {
+        if (!LOG_SHOW) return;
+        Log.i(TAG, pre + angle);
     }
 }

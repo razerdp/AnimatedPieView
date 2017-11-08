@@ -24,9 +24,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
         mButton = findViewById(R.id.start);
-        test = (AnimatedPieView) findViewById(R.id.test);
+        test = findViewById(R.id.test);
         AnimatedPieViewConfig config = new AnimatedPieViewConfig();
-        config.setStartAngle(180)
+        config.setStartAngle(-90)
                 .addData(new SimplePieInfo(15.0f, Color.parseColor("#FFE94543"), ""))
                 .addData(new SimplePieInfo(55.0f, Color.parseColor("#FFF2AE42"), ""))
                 .addData(new SimplePieInfo(20.0f, Color.parseColor("#FF58B957"), ""))

@@ -54,13 +54,29 @@ public class TouchHelper {
         final float startAngle = mConfig.getStartAngle();
         //得到角度
         double touchAngle = Math.toDegrees(Math.atan2(y - centerY, x - centerX));
-        DebugLogUtil.logTouchAngle(touchAngle);
+        touchAngle = fixedTouchAngle(touchAngle, startAngle);
         for (PieInfoImpl pieInfo : mConfig.getImplDatas()) {
             if (pieInfo.isInAngleRange((float) touchAngle)) {
                 return pieInfo;
             }
         }
         return null;
+    }
+
+    private double fixedTouchAngle(double touchAngle, float startAngle) {
+        double result = touchAngle;
+        DebugLogUtil.logTouchAngle("修正前角度  >>>  ", result);
+        if (result < 0) {
+            result += 360.0;
+        }
+        float turns=startAngle/360.0f;
+        if (turns<1){
+
+        }
+        result += startAngle;
+
+        DebugLogUtil.logTouchAngle("修正后角度  >>>  ", result);
+        return result;
     }
 
 }

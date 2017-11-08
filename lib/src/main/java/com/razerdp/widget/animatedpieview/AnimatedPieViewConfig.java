@@ -68,7 +68,6 @@ public class AnimatedPieViewConfig implements Serializable {
     }
 
     public AnimatedPieViewConfig setStartAngle(float startAngle) {
-
         this.startAngle = startAngle;
         return setReApply(true);
     }
