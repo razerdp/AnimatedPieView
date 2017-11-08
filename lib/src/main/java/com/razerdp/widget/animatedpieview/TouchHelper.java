@@ -69,9 +69,9 @@ public class TouchHelper {
         if (result < 0) {
             result += 360.0;
         }
-        float turns=startAngle/360.0f;
-        if (turns<1){
-
+        int turns = (int) (startAngle / 360.0f);
+        if (startAngle < -180.0 || startAngle > 360.0) {
+            result += 360.0f * turns;
         }
         result += startAngle;
 
