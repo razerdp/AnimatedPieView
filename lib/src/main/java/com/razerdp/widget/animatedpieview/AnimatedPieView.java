@@ -80,10 +80,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
     private void applyConfigInternal(AnimatedPieViewConfig config) {
         if (config == null) throw new NoViewConfigException("请使用config进行配置");
-        if (mConfig != config) {
-            mConfig.setConfig(config);
-        }
-
+        mConfig.setConfig(config);
         //anim
         if (mPieViewAnimation == null) mPieViewAnimation = new PieViewAnimation(config);
         mPieViewAnimation.setDuration(config.getDuration());
@@ -107,7 +104,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
             }
         });
 
-        if (config.isReApply()) config.setReApply(false);
+        if (mConfig.isReApply()) config.setReApply(false);
     }
 
 
@@ -131,10 +128,10 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         if (mCurrentInfo != null) {
             if (!ToolUtil.isListEmpty(mDrawedPieInfo)) {
                 for (PieInfoImpl pieInfo : mDrawedPieInfo) {
-                    canvas.drawArc(mDrawRectf, pieInfo.getStartAngle(), pieInfo.getSweepAngle(), false, pieInfo.getPaint());
+                    canvas.drawArc(mDrawRectf, pieInfo.getStartAngle(), pieInfo.getSweepAngle(), !mConfig.isDrawStrokeOnly(), pieInfo.getPaint());
                 }
             }
-            canvas.drawArc(mDrawRectf, mCurrentInfo.getStartAngle(), angle - mCurrentInfo.getStartAngle(), false, mCurrentInfo.getPaint());
+            canvas.drawArc(mDrawRectf, mCurrentInfo.getStartAngle(), angle - mCurrentInfo.getStartAngle(), !mConfig.isDrawStrokeOnly(), mCurrentInfo.getPaint());
         }
 
     }

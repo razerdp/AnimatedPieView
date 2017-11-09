@@ -8,11 +8,26 @@
     android:orientation="vertical"
     tools:context="com.razerdp.animatedpieview.MainActivity">
 
-    <Button
-        android:id="@+id/start"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="start"/>
+        >
+
+        <Button
+            android:id="@+id/start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="start"/>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/no_donuts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@id/start"
+            android:text="不要甜甜圈？"/>
+    </RelativeLayout>
 
     <com.razerdp.widget.animatedpieview.AnimatedPieView
         android:id="@+id/test"

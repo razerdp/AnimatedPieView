@@ -28,11 +28,12 @@ public class TouchHelper {
     }
 
     public PieInfoImpl pointToInfo(float x, float y) {
+        final boolean isStrokeOnly = mConfig.isDrawStrokeOnly();
         final float strokeWidth = mConfig.getStrokeWidth();
         //外圆半径
         final float exCircleRadius = radius;
         //内圆半径
-        final float innerCircleRadius = exCircleRadius - strokeWidth;
+        final float innerCircleRadius = isStrokeOnly ? exCircleRadius - strokeWidth : 0;
         //点击位置到圆心的直线距离(没开根)
         final double touchDistancePow = Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2);
         //内圆半径<=直线距离<=外圆半径

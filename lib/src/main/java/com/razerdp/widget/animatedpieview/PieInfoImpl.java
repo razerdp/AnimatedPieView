@@ -12,17 +12,26 @@ import com.razerdp.widget.animatedpieview.utils.DegreeUtil;
 
 final class PieInfoImpl {
     private final IPieInfo mPieInfo;
+    private boolean drawStrokeOnly = true;
     private float startAngle;
     private float endAngle;
+    private int strokeWidth;
     private Paint mPaint;
 
     private PieInfoImpl(IPieInfo info) {
         this.mPieInfo = info;
+        initPaint(info);
+    }
+
+    private void initPaint(IPieInfo info) {
         if (mPaint == null) mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setStyle(drawStrokeOnly ? Paint.Style.STROKE : Paint.Style.FILL);
+        mPaint.setStrokeWidth(strokeWidth);
         mPaint.setColor(info.getColor());
-        BlurMaskFilter maskFilter = new BlurMaskFilter(18, BlurMaskFilter.Blur.SOLID);
-        mPaint.setMaskFilter(maskFilter);
+        if (mPaint.getMaskFilter() == null) {
+            BlurMaskFilter maskFilter = new BlurMaskFilter(18, BlurMaskFilter.Blur.SOLID);
+            mPaint.setMaskFilter(maskFilter);
+        }
     }
 
     public static PieInfoImpl create(IPieInfo info) {
@@ -57,7 +66,19 @@ final class PieInfoImpl {
         mPaint = paint;
     }
 
+    public boolean isDrawStrokeOnly() {
+        return drawStrokeOnly;
+    }
+
+    public PieInfoImpl setDrawStrokeOnly(boolean drawStrokeOnly) {
+        if (this.drawStrokeOnly == drawStrokeOnly) return this;
+        this.drawStrokeOnly = drawStrokeOnly;
+        initPaint(mPieInfo);
+        return this;
+    }
+
     public PieInfoImpl setStrokeWidth(int width) {
+        this.strokeWidth = width;
         mPaint.setStrokeWidth(width);
         return this;
     }

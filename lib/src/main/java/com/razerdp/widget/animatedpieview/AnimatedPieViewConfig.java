@@ -30,10 +30,20 @@ public class AnimatedPieViewConfig implements Serializable {
     private List<PieInfoImpl> mDatas;
     private AnimatedPieViewHelper mPieViewHelper;
     private Interpolator mInterpolator = DEFAULT_ANIMATION_INTERPOLATOR;
+    private boolean isStroke = true;
 
     public AnimatedPieViewConfig() {
         mPieViewHelper = new AnimatedPieViewHelper();
         mDatas = new ArrayList<>();
+    }
+
+    public boolean isDrawStrokeOnly() {
+        return isStroke;
+    }
+
+    public AnimatedPieViewConfig setDrawStrokeOnly(boolean stroke) {
+        isStroke = stroke;
+        return setReApply(true);
     }
 
     public int getStrokeWidth() {
@@ -85,9 +95,18 @@ public class AnimatedPieViewConfig implements Serializable {
 
     public AnimatedPieViewConfig addData(@NonNull IPieInfo info) {
         assert info != null : "不能添加空数据";
-        mDatas.add(PieInfoImpl.create(info).setStrokeWidth(strokeWidth));
+        mDatas.add(PieInfoImpl.create(info).setStrokeWidth(strokeWidth).setDrawStrokeOnly(isStroke));
         mPieViewHelper.prepare();
         return this;
+    }
+
+    void updateDatas() {
+        if (!ToolUtil.isListEmpty(mDatas)) {
+            for (PieInfoImpl data : mDatas) {
+                data.setStrokeWidth(strokeWidth);
+                data.setDrawStrokeOnly(isStroke);
+            }
+        }
     }
 
     protected boolean isReApply() {
@@ -125,8 +144,11 @@ public class AnimatedPieViewConfig implements Serializable {
             setStrokeWidth(config.getStrokeWidth())
                     .setDuration(config.getDuration())
                     .setInterpolator(config.getInterpolator())
-                    .setStartAngle(config.getStartAngle());
-            for (IPieInfo info : config.getDatas()) {
+                    .setStartAngle(config.getStartAngle())
+                    .setDrawStrokeOnly(config.isDrawStrokeOnly());
+            List<IPieInfo> infos = config.getDatas();
+            mDatas.clear();
+            for (IPieInfo info : infos) {
                 addData(info);
             }
         }
