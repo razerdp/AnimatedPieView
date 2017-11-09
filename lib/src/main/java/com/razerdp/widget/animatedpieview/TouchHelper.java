@@ -1,5 +1,7 @@
 package com.razerdp.widget.animatedpieview;
 
+import android.util.Log;
+
 /**
  * Created by 大灯泡 on 2017/11/8.
  * <p>
@@ -7,6 +9,7 @@ package com.razerdp.widget.animatedpieview;
  */
 
 public class TouchHelper {
+    private static final String TAG = "TouchHelper";
     private AnimatedPieViewConfig mConfig;
     //圆心
     private float centerX;
@@ -60,6 +63,7 @@ public class TouchHelper {
         if (touchAngle < 0) {
             touchAngle += 360.0f;
         }
+        Log.i(TAG, "角度: " + touchAngle);
         for (PieInfoImpl pieInfo : mConfig.getImplDatas()) {
             if (pieInfo.isTouchInAngleRange((float) touchAngle)) {
                 return pieInfo;

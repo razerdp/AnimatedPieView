@@ -6,6 +6,8 @@ import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.CompoundButton;
 
@@ -35,17 +37,17 @@ public class MainActivity extends AppCompatActivity {
         mNoDonuts = findViewById(R.id.no_donuts);
         test = findViewById(R.id.test);
         AnimatedPieViewConfig config = new AnimatedPieViewConfig();
-        config.setStartAngle(-1800.68f)
-                .addData(new SimplePieInfo(1.0f, randomColor(), ""))
+        config.setStartAngle(180)
+                .addData(new SimplePieInfo(30, randomColor(), ""))
 //                .addData(new SimplePieInfo(18.0f, randomColor(), ""))
 //                .addData(new SimplePieInfo(123.0f, randomColor(), ""))
 //                .addData(new SimplePieInfo(87.0f, randomColor(), ""))
 //                .addData(new SimplePieInfo(15.0f, randomColor(), ""))
 //                .addData(new SimplePieInfo(55.0f, randomColor(), ""))
-                .addData(new SimplePieInfo(20.0f, randomColor(), ""))
-                .addData(new SimplePieInfo(90.0f, randomColor(), ""))
-                .setDuration(1200)
-                .setInterpolator(new FastOutLinearInInterpolator());
+                .addData(new SimplePieInfo(30.0f, randomColor(), ""))
+                .addData(new SimplePieInfo(30.0f, randomColor(), ""))
+                .setDuration(2000)
+                .setInterpolator(new DecelerateInterpolator(2.5f));
         test.applyConfig(config);
 
         mButton.setOnClickListener(new View.OnClickListener() {

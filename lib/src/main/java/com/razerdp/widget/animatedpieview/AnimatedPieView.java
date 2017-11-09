@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Build;
@@ -44,6 +45,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
     private PieInfoImpl mCurrentInfo;
     private PieInfoImpl mCurrentTouchInfo;
     private RectF mDrawRectf;
+    private RectF mTouchRectf;
     private List<PieInfoImpl> mDrawedPieInfo;
 
     private volatile boolean isInAnimated;
@@ -79,6 +81,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
             mTouchEventPaint.setMaskFilter(maskFilter);
         }
         mDrawRectf = new RectF();
+        mTouchRectf = new RectF();
         mDrawedPieInfo = new ArrayList<>();
         mTouchHelper = new TouchHelper(mConfig);
         applyConfigInternal(mConfig);
@@ -156,9 +159,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
     private void onTouchModeHandle(Canvas canvas) {
         if (mCurrentTouchInfo != null) {
             if (!ToolUtil.isListEmpty(mDrawedPieInfo)) {
-                Log.i(TAG, "点击的id: " + mCurrentTouchInfo.getId());
                 for (PieInfoImpl pieInfo : mDrawedPieInfo) {
-                    Log.i(TAG, "遍历的id: " + pieInfo.getId());
                     if (!mCurrentTouchInfo.equalsWith(pieInfo)) {
                         canvas.drawArc(mDrawRectf, pieInfo.getStartAngle(), pieInfo.getSweepAngle(), !mConfig.isDrawStrokeOnly(), pieInfo.getPaint());
                     }
@@ -167,16 +168,30 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
             mTouchEventPaint.set(mCurrentTouchInfo.getPaint());
             BlurMaskFilter maskFilter = new BlurMaskFilter(18, BlurMaskFilter.Blur.SOLID);
             mTouchEventPaint.setMaskFilter(maskFilter);
-            canvas.drawArc(mDrawRectf, mCurrentTouchInfo.getStartAngle() - 15, mCurrentTouchInfo.getSweepAngle() + 15, !mConfig.isDrawStrokeOnly(), mTouchEventPaint);
+            final float scaleSizeInTouch = mConfig.getScaleSizeInTouch();
+            mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch,
+                            mDrawRectf.top - scaleSizeInTouch,
+                            mDrawRectf.right + scaleSizeInTouch,
+                            mDrawRectf.bottom + scaleSizeInTouch);
+            canvas.drawArc(mTouchRectf, mCurrentTouchInfo.getStartAngle() - 5, mCurrentTouchInfo.getSweepAngle() + 5, !mConfig.isDrawStrokeOnly(), mTouchEventPaint);
         }
     }
 
     @Override
     public void onAnimationProcessing(float angle, @NonNull PieInfoImpl infoImpl) {
         if (mCurrentInfo != null) {
-            if (angle > mCurrentInfo.getEndAngle()) {
-                DebugLogUtil.logAngles("超出角度", mCurrentInfo);
-                mDrawedPieInfo.add(mCurrentInfo);
+            if (angle >= mCurrentInfo.getEndAngle()) {
+                boolean hasAdded = false;
+                for (PieInfoImpl pieInfo : mDrawedPieInfo) {
+                    if (pieInfo.equalsWith(mCurrentInfo)) {
+                        hasAdded = true;
+                        break;
+                    }
+                }
+                if (!hasAdded) {
+                    DebugLogUtil.logAngles("超出角度", mCurrentInfo);
+                    mDrawedPieInfo.add(mCurrentInfo);
+                }
             }
         }
         this.angle = angle;

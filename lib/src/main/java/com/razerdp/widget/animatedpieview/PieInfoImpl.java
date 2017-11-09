@@ -1,11 +1,13 @@
 package com.razerdp.widget.animatedpieview;
 
+import android.graphics.BlurMaskFilter;
 import android.graphics.Paint;
 import android.text.TextUtils;
 
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
 import com.razerdp.widget.animatedpieview.utils.DegreeUtil;
 
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -41,7 +43,8 @@ final class PieInfoImpl {
         mPaint.setStyle(drawStrokeOnly ? Paint.Style.STROKE : Paint.Style.FILL);
         mPaint.setStrokeWidth(strokeWidth);
         mPaint.setColor(info.getColor());
-       /* if (mPaint.getMaskFilter() == null) {
+        mPaint.setStrokeJoin(Paint.Join.MITER);
+        /*if (mPaint.getMaskFilter() == null) {
             BlurMaskFilter maskFilter = new BlurMaskFilter(18, BlurMaskFilter.Blur.SOLID);
             mPaint.setMaskFilter(maskFilter);
         }*/

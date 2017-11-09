@@ -19,6 +19,7 @@ import java.util.List;
 public class AnimatedPieViewConfig implements Serializable {
     private static final int DEFAULT_STROKE_WIDTH = 80;
     private static final float DEFAULT_START_ANGLE = -90.0f;
+    private static final float DEFAULT_SCALE_SIZE_WHEN_TOUCH = 15;
     private static final long DEFAULT_ANIMATION_DURATION = 2500;
     private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR = new DecelerateInterpolator(1.2f);
 
@@ -31,6 +32,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private AnimatedPieViewHelper mPieViewHelper;
     private Interpolator mInterpolator = DEFAULT_ANIMATION_INTERPOLATOR;
     private boolean isStroke = true;
+    private float scaleSizeInTouch = DEFAULT_SCALE_SIZE_WHEN_TOUCH;
 
     public AnimatedPieViewConfig() {
         mPieViewHelper = new AnimatedPieViewHelper();
@@ -124,6 +126,15 @@ public class AnimatedPieViewConfig implements Serializable {
             result.add(data.getPieInfo());
         }
         return result;
+    }
+
+    public float getScaleSizeInTouch() {
+        return scaleSizeInTouch;
+    }
+
+    public AnimatedPieViewConfig setScaleSizeInTouch(float scaleSizeInTouch) {
+        this.scaleSizeInTouch = scaleSizeInTouch;
+        return this;
     }
 
     protected List<PieInfoImpl> getImplDatas() {
