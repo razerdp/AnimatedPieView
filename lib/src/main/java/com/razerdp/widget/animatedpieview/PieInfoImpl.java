@@ -1,16 +1,19 @@
 package com.razerdp.widget.animatedpieview;
 
-import android.graphics.BlurMaskFilter;
 import android.graphics.Paint;
+import android.text.TextUtils;
 
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
 import com.razerdp.widget.animatedpieview.utils.DegreeUtil;
+
+import java.util.UUID;
 
 /**
  * Created by 大灯泡 on 2017/11/7.
  */
 
 final class PieInfoImpl {
+    private final String id;
     private final IPieInfo mPieInfo;
     private boolean drawStrokeOnly = true;
     private float startAngle;
@@ -19,8 +22,18 @@ final class PieInfoImpl {
     private Paint mPaint;
 
     private PieInfoImpl(IPieInfo info) {
+        id = UUID.randomUUID().toString();
         this.mPieInfo = info;
         initPaint(info);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public boolean equalsWith(PieInfoImpl info) {
+        if (info == null) return false;
+        return TextUtils.equals(info.getId(), id);
     }
 
     private void initPaint(IPieInfo info) {
@@ -28,10 +41,10 @@ final class PieInfoImpl {
         mPaint.setStyle(drawStrokeOnly ? Paint.Style.STROKE : Paint.Style.FILL);
         mPaint.setStrokeWidth(strokeWidth);
         mPaint.setColor(info.getColor());
-        if (mPaint.getMaskFilter() == null) {
+       /* if (mPaint.getMaskFilter() == null) {
             BlurMaskFilter maskFilter = new BlurMaskFilter(18, BlurMaskFilter.Blur.SOLID);
             mPaint.setMaskFilter(maskFilter);
-        }
+        }*/
     }
 
     public static PieInfoImpl create(IPieInfo info) {

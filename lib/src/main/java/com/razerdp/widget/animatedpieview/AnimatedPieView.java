@@ -10,10 +10,10 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
-import android.widget.Toast;
 
 import com.razerdp.widget.animatedpieview.exception.NoViewConfigException;
 import com.razerdp.widget.animatedpieview.utils.ToolUtil;
@@ -28,7 +28,13 @@ import java.util.List;
  */
 
 public class AnimatedPieView extends View implements PieViewAnimation.AnimationHandler {
-    private final String TAG = this.getClass().getSimpleName();
+    protected final String TAG = this.getClass().getSimpleName();
+
+    private enum Mode {
+        DRAW, TOUCH
+    }
+
+    private Mode mode = Mode.DRAW;
 
     private AnimatedPieViewConfig mConfig;
     private PieViewAnimation mPieViewAnimation;
@@ -36,6 +42,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
     private volatile float angle;
     private PieInfoImpl mCurrentInfo;
+    private PieInfoImpl mCurrentTouchInfo;
     private RectF mDrawRectf;
     private List<PieInfoImpl> mDrawedPieInfo;
 
@@ -125,6 +132,17 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         mTouchHelper.setPieParam(width / 2, height / 2, radius);
         mDrawRectf.set(-radius, -radius, radius, radius);
 
+        switch (mode) {
+            case DRAW:
+                onDrawModeHandle(canvas);
+                break;
+            case TOUCH:
+                onTouchModeHandle(canvas);
+                break;
+        }
+    }
+
+    private void onDrawModeHandle(Canvas canvas) {
         if (mCurrentInfo != null) {
             if (!ToolUtil.isListEmpty(mDrawedPieInfo)) {
                 for (PieInfoImpl pieInfo : mDrawedPieInfo) {
@@ -133,29 +151,24 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
             }
             canvas.drawArc(mDrawRectf, mCurrentInfo.getStartAngle(), angle - mCurrentInfo.getStartAngle(), !mConfig.isDrawStrokeOnly(), mCurrentInfo.getPaint());
         }
-
     }
 
-    float x = 0;
-    float y = 0;
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                x = event.getX();
-                y = event.getY();
-                return true;
-            case MotionEvent.ACTION_UP:
-                PieInfoImpl clickedInfo = mTouchHelper.pointToInfo(x, y);
-                if (clickedInfo != null) {
-                    Toast.makeText(getContext(), clickedInfo.toString(), Toast.LENGTH_LONG).show();
-                    return true;
+    private void onTouchModeHandle(Canvas canvas) {
+        if (mCurrentTouchInfo != null) {
+            if (!ToolUtil.isListEmpty(mDrawedPieInfo)) {
+                Log.i(TAG, "点击的id: " + mCurrentTouchInfo.getId());
+                for (PieInfoImpl pieInfo : mDrawedPieInfo) {
+                    Log.i(TAG, "遍历的id: " + pieInfo.getId());
+                    if (!mCurrentTouchInfo.equalsWith(pieInfo)) {
+                        canvas.drawArc(mDrawRectf, pieInfo.getStartAngle(), pieInfo.getSweepAngle(), !mConfig.isDrawStrokeOnly(), pieInfo.getPaint());
+                    }
                 }
-                break;
-
+            }
+            mTouchEventPaint.set(mCurrentTouchInfo.getPaint());
+            BlurMaskFilter maskFilter = new BlurMaskFilter(18, BlurMaskFilter.Blur.SOLID);
+            mTouchEventPaint.setMaskFilter(maskFilter);
+            canvas.drawArc(mDrawRectf, mCurrentTouchInfo.getStartAngle() - 15, mCurrentTouchInfo.getSweepAngle() + 15, !mConfig.isDrawStrokeOnly(), mTouchEventPaint);
         }
-        return super.onTouchEvent(event);
     }
 
     @Override
@@ -184,9 +197,45 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         if (isInAnimated) {
             return;
         }
+        setMode(Mode.DRAW);
         mDrawedPieInfo.clear();
         clearAnimation();
         isInAnimated = true;
         startAnimation(mPieViewAnimation);
+    }
+
+    //-----------------------------------------touch-----------------------------------------
+
+    float x = 0;
+    float y = 0;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                x = event.getX();
+                y = event.getY();
+                return true;
+            case MotionEvent.ACTION_UP:
+                PieInfoImpl clickedInfo = mTouchHelper.pointToInfo(x, y);
+                if (clickedInfo != null) {
+                    if (!isInAnimated) {
+                        this.mCurrentTouchInfo = clickedInfo;
+                        setMode(Mode.TOUCH);
+                        invalidate();
+                    }
+                    return true;
+                }
+                break;
+
+        }
+        return super.onTouchEvent(event);
+    }
+
+
+    //-----------------------------------------Tools-----------------------------------------
+
+    private void setMode(Mode mode) {
+        this.mode = mode;
     }
 }
