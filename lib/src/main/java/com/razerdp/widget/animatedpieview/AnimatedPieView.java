@@ -169,11 +169,16 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
             BlurMaskFilter maskFilter = new BlurMaskFilter(18, BlurMaskFilter.Blur.SOLID);
             mTouchEventPaint.setMaskFilter(maskFilter);
             final float scaleSizeInTouch = mConfig.getScaleSizeInTouch();
-            mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch,
-                            mDrawRectf.top - scaleSizeInTouch,
-                            mDrawRectf.right + scaleSizeInTouch,
-                            mDrawRectf.bottom + scaleSizeInTouch);
-            canvas.drawArc(mTouchRectf, mCurrentTouchInfo.getStartAngle() - 5, mCurrentTouchInfo.getSweepAngle() + 5, !mConfig.isDrawStrokeOnly(), mTouchEventPaint);
+            if (!mConfig.isDrawStrokeOnly()) {
+                mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch,
+                                mDrawRectf.top - scaleSizeInTouch,
+                                mDrawRectf.right + scaleSizeInTouch,
+                                mDrawRectf.bottom + scaleSizeInTouch);
+            } else {
+                mTouchRectf.set(mDrawRectf);
+                mTouchEventPaint.setStrokeWidth(mCurrentTouchInfo.getPaint().getStrokeWidth() + 10);
+            }
+            canvas.drawArc(mTouchRectf, mCurrentTouchInfo.getStartAngle() - 5, mCurrentTouchInfo.getSweepAngle() + 10, !mConfig.isDrawStrokeOnly(), mTouchEventPaint);
         }
     }
 
