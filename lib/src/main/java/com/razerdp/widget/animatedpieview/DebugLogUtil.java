@@ -41,7 +41,12 @@ public class DebugLogUtil {
 
     public static void logTouchAngle(double angle) {
         if (!LOG_SHOW) return;
-        logTouchAngle("点击角度： ",angle);
+        logTouchAngle("点击角度： ", angle);
+    }
+
+    public static void findTouchInfo(PieInfoImpl info) {
+        if (!LOG_SHOW || info == null) return;
+        Log.i(TAG, "找到点击的info: " + info.toString());
     }
 
     public static void logTouchAngle(String pre, double angle) {

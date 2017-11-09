@@ -5,6 +5,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
+import com.razerdp.widget.animatedpieview.utils.DegreeUtil;
 import com.razerdp.widget.animatedpieview.utils.ToolUtil;
 
 import java.io.Serializable;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 
 public class AnimatedPieViewConfig implements Serializable {
-    private static final int DEFAULT_STROKE_WIDTH = 60;
+    private static final int DEFAULT_STROKE_WIDTH = 80;
     private static final float DEFAULT_START_ANGLE = -90.0f;
     private static final long DEFAULT_ANIMATION_DURATION = 2500;
     private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR = new DecelerateInterpolator(1.2f);
@@ -49,6 +50,10 @@ public class AnimatedPieViewConfig implements Serializable {
         return startAngle;
     }
 
+    float getStartAngleAfterLimited() {
+        return DegreeUtil.limitDegreeInTo360(startAngle);
+    }
+
     public Interpolator getInterpolator() {
         return mInterpolator;
     }
@@ -67,6 +72,12 @@ public class AnimatedPieViewConfig implements Serializable {
         return setReApply(true);
     }
 
+    /**
+     * startAngle有点儿问题，暂时不允许设置
+     *
+     * @param startAngle
+     * @return
+     */
     public AnimatedPieViewConfig setStartAngle(float startAngle) {
         this.startAngle = startAngle;
         return setReApply(true);

@@ -4,6 +4,7 @@ import android.graphics.BlurMaskFilter;
 import android.graphics.Paint;
 
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
+import com.razerdp.widget.animatedpieview.utils.DegreeUtil;
 
 /**
  * Created by 大灯泡 on 2017/11/7.
@@ -65,8 +66,27 @@ final class PieInfoImpl {
         return Math.abs(endAngle - startAngle);
     }
 
-    public boolean isInAngleRange(float angle) {
+    boolean isInAngleRange(float angle) {
         return angle >= startAngle && angle <= endAngle;
+    }
+
+    boolean isTouchInAngleRange(float angle) {
+        //所有点击的角度都需要收归到0~360的范围，兼容任意角度
+        final float tAngle = DegreeUtil.limitDegreeInTo360(angle);
+        float tStart = DegreeUtil.limitDegreeInTo360(startAngle);
+        float tEnd = DegreeUtil.limitDegreeInTo360(endAngle);
+        DebugLogUtil.logTouchAngle("isTouchInAngleRange  >>  tStart： " + tStart + "   tEnd： " + tEnd + "   tAngle： ", tAngle);
+        boolean result;
+        if (tEnd < tStart) {
+            //已经过界
+            result = tAngle >= tStart && (360 - tAngle) <= tEnd;
+        } else {
+            result = tAngle >= tStart && tAngle <= tEnd;
+        }
+        if (result) {
+            DebugLogUtil.findTouchInfo(this);
+        }
+        return result;
     }
 
     @Override

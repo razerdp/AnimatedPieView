@@ -13,6 +13,10 @@ public class TouchHelper {
     private float centerY;
     private float radius;
 
+    //因为判断点击时是判断内圆和外圆半径，可能很苛刻，所以这里可以考虑增加点击范围
+    //ps，这个是会被平方的
+    private int expandClickRange = 5;
+
     public TouchHelper(AnimatedPieViewConfig config) {
         mConfig = config;
     }
@@ -32,7 +36,8 @@ public class TouchHelper {
         //点击位置到圆心的直线距离(没开根)
         final double touchDistancePow = Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2);
         //内圆半径<=直线距离<=外圆半径
-        final boolean isTouchInRing = touchDistancePow >= Math.pow(innerCircleRadius, 2) && touchDistancePow <= Math.pow(exCircleRadius, 2);
+        final boolean isTouchInRing = touchDistancePow >= Math.pow(innerCircleRadius + expandClickRange, 2)
+                && touchDistancePow <= Math.pow(exCircleRadius + expandClickRange, 2);
         if (!isTouchInRing) return null;
         return findPieInfoImpl(x, y, touchDistancePow);
     }
@@ -42,7 +47,6 @@ public class TouchHelper {
      * <p>
      * Math.atan2比Math.atan稳定很多
      * <p>
-     * 若要用度表示反正切值，请将结果再乘以 180/3.14159(PI)
      *
      * @param x
      * @param y
@@ -50,33 +54,18 @@ public class TouchHelper {
      * @return
      */
     private PieInfoImpl findPieInfoImpl(float x, float y, double touchDistancePow) {
-        //获取设定好的起点角
-        final float startAngle = mConfig.getStartAngle();
         //得到角度
         double touchAngle = Math.toDegrees(Math.atan2(y - centerY, x - centerX));
-        touchAngle = fixedTouchAngle(touchAngle, startAngle);
+        if (touchAngle < 0) {
+            touchAngle += 360.0f;
+        }
         for (PieInfoImpl pieInfo : mConfig.getImplDatas()) {
-            if (pieInfo.isInAngleRange((float) touchAngle)) {
+            if (pieInfo.isTouchInAngleRange((float) touchAngle)) {
                 return pieInfo;
             }
         }
         return null;
     }
 
-    private double fixedTouchAngle(double touchAngle, float startAngle) {
-        double result = touchAngle;
-        DebugLogUtil.logTouchAngle("修正前角度  >>>  ", result);
-        if (result < 0) {
-            result += 360.0;
-        }
-        int turns = (int) (startAngle / 360.0f);
-        if (startAngle < -180.0 || startAngle > 360.0) {
-            result += 360.0f * turns;
-        }
-        result += startAngle;
-
-        DebugLogUtil.logTouchAngle("修正后角度  >>>  ", result);
-        return result;
-    }
 
 }

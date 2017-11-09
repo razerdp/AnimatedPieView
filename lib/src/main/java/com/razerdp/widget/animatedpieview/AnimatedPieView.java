@@ -2,7 +2,9 @@ package com.razerdp.widget.animatedpieview;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -22,7 +24,7 @@ import java.util.List;
 /**
  * Created by 大灯泡 on 2017/11/7.
  * <p>
- * 好吃的圆饼？请问要什么口味呢
+ * 好吃的甜甜圈？请问要什么口味呢
  */
 
 public class AnimatedPieView extends View implements PieViewAnimation.AnimationHandler {
@@ -38,6 +40,8 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
     private List<PieInfoImpl> mDrawedPieInfo;
 
     private volatile boolean isInAnimated;
+
+    private Paint mTouchEventPaint;
 
 
     public AnimatedPieView(Context context) {
@@ -62,6 +66,11 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
     private void initView(Context context, AttributeSet attrs) {
         if (mConfig == null) mConfig = new AnimatedPieViewConfig();
+        if (mTouchEventPaint == null) {
+            mTouchEventPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+            BlurMaskFilter maskFilter = new BlurMaskFilter(18, BlurMaskFilter.Blur.SOLID);
+            mTouchEventPaint.setMaskFilter(maskFilter);
+        }
         mDrawRectf = new RectF();
         mDrawedPieInfo = new ArrayList<>();
         mTouchHelper = new TouchHelper(mConfig);
