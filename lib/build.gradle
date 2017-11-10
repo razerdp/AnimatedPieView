@@ -1,9 +1,8 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 26
-
-
 
     defaultConfig {
         minSdkVersion 14
@@ -22,6 +21,10 @@ android {
         }
     }
 
+    lintOptions {
+        abortOnError false
+    }
+
 }
 
 dependencies {
@@ -31,4 +34,13 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+}
+
+publish {
+    userOrg = 'razerdp'
+    groupId = 'com.github.razerdp'
+    artifactId = 'AnimatedPieView'
+    publishVersion = '1.0.0'
+    desc = '好吃的甜甜圈？'
+    website = 'https://github.com/razerdp/AnimatedPieView'
 }
