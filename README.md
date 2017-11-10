@@ -2,9 +2,12 @@
 
 #### // 一个好吃的甜甜圈？请问客官要啥口味捏-V-
 
-[ ![Download](https://api.bintray.com/packages/razerdp/maven/AnimatedPieView/images/download.svg) ](https://bintray.com/razerdp/maven/AnimatedPieView/_latestVersion)
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/razerdp/AnimatedPieView/blob/master/LICENSE)
+[![Download](https://api.bintray.com/packages/razerdp/maven/AnimatedPieView/images/download.svg)](https://bintray.com/razerdp/maven/AnimatedPieView/_latestVersion)
+[![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/razerdp/AnimatedPieView/blob/master/LICENSE)
+![Progress](http://progressed.io/bar/59?title=dev_progress)   
+[![Api](https://img.shields.io/badge/Api-14%2B-green.svg)](https://img.shields.io/badge/Api-14%2B-green.svg)
 [![Author](https://img.shields.io/badge/Author-razerdp-blue.svg)](https://github.com/razerdp) 
+
 
 ##### 这是一个可爱的甜甜圈，也许是一个圆饼图，包含着动画和点击效果，目前仍在维护和不断加料中
 
