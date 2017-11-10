@@ -8,7 +8,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0'
-        
+        classpath 'com.novoda:bintray-release:0.7.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -20,8 +20,18 @@ allprojects {
         google()
         jcenter()
     }
+    // 指定javadoc UTF-8格式
+    tasks.withType(Javadoc) {
+        options{
+            encoding 'UTF-8'
+            charSet 'UTF-8'
+            links "https://androiddoc.qiniudn.com/reference/"
+            addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
