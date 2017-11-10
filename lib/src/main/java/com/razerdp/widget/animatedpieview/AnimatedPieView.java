@@ -1,20 +1,21 @@
 package com.razerdp.widget.animatedpieview;
 
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.Toast;
 
 import com.razerdp.widget.animatedpieview.exception.NoViewConfigException;
 import com.razerdp.widget.animatedpieview.utils.ToolUtil;
@@ -39,16 +40,22 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
     private AnimatedPieViewConfig mConfig;
     private PieViewAnimation mPieViewAnimation;
+    private ValueAnimator mTouchScaleUpAnimator;
+    private ValueAnimator mTouchScaleDownAnimator;
+
     private TouchHelper mTouchHelper;
 
     private volatile float angle;
+    private volatile float mScaleUpTime;
+    private volatile float mScaleDownTime;
     private PieInfoImpl mCurrentInfo;
     private PieInfoImpl mCurrentTouchInfo;
+    private PieInfoImpl mLastTouchInfo;
     private RectF mDrawRectf;
     private RectF mTouchRectf;
-    private List<PieInfoImpl> mDrawedPieInfo;
+    private List<PieInfoImpl> mDrawedCachePieInfo;
 
-    private volatile boolean isInAnimated;
+    private volatile boolean isInAnimating;
 
     private Paint mTouchEventPaint;
 
@@ -82,7 +89,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         }
         mDrawRectf = new RectF();
         mTouchRectf = new RectF();
-        mDrawedPieInfo = new ArrayList<>();
+        mDrawedCachePieInfo = new ArrayList<>();
         mTouchHelper = new TouchHelper(mConfig);
         applyConfigInternal(mConfig);
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -91,6 +98,11 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
     private void applyConfigInternal(AnimatedPieViewConfig config) {
         if (config == null) throw new NoViewConfigException("请使用config进行配置");
         mConfig.setConfig(config);
+        buildAnima(mConfig);
+        if (mConfig.isReApply()) config.setReApply(false);
+    }
+
+    private void buildAnima(AnimatedPieViewConfig config) {
         //anim
         if (mPieViewAnimation == null) mPieViewAnimation = new PieViewAnimation(config);
         mPieViewAnimation.setDuration(config.getDuration());
@@ -104,7 +116,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                isInAnimated = false;
+                isInAnimating = false;
 
             }
 
@@ -113,8 +125,30 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
             }
         });
-
-        if (mConfig.isReApply()) config.setReApply(false);
+        //scale up
+        if (mTouchScaleUpAnimator == null)
+            mTouchScaleUpAnimator = ValueAnimator.ofFloat(0.0f, 1.0f);
+        mTouchScaleUpAnimator.setDuration(config.getTouchScaleUpDuration());
+        mTouchScaleUpAnimator.setInterpolator(new DecelerateInterpolator());
+        mTouchScaleUpAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mScaleUpTime = (float) animation.getAnimatedValue();
+                invalidate();
+            }
+        });
+        //scaleDown
+        if (mTouchScaleDownAnimator == null)
+            mTouchScaleDownAnimator = ValueAnimator.ofFloat(1.0f, 0.0f);
+        mTouchScaleDownAnimator.setDuration(config.getTouchScaleDownDuration());
+        mTouchScaleDownAnimator.setInterpolator(new DecelerateInterpolator());
+        mTouchScaleDownAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mScaleDownTime = (float) animation.getAnimatedValue();
+                invalidate();
+            }
+        });
     }
 
 
@@ -147,47 +181,73 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
     private void onDrawModeHandle(Canvas canvas) {
         if (mCurrentInfo != null) {
-            if (!ToolUtil.isListEmpty(mDrawedPieInfo)) {
-                for (PieInfoImpl pieInfo : mDrawedPieInfo) {
-                    canvas.drawArc(mDrawRectf, pieInfo.getStartAngle(), pieInfo.getSweepAngle(), !mConfig.isDrawStrokeOnly(), pieInfo.getPaint());
-                }
-            }
+            drawCachedInfos(canvas, null);
             canvas.drawArc(mDrawRectf, mCurrentInfo.getStartAngle(), angle - mCurrentInfo.getStartAngle(), !mConfig.isDrawStrokeOnly(), mCurrentInfo.getPaint());
         }
     }
 
     private void onTouchModeHandle(Canvas canvas) {
         if (mCurrentTouchInfo != null) {
-            if (!ToolUtil.isListEmpty(mDrawedPieInfo)) {
-                for (PieInfoImpl pieInfo : mDrawedPieInfo) {
-                    if (!mCurrentTouchInfo.equalsWith(pieInfo)) {
-                        canvas.drawArc(mDrawRectf, pieInfo.getStartAngle(), pieInfo.getSweepAngle(), !mConfig.isDrawStrokeOnly(), pieInfo.getPaint());
-                    }
-                }
+            drawCachedInfos(canvas, mCurrentTouchInfo);
+            //先完成上一个点击的动画
+            if (mLastTouchInfo != null && !mLastTouchInfo.equalsWith(mCurrentInfo)) {
+                mTouchRectf.set(mDrawRectf);
+                mTouchEventPaint.set(mLastTouchInfo.getPaint());
+                BlurMaskFilter scaleDownMaskFilter = new BlurMaskFilter(Math.max(1, mConfig.getTouchShadowRadius() * mScaleDownTime), BlurMaskFilter.Blur.SOLID);
+                mTouchEventPaint.setMaskFilter(mScaleDownTime > 0 ? scaleDownMaskFilter : null);
+                mTouchEventPaint.setStrokeWidth(mLastTouchInfo.getPaint().getStrokeWidth() + (10 * mScaleDownTime));
+                canvas.drawArc(mTouchRectf,
+                        mLastTouchInfo.getStartAngle() - (mConfig.getTouchExpandAngle() * mScaleDownTime),
+                        mLastTouchInfo.getSweepAngle() + (mConfig.getTouchExpandAngle() * 2 * mScaleDownTime),
+                        !mConfig.isDrawStrokeOnly(),
+                        mTouchEventPaint);
             }
+            //再完成当前点击的动画
             mTouchEventPaint.set(mCurrentTouchInfo.getPaint());
-            BlurMaskFilter maskFilter = new BlurMaskFilter(18, BlurMaskFilter.Blur.SOLID);
+            BlurMaskFilter maskFilter = new BlurMaskFilter(Math.max(1, mConfig.getTouchShadowRadius() * mScaleUpTime), BlurMaskFilter.Blur.SOLID);
             mTouchEventPaint.setMaskFilter(maskFilter);
-            final float scaleSizeInTouch = mConfig.getScaleSizeInTouch();
+            final float scaleSizeInTouch = mConfig.getTouchScaleSize();
             if (!mConfig.isDrawStrokeOnly()) {
                 mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch,
-                                mDrawRectf.top - scaleSizeInTouch,
-                                mDrawRectf.right + scaleSizeInTouch,
-                                mDrawRectf.bottom + scaleSizeInTouch);
+                        mDrawRectf.top - scaleSizeInTouch,
+                        mDrawRectf.right + scaleSizeInTouch,
+                        mDrawRectf.bottom + scaleSizeInTouch);
             } else {
                 mTouchRectf.set(mDrawRectf);
-                mTouchEventPaint.setStrokeWidth(mCurrentTouchInfo.getPaint().getStrokeWidth() + 10);
+                mTouchEventPaint.setStrokeWidth(mCurrentTouchInfo.getPaint().getStrokeWidth() + (10 * mScaleUpTime));
             }
-            canvas.drawArc(mTouchRectf, mCurrentTouchInfo.getStartAngle() - 5, mCurrentTouchInfo.getSweepAngle() + 10, !mConfig.isDrawStrokeOnly(), mTouchEventPaint);
+            canvas.drawArc(mTouchRectf,
+                    mCurrentTouchInfo.getStartAngle() - (mConfig.getTouchExpandAngle() * mScaleUpTime),
+                    mCurrentTouchInfo.getSweepAngle() + (mConfig.getTouchExpandAngle() * 2 * mScaleUpTime),
+                    !mConfig.isDrawStrokeOnly(),
+                    mTouchEventPaint);
+        }
+    }
+
+    /**
+     * 绘制缓存的圆环
+     *
+     * @param canvas
+     * @param excluded 排除excluded
+     */
+    private void drawCachedInfos(Canvas canvas, PieInfoImpl excluded) {
+        if (!ToolUtil.isListEmpty(mDrawedCachePieInfo)) {
+            for (PieInfoImpl pieInfo : mDrawedCachePieInfo) {
+                if (excluded != null && excluded.equalsWith(pieInfo)) {
+                    continue;
+                }
+                canvas.drawArc(mDrawRectf, pieInfo.getStartAngle(), pieInfo.getSweepAngle(), !mConfig.isDrawStrokeOnly(), pieInfo.getPaint());
+            }
         }
     }
 
     @Override
     public void onAnimationProcessing(float angle, @NonNull PieInfoImpl infoImpl) {
         if (mCurrentInfo != null) {
+            //角度切换时就把画过的添加到缓存，因为角度切换只有很少的几次，所以这里允许循环，并不会造成大量的循环
             if (angle >= mCurrentInfo.getEndAngle()) {
                 boolean hasAdded = false;
-                for (PieInfoImpl pieInfo : mDrawedPieInfo) {
+                for (PieInfoImpl pieInfo : mDrawedCachePieInfo) {
                     if (pieInfo.equalsWith(mCurrentInfo)) {
                         hasAdded = true;
                         break;
@@ -195,7 +255,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                 }
                 if (!hasAdded) {
                     DebugLogUtil.logAngles("超出角度", mCurrentInfo);
-                    mDrawedPieInfo.add(mCurrentInfo);
+                    mDrawedCachePieInfo.add(mCurrentInfo);
                 }
             }
         }
@@ -214,13 +274,13 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
 
     public void start() {
-        if (isInAnimated) {
+        if (isInAnimating) {
             return;
         }
         setMode(Mode.DRAW);
-        mDrawedPieInfo.clear();
+        mDrawedCachePieInfo.clear();
         clearAnimation();
-        isInAnimated = true;
+        isInAnimating = true;
         startAnimation(mPieViewAnimation);
     }
 
@@ -239,10 +299,17 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
             case MotionEvent.ACTION_UP:
                 PieInfoImpl clickedInfo = mTouchHelper.pointToInfo(x, y);
                 if (clickedInfo != null) {
-                    if (!isInAnimated) {
-                        this.mCurrentTouchInfo = clickedInfo;
+                    Toast.makeText(getContext(), clickedInfo.getPieInfo().getDesc(), Toast.LENGTH_SHORT).show();
+                    if (!isInAnimating) {
+                        mLastTouchInfo = mCurrentTouchInfo;
+                        mCurrentTouchInfo = clickedInfo;
                         setMode(Mode.TOUCH);
-                        invalidate();
+                        if (mConfig.isTouchAnimation()) {
+                            mTouchScaleDownAnimator.start();
+                            mTouchScaleUpAnimator.start();
+                        } else {
+                            invalidate();
+                        }
                     }
                     return true;
                 }
@@ -256,6 +323,10 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
     //-----------------------------------------Tools-----------------------------------------
 
     private void setMode(Mode mode) {
+        if (mode == Mode.DRAW) {
+            mCurrentTouchInfo = null;
+            mLastTouchInfo = null;
+        }
         this.mode = mode;
     }
 }

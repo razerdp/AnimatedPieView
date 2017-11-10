@@ -1,13 +1,11 @@
 package com.razerdp.widget.animatedpieview;
 
-import android.graphics.BlurMaskFilter;
 import android.graphics.Paint;
 import android.text.TextUtils;
 
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
 import com.razerdp.widget.animatedpieview.utils.DegreeUtil;
 
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -115,8 +113,12 @@ final class PieInfoImpl {
         DebugLogUtil.logTouchAngle("isTouchInAngleRange  >>  tStart： " + tStart + "   tEnd： " + tEnd + "   tAngle： ", tAngle);
         boolean result;
         if (tEnd < tStart) {
-            //已经过界
-            result = tAngle >= tStart && (360 - tAngle) <= tEnd;
+            if (tAngle > 180) {
+                //已经过界
+                result = tAngle >= tStart && (360 - tAngle) <= tEnd;
+            } else {
+                result = tAngle + 360 >= tStart && tAngle <= tEnd;
+            }
         } else {
             result = tAngle >= tStart && tAngle <= tEnd;
         }
