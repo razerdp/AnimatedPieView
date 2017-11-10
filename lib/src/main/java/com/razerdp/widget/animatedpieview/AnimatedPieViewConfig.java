@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
+import com.razerdp.widget.animatedpieview.callback.OnPieSelectListener;
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
 import com.razerdp.widget.animatedpieview.utils.DegreeUtil;
 import com.razerdp.widget.animatedpieview.utils.ToolUtil;
@@ -44,6 +45,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private boolean isStroke = true;
     private float touchScaleSize = DEFAULT_SCALE_SIZE_WHEN_TOUCH;
     private boolean touchAnimation = true;
+    private OnPieSelectListener mOnPieSelectListener;
 
     public AnimatedPieViewConfig() {
         mPieViewHelper = new AnimatedPieViewHelper();
@@ -193,6 +195,15 @@ public class AnimatedPieViewConfig implements Serializable {
         return this;
     }
 
+    public <T extends IPieInfo> OnPieSelectListener<T> getOnPieSelectListener() {
+        return mOnPieSelectListener;
+    }
+
+    public <T extends IPieInfo> AnimatedPieViewConfig setOnPieSelectListener(OnPieSelectListener<T> onPieSelectListener) {
+        mOnPieSelectListener = onPieSelectListener;
+        return this;
+    }
+
     protected List<PieInfoImpl> getImplDatas() {
         return new ArrayList<>(mDatas);
     }
@@ -218,7 +229,8 @@ public class AnimatedPieViewConfig implements Serializable {
                     .setTouchScaleDownDuration(config.getTouchScaleDownDuration())
                     .setTouchShadowRadius(config.getTouchShadowRadius())
                     .setTouchExpandAngle(config.getTouchExpandAngle())
-                    .setTouchAnimation(config.isTouchAnimation());
+                    .setTouchAnimation(config.isTouchAnimation())
+                    .setOnPieSelectListener(config.getOnPieSelectListener());
             List<IPieInfo> infos = config.getDatas();
             mDatas.clear();
             for (IPieInfo info : infos) {
