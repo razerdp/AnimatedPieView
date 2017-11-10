@@ -18,7 +18,6 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AnimatedPieView test;
     private Button mButton;
     private SwitchCompat mNoDonuts;
     private final Random random = new Random();
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         mButton = findViewById(R.id.start);
         mNoDonuts = findViewById(R.id.no_donuts);
-        test = findViewById(R.id.test);
+        final AnimatedPieView mAnimatedPieView = findViewById(R.id.animatedPieView);
         AnimatedPieViewConfig config = new AnimatedPieViewConfig();
         config.setStartAngle(-90)
                 .addData(new SimplePieInfo(30, getColor("FFC5FF8C"), "这是第一段"))
@@ -47,13 +46,13 @@ public class MainActivity extends AppCompatActivity {
                 .addData(new SimplePieInfo(30.0f, getColor("ff957de0"), "这是第八段"))
                 .setDuration(2000)
                 .setInterpolator(new DecelerateInterpolator(2.5f));
-        test.applyConfig(config);
+        mAnimatedPieView.applyConfig(config);
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                test.getConfig().setDrawStrokeOnly(!noDonuts);
-                test.start();
+                mAnimatedPieView.getConfig().setDrawStrokeOnly(!noDonuts);
+                mAnimatedPieView.start();
             }
         });
         mNoDonuts.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
