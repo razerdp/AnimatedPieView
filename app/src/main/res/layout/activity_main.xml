@@ -30,7 +30,7 @@
     </RelativeLayout>
 
     <com.razerdp.widget.animatedpieview.AnimatedPieView
-        android:id="@+id/test"
+        android:id="@+id/animatedPieView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
