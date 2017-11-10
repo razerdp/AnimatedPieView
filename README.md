@@ -9,11 +9,11 @@
 [![Author](https://img.shields.io/badge/Author-razerdp-blue.svg)](https://github.com/razerdp) 
 
 
-##### 这是一个可爱的甜甜圈，也许是一个圆饼图，包含着动画和点击效果，目前仍在维护和不断加料中
+### 这是一个可爱的甜甜圈，也许是一个圆饼图，包含着动画和点击效果，目前仍在维护和不断加料中
 
 --- 
 
-##### 主要功能：
+### 主要功能：
  
   - 动画展开
   
@@ -24,7 +24,7 @@
    ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/click.gif)
    
    
-##### 依赖
+### 依赖
 
 添加依赖（请把{latestVersion}替换成上面的jcenter标签所示版本）
 ```xml
@@ -35,7 +35,7 @@
 
 #### 基本使用方式（简单的超乎想像）：
 
-##### ps:目前还没全部完成，后续会继续完善的
+### ps:目前还没全部完成，后续会继续完善的
 
 
 ```java
@@ -51,7 +51,7 @@
         mAnimatedPieView.start();
 ```
 
-##### 进阶用法（所有配置都在config，下面的只是展示用哦）：
+### 进阶用法（所有配置都在config，下面的只是展示用哦）：
 ```java
         AnimatedPieViewConfig mConfig=mAnimatedPieView.getConfig();
         mConfig.setTouchAnimation(true)//点击事件是否播放浮现动画/回退动画（默认true）
@@ -68,12 +68,14 @@
                         .setConfig(new AnimatedPieViewConfig());//配置
 ```
 
-#### 打赏（您的支持是我维护的动力-V-愿意的话，给个零食呗）
+---
+
+### 打赏（您的支持是我维护的动力-V-愿意的话，金额随意）
 ![wechat](https://github.com/razerdp/AnimatedPieView/blob/master/art/wechat.jpg)
 
-#### 控件思路（书写中。。。地址会更新到这里的）
+### 控件思路（书写中。。。地址会更新到这里的）
 
-#### LICENSE
+### LICENSE
 Apache-2.0
    
    
