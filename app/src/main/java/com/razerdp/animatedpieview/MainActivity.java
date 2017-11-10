@@ -2,6 +2,7 @@ package com.razerdp.animatedpieview;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
@@ -9,9 +10,12 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import com.razerdp.widget.animatedpieview.AnimatedPieView;
 import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
+import com.razerdp.widget.animatedpieview.callback.OnPieSelectListener;
+import com.razerdp.widget.animatedpieview.data.IPieInfo;
 import com.razerdp.widget.animatedpieview.data.SimplePieInfo;
 
 import java.util.Random;
@@ -45,7 +49,13 @@ public class MainActivity extends AppCompatActivity {
                 .addData(new SimplePieInfo(30.0f, getColor("fffa734d"), "这是第七段"))
                 .addData(new SimplePieInfo(30.0f, getColor("ff957de0"), "这是第八段"))
                 .setDuration(2000)
-                .setInterpolator(new DecelerateInterpolator(2.5f));
+                .setInterpolator(new DecelerateInterpolator(2.5f))
+                .setOnPieSelectListener(new OnPieSelectListener<IPieInfo>() {
+                    @Override
+                    public void onSelectPie(@NonNull IPieInfo pieInfo) {
+                        Toast.makeText(MainActivity.this, pieInfo.getDesc(), Toast.LENGTH_SHORT).show();
+                    }
+                });
         mAnimatedPieView.applyConfig(config);
 
         mButton.setOnClickListener(new View.OnClickListener() {

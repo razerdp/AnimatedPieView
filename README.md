@@ -65,7 +65,8 @@
                         .setDuration(2500)//动画时间
                         .setInterpolator(new LinearInterpolator())//插值器
                         .setStartAngle(-90f)//开始的角度
-                        .setConfig(new AnimatedPieViewConfig());//配置
+                        .setOnPieSelectListener(new OnPieSelectListener<IPieInfo>())//点击事件
+                        .setConfig(new AnimatedPieViewConfig());//配置（这里的new只是演示哦，可不要学我例子这里直接塞进一个新的config，否则上面的设置都浪费了）
 ```
 
 ---

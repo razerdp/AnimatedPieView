@@ -219,7 +219,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.Toast;
 
 import com.razerdp.widget.animatedpieview.exception.NoViewConfigException;
 import com.razerdp.widget.animatedpieview.utils.ToolUtil;
@@ -396,35 +395,15 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
             //先完成上一个点击的动画
             if (mLastTouchInfo != null && !mLastTouchInfo.equalsWith(mCurrentInfo)) {
                 mTouchRectf.set(mDrawRectf);
-                mTouchEventPaint.set(mLastTouchInfo.getPaint());
-                BlurMaskFilter scaleDownMaskFilter = new BlurMaskFilter(Math.max(1, mConfig.getTouchShadowRadius() * mScaleDownTime), BlurMaskFilter.Blur.SOLID);
-                mTouchEventPaint.setMaskFilter(mScaleDownTime > 0 ? scaleDownMaskFilter : null);
-                mTouchEventPaint.setStrokeWidth(mLastTouchInfo.getPaint().getStrokeWidth() + (10 * mScaleDownTime));
-                canvas.drawArc(mTouchRectf,
-                        mLastTouchInfo.getStartAngle() - (mConfig.getTouchExpandAngle() * mScaleDownTime),
-                        mLastTouchInfo.getSweepAngle() + (mConfig.getTouchExpandAngle() * 2 * mScaleDownTime),
-                        !mConfig.isDrawStrokeOnly(),
-                        mTouchEventPaint);
+                drawTouchAnimaArc(canvas, mLastTouchInfo, mScaleDownTime);
             }
             //再完成当前点击的动画
-            mTouchEventPaint.set(mCurrentTouchInfo.getPaint());
-            BlurMaskFilter maskFilter = new BlurMaskFilter(Math.max(1, mConfig.getTouchShadowRadius() * mScaleUpTime), BlurMaskFilter.Blur.SOLID);
-            mTouchEventPaint.setMaskFilter(maskFilter);
-            final float scaleSizeInTouch = mConfig.getTouchScaleSize();
-            if (!mConfig.isDrawStrokeOnly()) {
-                mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch,
-                        mDrawRectf.top - scaleSizeInTouch,
-                        mDrawRectf.right + scaleSizeInTouch,
-                        mDrawRectf.bottom + scaleSizeInTouch);
-            } else {
-                mTouchRectf.set(mDrawRectf);
-                mTouchEventPaint.setStrokeWidth(mCurrentTouchInfo.getPaint().getStrokeWidth() + (10 * mScaleUpTime));
-            }
-            canvas.drawArc(mTouchRectf,
-                    mCurrentTouchInfo.getStartAngle() - (mConfig.getTouchExpandAngle() * mScaleUpTime),
-                    mCurrentTouchInfo.getSweepAngle() + (mConfig.getTouchExpandAngle() * 2 * mScaleUpTime),
-                    !mConfig.isDrawStrokeOnly(),
-                    mTouchEventPaint);
+            final float scaleSizeInTouch = !mConfig.isDrawStrokeOnly() ? mConfig.getTouchScaleSize() : 0;
+            mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch,
+                    mDrawRectf.top - scaleSizeInTouch,
+                    mDrawRectf.right + scaleSizeInTouch,
+                    mDrawRectf.bottom + scaleSizeInTouch);
+            drawTouchAnimaArc(canvas, mCurrentTouchInfo, mScaleUpTime);
         }
     }
 
@@ -443,6 +422,26 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                 canvas.drawArc(mDrawRectf, pieInfo.getStartAngle(), pieInfo.getSweepAngle(), !mConfig.isDrawStrokeOnly(), pieInfo.getPaint());
             }
         }
+    }
+
+    /**
+     * 绘制touch时的圆环
+     *
+     * @param canvas
+     * @param info
+     * @param timeFactor
+     */
+    private void drawTouchAnimaArc(Canvas canvas, PieInfoImpl info, float timeFactor) {
+        if (info == null) return;
+        mTouchEventPaint.set(info.getPaint());
+        BlurMaskFilter scaleDownMaskFilter = new BlurMaskFilter(Math.max(1, mConfig.getTouchShadowRadius() * timeFactor), BlurMaskFilter.Blur.SOLID);
+        mTouchEventPaint.setMaskFilter(timeFactor > 0 ? scaleDownMaskFilter : null);
+        mTouchEventPaint.setStrokeWidth(info.getPaint().getStrokeWidth() + (10 * timeFactor));
+        canvas.drawArc(mTouchRectf,
+                info.getStartAngle() - (mConfig.getTouchExpandAngle() * timeFactor),
+                info.getSweepAngle() + (mConfig.getTouchExpandAngle() * 2 * timeFactor),
+                !mConfig.isDrawStrokeOnly(),
+                mTouchEventPaint);
     }
 
     @Override
@@ -503,7 +502,6 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
             case MotionEvent.ACTION_UP:
                 PieInfoImpl clickedInfo = mTouchHelper.pointToInfo(x, y);
                 if (clickedInfo != null) {
-                    Toast.makeText(getContext(), clickedInfo.getPieInfo().getDesc(), Toast.LENGTH_SHORT).show();
                     if (!isInAnimating) {
                         mLastTouchInfo = mCurrentTouchInfo;
                         mCurrentTouchInfo = clickedInfo;
@@ -512,8 +510,13 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                             mTouchScaleDownAnimator.start();
                             mTouchScaleUpAnimator.start();
                         } else {
+                            mScaleUpTime = 1;
                             invalidate();
                         }
+                        if (mConfig.getOnPieSelectListener() != null) {
+                            mConfig.getOnPieSelectListener().onSelectPie(clickedInfo.getPieInfo());
+                        }
+
                     }
                     return true;
                 }
