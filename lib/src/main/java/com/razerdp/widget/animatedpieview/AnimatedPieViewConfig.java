@@ -1,5 +1,6 @@
 package com.razerdp.widget.animatedpieview;
 
+import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -26,6 +27,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private static final long DEFAULT_TOUCH_SCALE_DOWN_DURATION = 800;
     private static final float DEFAULT_SHADOW_BLUR_RADIUS = 18;
     private static final float DEFAULT_TOUCH_EXPAND_ANGLE = 8;
+    private static final float DEFAULT_PIE_RADIUS_SCALE = 0.85f;
 
 
     private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR = new DecelerateInterpolator(1.2f);
@@ -37,6 +39,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private long touchScaleDownDuration = DEFAULT_TOUCH_SCALE_DOWN_DURATION;
     private float touchShadowRadius = DEFAULT_SHADOW_BLUR_RADIUS;
     private float touchExpandAngle = DEFAULT_TOUCH_EXPAND_ANGLE;
+    private float pieRadiusScale = DEFAULT_PIE_RADIUS_SCALE;
 
     private volatile boolean reApply;
     private List<PieInfoImpl> mDatas;
@@ -46,6 +49,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private float touchScaleSize = DEFAULT_SCALE_SIZE_WHEN_TOUCH;
     private boolean touchAnimation = true;
     private OnPieSelectListener mOnPieSelectListener;
+    private boolean drawText;
 
     public AnimatedPieViewConfig() {
         mPieViewHelper = new AnimatedPieViewHelper();
@@ -195,6 +199,24 @@ public class AnimatedPieViewConfig implements Serializable {
         return this;
     }
 
+    public float getPieRadiusScale() {
+        return drawText ? 0.5f : pieRadiusScale;
+    }
+
+    public AnimatedPieViewConfig setPieRadiusScale(@FloatRange(from = 0.0f, to = 1.0f) float pieRadiusScale) {
+        this.pieRadiusScale = pieRadiusScale;
+        return this;
+    }
+
+    public boolean isDrawText() {
+        return drawText;
+    }
+
+    public AnimatedPieViewConfig setDrawText(boolean drawText) {
+        this.drawText = drawText;
+        return setReApply(true);
+    }
+
     public <T extends IPieInfo> OnPieSelectListener<T> getOnPieSelectListener() {
         return mOnPieSelectListener;
     }
@@ -230,7 +252,9 @@ public class AnimatedPieViewConfig implements Serializable {
                     .setTouchShadowRadius(config.getTouchShadowRadius())
                     .setTouchExpandAngle(config.getTouchExpandAngle())
                     .setTouchAnimation(config.isTouchAnimation())
-                    .setOnPieSelectListener(config.getOnPieSelectListener());
+                    .setOnPieSelectListener(config.getOnPieSelectListener())
+                    .setPieRadiusScale(config.getPieRadiusScale())
+                    .setDrawText(config.isDrawText());
             List<IPieInfo> infos = config.getDatas();
             mDatas.clear();
             for (IPieInfo info : infos) {
