@@ -217,6 +217,12 @@ import java.util.UUID;
  */
 
 final class PieInfoImpl {
+    public enum ScaleType {
+        UP,
+        DOWN,
+        SKIP
+    }
+
     private final String id;
     private final IPieInfo mPieInfo;
     private boolean drawStrokeOnly = true;
@@ -224,6 +230,7 @@ final class PieInfoImpl {
     private float endAngle;
     private int strokeWidth;
     private Paint mPaint;
+    private ScaleType mActionScaleType = ScaleType.DOWN;
 
     private PieInfoImpl(IPieInfo info) {
         id = UUID.randomUUID().toString();
@@ -339,6 +346,18 @@ final class PieInfoImpl {
             DebugLogUtil.findTouchInfo(this);
         }
         return result;
+    }
+
+    public ScaleType getActionScaleType() {
+        return mActionScaleType;
+    }
+
+    void setActionScaleType(ScaleType actionScaleType) {
+        mActionScaleType = actionScaleType;
+    }
+
+    void toggleActionScaleType() {
+        mActionScaleType = mActionScaleType == ScaleType.UP ? ScaleType.DOWN : ScaleType.UP;
     }
 
     @Override
