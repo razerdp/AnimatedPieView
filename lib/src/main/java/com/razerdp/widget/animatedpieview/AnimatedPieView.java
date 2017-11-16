@@ -222,6 +222,7 @@ import android.view.animation.DecelerateInterpolator;
 
 import com.razerdp.widget.animatedpieview.exception.NoViewConfigException;
 import com.razerdp.widget.animatedpieview.utils.ToolUtil;
+import com.razerdp.widget.animatedpieview.utils.UIHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -239,7 +240,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         DRAW, TOUCH
     }
 
-    private enum LineDirection {
+    private enum LineGravity {
         TOP_RIGHT,
         BOTTOM_RIGHT,
         TOP_LEFT,
@@ -470,10 +471,65 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
      */
     private void drawDescDecoration(Canvas canvas, PieInfoImpl info, float drawWidth, float drawHeight, float radius) {
         if (info == null) return;
-        float cx = (float) ((radius + 80) * Math.cos(Math.toRadians(info.getMiddleAngle())));
-        float cy = (float) ((radius + 80) * Math.sin(Math.toRadians(info.getMiddleAngle())));
+        final float pointRadius = radius + UIHelper.dip2px(getContext(), 16) + (mConfig.isDrawStrokeOnly() ? mConfig.getStrokeWidth() / 2 : 0);
+        float cx = (float) (pointRadius * Math.cos(Math.toRadians(info.getMiddleAngle())));
+        float cy = (float) (pointRadius * Math.sin(Math.toRadians(info.getMiddleAngle())));
+        //画点
+        canvas.drawCircle(cx, cy, UIHelper.dip2px(getContext(), 4), info.getPaint(Paint.Style.FILL));
 
-        canvas.drawCircle(cx, cy, 8, info.getPaint(Paint.Style.FILL));
+        float lineMiddleX = 0;
+        float lineMiddleY = 0;
+
+        float lineEndX = 0;
+        float lineEndY = 0;
+
+        float middeLineWidth = UIHelper.dip2px(getContext(), 24);
+
+        //画线
+        LineGravity gravity = calculateLineGravity(cx, cy);
+
+        switch (gravity) {
+            case TOP_LEFT:
+                lineMiddleX = cx - (float) (middeLineWidth * Math.cos(Math.toRadians(-45)));
+                lineMiddleY = cy - (float) (middeLineWidth * Math.sin(Math.toRadians(135)));
+                lineEndX = lineMiddleX - middeLineWidth;
+                break;
+            case CENTER_LEFT:
+                lineMiddleX = cx - middeLineWidth;
+                lineMiddleY = cy;
+                lineEndX = lineMiddleX - middeLineWidth;
+                break;
+            case BOTTOM_LEFT:
+                lineMiddleX = cx - (float) (middeLineWidth * Math.cos(Math.toRadians(-45)));
+                lineMiddleY = cy + (float) (middeLineWidth * Math.sin(Math.toRadians(135)));
+                lineEndX = lineMiddleX - middeLineWidth;
+                break;
+            case TOP_RIGHT:
+                lineMiddleX = cx + (float) (middeLineWidth * Math.cos(Math.toRadians(45)));
+                lineMiddleY = cy - (float) (middeLineWidth * Math.sin(Math.toRadians(45)));
+                lineEndX = lineMiddleX + middeLineWidth;
+                break;
+            case CENTER_RIGHT:
+                lineMiddleX = cx + middeLineWidth;
+                lineMiddleY = cy;
+                lineEndX = lineMiddleX + middeLineWidth;
+                break;
+            case BOTTOM_RIGHT:
+                lineMiddleX = cx + (float) (middeLineWidth * Math.cos(Math.toRadians(45)));
+                lineMiddleY = cy + (float) (middeLineWidth * Math.sin(Math.toRadians(45)));
+                lineEndX = lineMiddleX + middeLineWidth;
+                break;
+        }
+        lineEndY = lineMiddleY;
+
+        Paint paint = info.getPaint(Paint.Style.STROKE, 6);
+        paint.setStrokeJoin(Paint.Join.BEVEL);
+        canvas.drawLine(cx, cy, lineMiddleX, lineMiddleY, paint);
+        canvas.drawLine(lineMiddleX, lineMiddleY, lineEndX, lineEndY, paint);
+
+        //画文字
+        canvas.drawText(info.getPieInfo().getDesc(), lineMiddleX, lineMiddleY, info.getPaint(Paint.Style.FILL));
+
     }
 
     /**
@@ -601,5 +657,20 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
             mLastTouchInfo = null;
         }
         this.mode = mode;
+    }
+
+    private LineGravity calculateLineGravity(float startX, float startY) {
+
+        if (startX > 0) {
+            //在右边
+            return startY > 0 ? LineGravity.BOTTOM_RIGHT : LineGravity.TOP_RIGHT;
+        } else if (startX < 0) {
+            //在左边
+            return startY > 0 ? LineGravity.BOTTOM_LEFT : LineGravity.TOP_LEFT;
+        } else if (startY == 0) {
+            //刚好中间
+            return startX > 0 ? LineGravity.CENTER_RIGHT : LineGravity.CENTER_LEFT;
+        }
+        return LineGravity.TOP_RIGHT;
     }
 }

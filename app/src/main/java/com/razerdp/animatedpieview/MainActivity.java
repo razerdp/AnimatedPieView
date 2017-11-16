@@ -40,8 +40,14 @@ public class MainActivity extends AppCompatActivity {
         final AnimatedPieView mAnimatedPieView = findViewById(R.id.animatedPieView);
         AnimatedPieViewConfig config = new AnimatedPieViewConfig();
         config.setStartAngle(-90)
-                .addData(new SimplePieInfo(8, getColor("FFC5FF8C"), "这是第一段"))
-                .addData(new SimplePieInfo(92, getColor("FFFFD28C"), "这是第二段"))
+                .addData(new SimplePieInfo(30, getColor("FFC5FF8C"), "这是第一段"))
+                .addData(new SimplePieInfo(18.0f, getColor("FFFFD28C"), "这是第二段"))
+                .addData(new SimplePieInfo(123.0f, getColor("FFbb76b4"), "这是第三段"))
+                .addData(new SimplePieInfo(87.0f, getColor("FFFFD28C"), "这是第四段"))
+                .addData(new SimplePieInfo(15.0f, getColor("ff2bbc80"), "这是第五段"))
+                .addData(new SimplePieInfo(55.0f, getColor("ff8be8ff"), "这是第六段"))
+                .addData(new SimplePieInfo(30.0f, getColor("fffa734d"), "这是第七段"))
+                .addData(new SimplePieInfo(30.0f, getColor("ff957de0"), "这是第八段"))
                 .setDuration(2000)
                 .setInterpolator(new DecelerateInterpolator(2.5f))
                 .setOnPieSelectListener(new OnPieSelectListener<IPieInfo>() {

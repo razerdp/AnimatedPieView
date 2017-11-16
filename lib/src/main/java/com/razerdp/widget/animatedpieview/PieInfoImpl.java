@@ -288,11 +288,16 @@ final class PieInfoImpl {
     }
 
     public Paint getPaint() {
-        return getPaint(drawStrokeOnly ? Paint.Style.STROKE : Paint.Style.FILL);
+        return getPaint(drawStrokeOnly ? Paint.Style.STROKE : Paint.Style.FILL, strokeWidth);
     }
 
     public Paint getPaint(Paint.Style style) {
+        return getPaint(style, strokeWidth);
+    }
+
+    public Paint getPaint(Paint.Style style, int strokeWidth) {
         mPaint.setStyle(style);
+        mPaint.setStrokeWidth(strokeWidth);
         return mPaint;
     }
 
