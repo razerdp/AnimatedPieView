@@ -264,6 +264,10 @@ final class PieInfoImpl {
         return startAngle;
     }
 
+    public float getMiddleAngle() {
+        return startAngle + getSweepAngle() / 2;
+    }
+
     public void setStartAngle(float startAngle) {
         this.startAngle = startAngle;
     }
@@ -277,6 +281,11 @@ final class PieInfoImpl {
     }
 
     public Paint getPaint() {
+        return getPaint(drawStrokeOnly ? Paint.Style.STROKE : Paint.Style.FILL);
+    }
+
+    public Paint getPaint(Paint.Style style) {
+        mPaint.setStyle(style);
         return mPaint;
     }
 

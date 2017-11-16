@@ -239,6 +239,15 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         DRAW, TOUCH
     }
 
+    private enum LineDirection {
+        TOP_RIGHT,
+        BOTTOM_RIGHT,
+        TOP_LEFT,
+        BOTTOM_LEFT,
+        CENTER_RIGHT,
+        CENTER_LEFT;
+    }
+
     private Mode mode = Mode.DRAW;
 
     private AnimatedPieViewConfig mConfig;
@@ -368,30 +377,33 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
         canvas.translate(width / 2, height / 2);
         //半径
-        final float radius = (float) (Math.min(width, height) / 2 * 0.85);
+        final float radius = (float) (Math.min(width, height) / 2 * mConfig.getPieRadiusScale());
         mTouchHelper.setPieParam(width / 2, height / 2, radius);
         mDrawRectf.set(-radius, -radius, radius, radius);
 
         switch (mode) {
             case DRAW:
-                onDrawModeHandle(canvas);
+                onDrawModeHandle(canvas, width, height, radius);
                 break;
             case TOUCH:
-                onTouchModeHandle(canvas);
+                onTouchModeHandle(canvas, width, height, radius);
                 break;
         }
     }
 
-    private void onDrawModeHandle(Canvas canvas) {
+    private void onDrawModeHandle(Canvas canvas, float drawWidth, float drawHeight, float radius) {
         if (mCurrentInfo != null) {
-            drawCachedInfos(canvas, null);
+            drawCachedInfos(canvas, null, drawWidth, drawHeight, radius);
             canvas.drawArc(mDrawRectf, mCurrentInfo.getStartAngle(), angle - mCurrentInfo.getStartAngle(), !mConfig.isDrawStrokeOnly(), mCurrentInfo.getPaint());
+            if (mConfig.isDrawText() && angle >= mCurrentInfo.getMiddleAngle() && angle <= mCurrentInfo.getEndAngle()) {
+                drawDescDecoration(canvas, mCurrentInfo, drawWidth, drawHeight, radius);
+            }
         }
     }
 
-    private void onTouchModeHandle(Canvas canvas) {
+    private void onTouchModeHandle(Canvas canvas, float drawWidth, float drawHeight, float radius) {
         if (mCurrentTouchInfo != null) {
-            drawCachedInfos(canvas, mCurrentTouchInfo);
+            drawCachedInfos(canvas, mCurrentTouchInfo, drawWidth, drawHeight, radius);
             //先完成上一个点击的动画
             if (mLastTouchInfo != null && !mLastTouchInfo.equalsWith(mCurrentInfo)) {
                 mTouchRectf.set(mDrawRectf);
@@ -413,15 +425,32 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
      * @param canvas
      * @param excluded 排除excluded
      */
-    private void drawCachedInfos(Canvas canvas, PieInfoImpl excluded) {
+    private void drawCachedInfos(Canvas canvas, PieInfoImpl excluded, float drawWidth, float drawHeight, float radius) {
         if (!ToolUtil.isListEmpty(mDrawedCachePieInfo)) {
             for (PieInfoImpl pieInfo : mDrawedCachePieInfo) {
                 if (excluded != null && excluded.equalsWith(pieInfo)) {
                     continue;
                 }
+                if (mConfig.isDrawText()) {
+                    drawDescDecoration(canvas, pieInfo, drawWidth, drawHeight, radius);
+                }
                 canvas.drawArc(mDrawRectf, pieInfo.getStartAngle(), pieInfo.getSweepAngle(), !mConfig.isDrawStrokeOnly(), pieInfo.getPaint());
             }
         }
+    }
+
+    /**
+     * 绘制描述的点和线以及文字
+     *
+     * @param canvas
+     * @param radius
+     */
+    private void drawDescDecoration(Canvas canvas, PieInfoImpl info, float drawWidth, float drawHeight, float radius) {
+        if (info == null) return;
+        float cx = (float) ((radius + 80) * Math.cos(Math.toRadians(info.getMiddleAngle())));
+        float cy = (float) ((radius + 80) * Math.sin(Math.toRadians(info.getMiddleAngle())));
+
+        canvas.drawCircle(cx, cy, 8, info.getPaint(Paint.Style.FILL));
     }
 
     /**
