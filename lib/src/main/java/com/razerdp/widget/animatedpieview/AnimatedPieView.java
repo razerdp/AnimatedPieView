@@ -404,19 +404,42 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
     private void onTouchModeHandle(Canvas canvas, float drawWidth, float drawHeight, float radius) {
         if (mCurrentTouchInfo != null) {
             drawCachedInfos(canvas, mCurrentTouchInfo, drawWidth, drawHeight, radius);
-            //先完成上一个点击的动画
-            if (mLastTouchInfo != null && !mLastTouchInfo.equalsWith(mCurrentInfo)) {
-                mTouchRectf.set(mDrawRectf);
-                drawTouchAnimaArc(canvas, mLastTouchInfo, mScaleDownTime);
+            final boolean sameClick = mCurrentTouchInfo.equalsWith(mLastTouchInfo);
+            if (mLastTouchInfo != null && !sameClick) {
+                switch (mLastTouchInfo.getActionScaleType()) {
+                    case UP:
+                        onScaleUpDraw(canvas, mLastTouchInfo);
+                        break;
+                    case DOWN:
+                        onScaleDownDraw(canvas, mLastTouchInfo);
+                        break;
+                }
             }
-            //再完成当前点击的动画
-            final float scaleSizeInTouch = !mConfig.isDrawStrokeOnly() ? mConfig.getTouchScaleSize() : 0;
-            mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch,
-                    mDrawRectf.top - scaleSizeInTouch,
-                    mDrawRectf.right + scaleSizeInTouch,
-                    mDrawRectf.bottom + scaleSizeInTouch);
-            drawTouchAnimaArc(canvas, mCurrentTouchInfo, mScaleUpTime);
+            switch (mCurrentTouchInfo.getActionScaleType()) {
+                case UP:
+                    onScaleUpDraw(canvas, mCurrentTouchInfo);
+                    break;
+                case DOWN:
+                    onScaleDownDraw(canvas, mCurrentTouchInfo);
+                    break;
+            }
         }
+    }
+
+    private void onScaleDownDraw(Canvas canvas, PieInfoImpl info) {
+        if (info == null) return;
+        mTouchRectf.set(mDrawRectf);
+        drawTouchAnimaArc(canvas, info, mScaleDownTime);
+    }
+
+    private void onScaleUpDraw(Canvas canvas, PieInfoImpl info) {
+        if (info == null) return;
+        final float scaleSizeInTouch = !mConfig.isDrawStrokeOnly() ? mConfig.getTouchScaleSize() : 0;
+        mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch,
+                mDrawRectf.top - scaleSizeInTouch,
+                mDrawRectf.right + scaleSizeInTouch,
+                mDrawRectf.bottom + scaleSizeInTouch);
+        drawTouchAnimaArc(canvas, info, mScaleUpTime);
     }
 
     /**
@@ -535,6 +558,20 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                         mLastTouchInfo = mCurrentTouchInfo;
                         mCurrentTouchInfo = clickedInfo;
                         setMode(Mode.TOUCH);
+                        if (mCurrentTouchInfo.equalsWith(mLastTouchInfo)) {
+                            mLastTouchInfo = null;
+                            mCurrentTouchInfo.toggleActionScaleType();
+                        } else {
+                            mCurrentTouchInfo.setActionScaleType(PieInfoImpl.ScaleType.UP);
+                            if (mLastTouchInfo != null) {
+                                if (mLastTouchInfo.getActionScaleType() == PieInfoImpl.ScaleType.UP) {
+                                    mLastTouchInfo.setActionScaleType(PieInfoImpl.ScaleType.DOWN);
+                                } else {
+                                    //因为指定为当前点击的放大，其他的都保持原样，所以指定为normal
+                                    mLastTouchInfo.setActionScaleType(PieInfoImpl.ScaleType.SKIP);
+                                }
+                            }
+                        }
                         if (mConfig.isTouchAnimation()) {
                             mTouchScaleDownAnimator.start();
                             mTouchScaleUpAnimator.start();
