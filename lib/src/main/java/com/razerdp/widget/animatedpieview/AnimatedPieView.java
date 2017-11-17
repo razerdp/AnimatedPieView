@@ -378,7 +378,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
         canvas.translate(width / 2, height / 2);
         //半径
-        final float radius = (float) (Math.min(width, height) / 2 * mConfig.getPieRadiusScale());
+        final float radius = Math.min(width, height) / 2 * mConfig.getPieRadiusScale();
         mTouchHelper.setPieParam(width / 2, height / 2, radius);
         mDrawRectf.set(-radius, -radius, radius, radius);
 
@@ -429,17 +429,21 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
     private void onScaleDownDraw(Canvas canvas, PieInfoImpl info) {
         if (info == null) return;
-        mTouchRectf.set(mDrawRectf);
+        final float scaleSizeInTouch = !mConfig.isDrawStrokeOnly() ? mConfig.getTouchScaleSize() : 0;
+        mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch * mScaleDownTime,
+                mDrawRectf.top - scaleSizeInTouch * mScaleDownTime,
+                mDrawRectf.right + scaleSizeInTouch * mScaleDownTime,
+                mDrawRectf.bottom + scaleSizeInTouch * mScaleDownTime);
         drawTouchAnimaArc(canvas, info, mScaleDownTime);
     }
 
     private void onScaleUpDraw(Canvas canvas, PieInfoImpl info) {
         if (info == null) return;
         final float scaleSizeInTouch = !mConfig.isDrawStrokeOnly() ? mConfig.getTouchScaleSize() : 0;
-        mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch,
-                mDrawRectf.top - scaleSizeInTouch,
-                mDrawRectf.right + scaleSizeInTouch,
-                mDrawRectf.bottom + scaleSizeInTouch);
+        mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch * mScaleUpTime,
+                mDrawRectf.top - scaleSizeInTouch * mScaleUpTime,
+                mDrawRectf.right + scaleSizeInTouch * mScaleUpTime,
+                mDrawRectf.bottom + scaleSizeInTouch * mScaleUpTime);
         drawTouchAnimaArc(canvas, info, mScaleUpTime);
     }
 
@@ -452,7 +456,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
     private void drawCachedInfos(Canvas canvas, PieInfoImpl excluded, float drawWidth, float drawHeight, float radius) {
         if (!ToolUtil.isListEmpty(mDrawedCachePieInfo)) {
             for (PieInfoImpl pieInfo : mDrawedCachePieInfo) {
-                if (excluded != null && excluded.equalsWith(pieInfo)) {
+                if (excluded != null && excluded.equalsWith(pieInfo) && !mConfig.isDrawText()) {
                     continue;
                 }
                 if (mConfig.isDrawText()) {
@@ -475,13 +479,18 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         float cx = (float) (pointRadius * Math.cos(Math.toRadians(info.getMiddleAngle())));
         float cy = (float) (pointRadius * Math.sin(Math.toRadians(info.getMiddleAngle())));
         //画点
-        canvas.drawCircle(cx, cy, UIHelper.dip2px(getContext(), 4), info.getPaint(Paint.Style.FILL));
+        Paint paint = info.getCopyPaint();
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawCircle(cx, cy, UIHelper.dip2px(getContext(), 4), paint);
 
         float lineMiddleX = 0;
         float lineMiddleY = 0;
 
         float lineEndX = 0;
         float lineEndY = 0;
+
+        float textStartX = 0;
+        float textStartY = 0;
 
         float middeLineWidth = UIHelper.dip2px(getContext(), 24);
 
@@ -490,46 +499,64 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
         switch (gravity) {
             case TOP_LEFT:
-                lineMiddleX = cx - (float) (middeLineWidth * Math.cos(Math.toRadians(-45)));
-                lineMiddleY = cy - (float) (middeLineWidth * Math.sin(Math.toRadians(135)));
+                lineMiddleX = cx - middeLineWidth * absMathCos(-45);
+                lineMiddleY = cy - middeLineWidth * absMathSin(-45);
                 lineEndX = lineMiddleX - middeLineWidth;
+                textStartX = lineEndX;
                 break;
             case CENTER_LEFT:
                 lineMiddleX = cx - middeLineWidth;
                 lineMiddleY = cy;
                 lineEndX = lineMiddleX - middeLineWidth;
+                textStartX = lineEndX;
                 break;
             case BOTTOM_LEFT:
-                lineMiddleX = cx - (float) (middeLineWidth * Math.cos(Math.toRadians(-45)));
-                lineMiddleY = cy + (float) (middeLineWidth * Math.sin(Math.toRadians(135)));
+                lineMiddleX = cx - middeLineWidth * absMathCos(-45);
+                lineMiddleY = cy + middeLineWidth * absMathSin(-45);
                 lineEndX = lineMiddleX - middeLineWidth;
+                textStartX = lineEndX;
                 break;
             case TOP_RIGHT:
-                lineMiddleX = cx + (float) (middeLineWidth * Math.cos(Math.toRadians(45)));
-                lineMiddleY = cy - (float) (middeLineWidth * Math.sin(Math.toRadians(45)));
+                lineMiddleX = cx + middeLineWidth * absMathCos(45);
+                lineMiddleY = cy - middeLineWidth * absMathSin(45);
                 lineEndX = lineMiddleX + middeLineWidth;
+                textStartX = lineMiddleX;
                 break;
             case CENTER_RIGHT:
                 lineMiddleX = cx + middeLineWidth;
                 lineMiddleY = cy;
                 lineEndX = lineMiddleX + middeLineWidth;
+                textStartX = lineMiddleX;
                 break;
             case BOTTOM_RIGHT:
-                lineMiddleX = cx + (float) (middeLineWidth * Math.cos(Math.toRadians(45)));
-                lineMiddleY = cy + (float) (middeLineWidth * Math.sin(Math.toRadians(45)));
+                lineMiddleX = cx + middeLineWidth * absMathCos(45);
+                lineMiddleY = cy + middeLineWidth * absMathSin(45);
                 lineEndX = lineMiddleX + middeLineWidth;
+                textStartX = lineMiddleX;
                 break;
         }
         lineEndY = lineMiddleY;
+        textStartY = lineMiddleY - mConfig.getTextMarginBottom();
 
-        Paint paint = info.getPaint(Paint.Style.STROKE, 6);
-        paint.setStrokeJoin(Paint.Join.BEVEL);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(6);
+        paint.setStrokeJoin(Paint.Join.ROUND);
         canvas.drawLine(cx, cy, lineMiddleX, lineMiddleY, paint);
         canvas.drawLine(lineMiddleX, lineMiddleY, lineEndX, lineEndY, paint);
 
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTextSize(mConfig.getTextSize());
         //画文字
-        canvas.drawText(info.getPieInfo().getDesc(), lineMiddleX, lineMiddleY, info.getPaint(Paint.Style.FILL));
+        canvas.drawText(info.getPieInfo().getDesc(), textStartX, textStartY, paint);
 
+    }
+
+    private float absMathSin(double angdeg) {
+        return (float) Math.abs(Math.sin(Math.toRadians(angdeg)));
+    }
+
+    private float absMathCos(double angdeg) {
+        return (float) Math.abs(Math.cos(Math.toRadians(angdeg)));
     }
 
     /**
@@ -588,10 +615,12 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         if (isInAnimating) {
             return;
         }
+        isInAnimating = true;
+        mDrawRectf.setEmpty();
+        mTouchRectf.setEmpty();
         setMode(Mode.DRAW);
         mDrawedCachePieInfo.clear();
         clearAnimation();
-        isInAnimating = true;
         startAnimation(mPieViewAnimation);
     }
 

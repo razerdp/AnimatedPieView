@@ -27,6 +27,16 @@
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@id/start"
             android:text="不要甜甜圈？"/>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/draw_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@id/no_donuts"
+            android:checked="true"
+            android:text="绘制文字？"/>
     </RelativeLayout>
 
     <com.razerdp.widget.animatedpieview.AnimatedPieView

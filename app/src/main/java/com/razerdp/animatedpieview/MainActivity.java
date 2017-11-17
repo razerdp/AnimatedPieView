@@ -24,8 +24,10 @@ public class MainActivity extends AppCompatActivity {
 
     private Button mButton;
     private SwitchCompat mNoDonuts;
+    private SwitchCompat mDrawText;
     private final Random random = new Random();
     private boolean noDonuts = false;
+    private boolean drawText = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,32 +39,35 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         mButton = findViewById(R.id.start);
         mNoDonuts = findViewById(R.id.no_donuts);
+        mDrawText = findViewById(R.id.draw_text);
         final AnimatedPieView mAnimatedPieView = findViewById(R.id.animatedPieView);
         AnimatedPieViewConfig config = new AnimatedPieViewConfig();
         config.setStartAngle(-90)
-                .addData(new SimplePieInfo(30, getColor("FFC5FF8C"), "这是第一段"))
-                .addData(new SimplePieInfo(18.0f, getColor("FFFFD28C"), "这是第二段"))
-                .addData(new SimplePieInfo(123.0f, getColor("FFbb76b4"), "这是第三段"))
-                .addData(new SimplePieInfo(87.0f, getColor("FFFFD28C"), "这是第四段"))
-                .addData(new SimplePieInfo(15.0f, getColor("ff2bbc80"), "这是第五段"))
-                .addData(new SimplePieInfo(55.0f, getColor("ff8be8ff"), "这是第六段"))
-                .addData(new SimplePieInfo(30.0f, getColor("fffa734d"), "这是第七段"))
-                .addData(new SimplePieInfo(30.0f, getColor("ff957de0"), "这是第八段"))
+                .addData(new SimplePieInfo(30, getColor("FF446767")), true)
+                .addData(new SimplePieInfo(18.0f, getColor("FFFFD28C")), true)
+                .addData(new SimplePieInfo(123.0f, getColor("FFbb76b4")), true)
+                .addData(new SimplePieInfo(87.0f, getColor("FFFFD28C")), true)
+                .addData(new SimplePieInfo(15.0f, getColor("ff2bbc80")), true)
+                .addData(new SimplePieInfo(55.0f, getColor("ff8be8ff")), true)
+                .addData(new SimplePieInfo(30.0f, getColor("fffa734d")), true)
+                .addData(new SimplePieInfo(30.0f, getColor("ff957de0")), true)
+                .setDrawText(drawText)
                 .setDuration(2000)
                 .setInterpolator(new DecelerateInterpolator(2.5f))
+                .setTextSize(12)
+                .setPieRadiusScale(0.8f)
                 .setOnPieSelectListener(new OnPieSelectListener<IPieInfo>() {
                     @Override
                     public void onSelectPie(@NonNull IPieInfo pieInfo) {
                         Toast.makeText(MainActivity.this, pieInfo.getDesc(), Toast.LENGTH_SHORT).show();
                     }
-                })
-                .setDrawText(true);
+                });
         mAnimatedPieView.applyConfig(config);
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAnimatedPieView.getConfig().setDrawStrokeOnly(!noDonuts);
+                mAnimatedPieView.getConfig().setDrawStrokeOnly(!noDonuts).setDrawText(drawText);
                 mAnimatedPieView.start();
             }
         });
@@ -70,6 +75,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 noDonuts = isChecked;
+            }
+        });
+
+        mDrawText.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                drawText = isChecked;
             }
         });
 

@@ -12,6 +12,10 @@ public class SimplePieInfo implements IPieInfo {
     public SimplePieInfo() {
     }
 
+    public SimplePieInfo(float value, int color) {
+        this(value, color, "");
+    }
+
     public SimplePieInfo(float value, int color, String desc) {
         this.value = value;
         this.color = color;
