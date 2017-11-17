@@ -13,17 +13,27 @@
 
 --- 
 
+### 进度：
+  > 文字描述动画
+  - ~~有文字描述的甜甜圈~~
+  - ~~点击事件回调的甜甜圈~~
+  - ~~点击动画的甜甜圈~~
+  - ~~可以点击的甜甜圈~~
+  - ~~可以编程大饼的甜甜圈~~
+  - ~~动画长大的甜甜圈~~
+
 ### 主要功能：
  
   - 动画展开
   
   ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/anima.gif)
   
-   - 点击事件（ps...刚完成，回调还没给呢~）
+   - 文字描述及点击事件
    
    ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/click.gif)
    
-   
+   ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/anima_text.gif)
+
 ### 依赖
 
 添加依赖（请把{latestVersion}替换成上面的jcenter标签所示版本）
@@ -66,6 +76,9 @@
                         .setInterpolator(new LinearInterpolator())//插值器
                         .setStartAngle(-90f)//开始的角度
                         .setOnPieSelectListener(new OnPieSelectListener<IPieInfo>())//点击事件
+                        .setDrawText(true)//是否绘制文字描述
+                        .setTextSize(12)//绘制的文字大小
+                        .setPieRadiusScale(0.8f)//甜甜圈半径占比
                         .setConfig(new AnimatedPieViewConfig());//配置（这里的new只是演示哦，可不要学我例子这里直接塞进一个新的config，否则上面的设置都浪费了）
 ```
 
@@ -74,7 +87,9 @@
 ### 打赏（您的支持是我维护的动力-V-愿意的话，金额随意）
 ![wechat](https://github.com/razerdp/AnimatedPieView/blob/master/art/wechat.jpg)
 
-### 控件思路（书写中。。。地址会更新到这里的）
+### 控件思路【按思路顺序更新】
+ - [自定义控件——弄个甜甜圈吧（1）： 起源](http://www.jianshu.com/p/b2a2d82e107e)
+ - 编写中...
 
 ### LICENSE
 Apache-2.0

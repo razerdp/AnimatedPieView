@@ -7,10 +7,12 @@ import android.view.animation.Interpolator;
 
 import com.razerdp.widget.animatedpieview.callback.OnPieSelectListener;
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
+import com.razerdp.widget.animatedpieview.data.SimplePieInfo;
 import com.razerdp.widget.animatedpieview.utils.DegreeUtil;
 import com.razerdp.widget.animatedpieview.utils.ToolUtil;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,7 @@ import java.util.List;
  */
 
 public class AnimatedPieViewConfig implements Serializable {
+    private static final DecimalFormat sFormateRate = new DecimalFormat("#.##");
     private static final int DEFAULT_STROKE_WIDTH = 80;
     private static final float DEFAULT_START_ANGLE = -90.0f;
     private static final float DEFAULT_SCALE_SIZE_WHEN_TOUCH = 15;
@@ -28,6 +31,8 @@ public class AnimatedPieViewConfig implements Serializable {
     private static final float DEFAULT_SHADOW_BLUR_RADIUS = 18;
     private static final float DEFAULT_TOUCH_EXPAND_ANGLE = 8;
     private static final float DEFAULT_PIE_RADIUS_SCALE = 0.85f;
+    private static final float DEFAULT_TEXT_MARGIN_BOTTOM = 8;
+    private static final int DEFAULT_TEXT_SIZE = 10;
 
 
     private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR = new DecelerateInterpolator(1.2f);
@@ -40,6 +45,8 @@ public class AnimatedPieViewConfig implements Serializable {
     private float touchShadowRadius = DEFAULT_SHADOW_BLUR_RADIUS;
     private float touchExpandAngle = DEFAULT_TOUCH_EXPAND_ANGLE;
     private float pieRadiusScale = DEFAULT_PIE_RADIUS_SCALE;
+    private float textMarginBottom = DEFAULT_TEXT_MARGIN_BOTTOM;
+    private int textSize = DEFAULT_TEXT_SIZE;
 
     private volatile boolean reApply;
     private List<PieInfoImpl> mDatas;
@@ -49,7 +56,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private float touchScaleSize = DEFAULT_SCALE_SIZE_WHEN_TOUCH;
     private boolean touchAnimation = true;
     private OnPieSelectListener mOnPieSelectListener;
-    private boolean drawText;
+    private boolean drawText = true;
 
     public AnimatedPieViewConfig() {
         mPieViewHelper = new AnimatedPieViewHelper();
@@ -113,9 +120,13 @@ public class AnimatedPieViewConfig implements Serializable {
     }
 
     public AnimatedPieViewConfig addData(@NonNull IPieInfo info) {
+        return addData(info, false);
+    }
+
+    public AnimatedPieViewConfig addData(@NonNull IPieInfo info, boolean autoDesc) {
         assert info != null : "不能添加空数据";
         mDatas.add(PieInfoImpl.create(info).setStrokeWidth(strokeWidth).setDrawStrokeOnly(isStroke));
-        mPieViewHelper.prepare();
+        mPieViewHelper.prepare(autoDesc);
         return this;
     }
 
@@ -200,10 +211,12 @@ public class AnimatedPieViewConfig implements Serializable {
     }
 
     public float getPieRadiusScale() {
-        return drawText ? 0.5f : pieRadiusScale;
+        return drawText ? 0.55f : pieRadiusScale;
     }
 
     public AnimatedPieViewConfig setPieRadiusScale(@FloatRange(from = 0.0f, to = 1.0f) float pieRadiusScale) {
+        if (pieRadiusScale <= 0.0f) pieRadiusScale = 0.0f;
+        if (pieRadiusScale > 1.0f) pieRadiusScale = 1.0f;
         this.pieRadiusScale = pieRadiusScale;
         return this;
     }
@@ -224,6 +237,24 @@ public class AnimatedPieViewConfig implements Serializable {
     public <T extends IPieInfo> AnimatedPieViewConfig setOnPieSelectListener(OnPieSelectListener<T> onPieSelectListener) {
         mOnPieSelectListener = onPieSelectListener;
         return this;
+    }
+
+    public float getTextMarginBottom() {
+        return textMarginBottom;
+    }
+
+    public AnimatedPieViewConfig setTextMarginBottom(float textMarginBottom) {
+        this.textMarginBottom = textMarginBottom;
+        return setReApply(true);
+    }
+
+    public int getTextSize() {
+        return textSize;
+    }
+
+    public AnimatedPieViewConfig setTextSize(int textSize) {
+        this.textSize = textSize;
+        return setReApply(true);
     }
 
     protected List<PieInfoImpl> getImplDatas() {
@@ -254,7 +285,9 @@ public class AnimatedPieViewConfig implements Serializable {
                     .setTouchAnimation(config.isTouchAnimation())
                     .setOnPieSelectListener(config.getOnPieSelectListener())
                     .setPieRadiusScale(config.getPieRadiusScale())
-                    .setDrawText(config.isDrawText());
+                    .setDrawText(config.isDrawText())
+                    .setTextMarginBottom(config.getTextMarginBottom())
+                    .setTextSize(config.getTextSize());
             List<IPieInfo> infos = config.getDatas();
             mDatas.clear();
             for (IPieInfo info : infos) {
@@ -267,13 +300,22 @@ public class AnimatedPieViewConfig implements Serializable {
     protected final class AnimatedPieViewHelper {
         private double sumValue;
 
-        private void prepare() {
+        private void prepare(boolean autoDesc) {
             if (ToolUtil.isListEmpty(mDatas)) return;
             sumValue = 0;
             //算总和
             for (PieInfoImpl dataImpl : mDatas) {
                 IPieInfo info = dataImpl.getPieInfo();
                 sumValue += info.getValue();
+            }
+            //自动填充auto
+            if (autoDesc) {
+                for (PieInfoImpl data : mDatas) {
+                    if (data.getPieInfo() instanceof SimplePieInfo) {
+                        SimplePieInfo info = (SimplePieInfo) data.getPieInfo();
+                        info.setDesc(sFormateRate.format((info.getValue() / sumValue) * 100) + "%");
+                    }
+                }
             }
             //算每部分的角度
             float start = startAngle;

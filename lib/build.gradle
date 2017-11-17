@@ -40,7 +40,7 @@ publish {
     userOrg = 'razerdp'
     groupId = 'com.github.razerdp'
     artifactId = 'AnimatedPieView'
-    publishVersion = '1.0.2'
+    publishVersion = '1.0.3'
     desc = '好吃的甜甜圈？'
     website = 'https://github.com/razerdp/AnimatedPieView'
 }

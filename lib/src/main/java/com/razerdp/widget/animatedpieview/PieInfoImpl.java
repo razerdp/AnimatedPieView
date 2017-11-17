@@ -230,6 +230,7 @@ final class PieInfoImpl {
     private float endAngle;
     private int strokeWidth;
     private Paint mPaint;
+    private Paint mCopyPaint;
     private ScaleType mActionScaleType = ScaleType.DOWN;
 
     private PieInfoImpl(IPieInfo info) {
@@ -253,10 +254,9 @@ final class PieInfoImpl {
         mPaint.setStrokeWidth(strokeWidth);
         mPaint.setColor(info.getColor());
         mPaint.setStrokeJoin(Paint.Join.MITER);
-        /*if (mPaint.getMaskFilter() == null) {
-            BlurMaskFilter maskFilter = new BlurMaskFilter(18, BlurMaskFilter.Blur.SOLID);
-            mPaint.setMaskFilter(maskFilter);
-        }*/
+
+        if (mCopyPaint == null) mCopyPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+        mCopyPaint.set(mPaint);
     }
 
     public static PieInfoImpl create(IPieInfo info) {
@@ -288,17 +288,12 @@ final class PieInfoImpl {
     }
 
     public Paint getPaint() {
-        return getPaint(drawStrokeOnly ? Paint.Style.STROKE : Paint.Style.FILL, strokeWidth);
-    }
-
-    public Paint getPaint(Paint.Style style) {
-        return getPaint(style, strokeWidth);
-    }
-
-    public Paint getPaint(Paint.Style style, int strokeWidth) {
-        mPaint.setStyle(style);
-        mPaint.setStrokeWidth(strokeWidth);
         return mPaint;
+    }
+
+    public Paint getCopyPaint() {
+        mCopyPaint.set(mPaint);
+        return mCopyPaint;
     }
 
     public void setPaint(Paint paint) {
