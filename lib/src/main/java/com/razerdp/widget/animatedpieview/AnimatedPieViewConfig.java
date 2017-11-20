@@ -389,14 +389,14 @@ public class AnimatedPieViewConfig implements Serializable {
     }
 
     /**
-     * 获取文字与描述线的距离
+     * 获取文字与指示线的距离
      */
     public float getTextMarginLine() {
         return textMarginLine;
     }
 
     /**
-     * 设置文字与描述线的距离
+     * 设置文字与指示线的距离
      *
      * @param textMarginLine 距离
      */
@@ -440,14 +440,14 @@ public class AnimatedPieViewConfig implements Serializable {
     }
 
     /**
-     * 获取描述文字的描述线宽度
+     * 获取描述文字的指示线宽度
      */
     public int getTextLineStrokeWidth() {
         return textLineStrokeWidth;
     }
 
     /**
-     * 设置描述文字的描述线宽度
+     * 设置描述文字的指示线宽度
      *
      * @param textLineStrokeWidth 宽度（px）
      */
@@ -457,14 +457,14 @@ public class AnimatedPieViewConfig implements Serializable {
     }
 
     /**
-     * 获取描述文字的描述线转折线长度
+     * 获取描述文字的指示线转折线长度
      */
     public int getTextLineTransitionLength() {
         return textLineTransitionLength;
     }
 
     /**
-     * 设置描述文字的描述线转折线长度
+     * 设置描述文字的指示线转折线长度
      *
      * @param textLineTransitionLength 长度（px）
      */
@@ -474,14 +474,14 @@ public class AnimatedPieViewConfig implements Serializable {
     }
 
     /**
-     * 获取描述文字的描述线距离圆心的开始距离
+     * 获取描述文字的指示线开始距离外圆半径的大小
      */
     public int getTextLineStartMargin() {
         return textLineStartMargin;
     }
 
     /**
-     * 设置描述文字的描述线距离圆心的开始距离
+     * 设置描述文字的指示线开始距离外圆半径的大小
      *
      * @param textLineStartMargin 距离(px)
      */
@@ -500,7 +500,7 @@ public class AnimatedPieViewConfig implements Serializable {
     /**
      * 设置描述文字是否统一方向
      *
-     * @param directText <p>true：文字将会在描述线上绘制<p>false：文字在1、2象限部分绘制在线的上方，在3、4象限绘制在线的下方
+     * @param directText <p>true：文字将会在指示线上绘制<p>false：文字在1、2象限部分绘制在线的上方，在3、4象限绘制在线的下方
      */
     public AnimatedPieViewConfig setDirectText(boolean directText) {
         this.directText = directText;
@@ -550,9 +550,7 @@ public class AnimatedPieViewConfig implements Serializable {
                     .setDirectText(config.isDirectText());
             List<IPieInfo> infos = config.getDatas();
             mDatas.clear();
-            for (IPieInfo info : infos) {
-                addData(info);
-            }
+            addDatas(infos);
         }
         return this;
     }

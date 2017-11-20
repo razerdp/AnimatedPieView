@@ -82,6 +82,12 @@
                         .setTextSize(12)// 绘制的文字大小
                         .getTextMarginLine(8)// 绘制文字与描述线的距离
                         .setPieRadiusScale(0.8f)// 甜甜圈半径占比
+                        .setTextPointRadius(2)// 设置描述文字的开始小点的大小
+                        .setTextLineStrokeWidth(4)// 设置描述文字的指示线宽度
+                        .setTextLineTransitionLength(8)// 设置描述文字的指示线折角处长度
+                        .setTextLineStartMargin(8)// 设置描述文字的指示线开始距离外圆半径的大小
+                        .setDirectText(true)// 设置描述文字是否统一方向  -true：文字将会在描述线上绘制
+                                                                      -false文字在1、2象限部分绘制在线的上方，在3、4象限绘制在线的下方
                         .setConfig(new AnimatedPieViewConfig());// 配置（这里的new只是演示哦，可不要学我例子这里直接塞进一个新的config，否则上面的设置都浪费了）
 ```
 
