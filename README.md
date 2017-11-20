@@ -80,7 +80,7 @@
                         .setOnPieSelectListener(new OnPieSelectListener<IPieInfo>())//点击事件
                         .setDrawText(true)// 是否绘制文字描述
                         .setTextSize(12)// 绘制的文字大小
-                        .setTextMarginBottom(8)// 绘制文字距离底部描述线的距离
+                        .getTextMarginLine(8)// 绘制文字与描述线的距离
                         .setPieRadiusScale(0.8f)// 甜甜圈半径占比
                         .setConfig(new AnimatedPieViewConfig());// 配置（这里的new只是演示哦，可不要学我例子这里直接塞进一个新的config，否则上面的设置都浪费了）
 ```

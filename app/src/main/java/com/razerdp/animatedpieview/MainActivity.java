@@ -58,8 +58,11 @@ public class MainActivity extends AppCompatActivity {
                 .setPieRadiusScale(0.8f)
                 .setOnPieSelectListener(new OnPieSelectListener<IPieInfo>() {
                     @Override
-                    public void onSelectPie(@NonNull IPieInfo pieInfo) {
-                        Toast.makeText(MainActivity.this, pieInfo.getDesc(), Toast.LENGTH_SHORT).show();
+                    public void onSelectPie(@NonNull IPieInfo pieInfo, boolean isScaleUp) {
+                        if (isScaleUp) {
+                            Toast.makeText(MainActivity.this, pieInfo.getDesc(), Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                 });
         mAnimatedPieView.applyConfig(config);
