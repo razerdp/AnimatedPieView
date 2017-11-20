@@ -67,7 +67,7 @@
         mConfig.setTouchAnimation(true)//点击事件是否播放浮现动画/回退动画（默认true）
                         .setTouchExpandAngle(15f)//点击后圆弧/扇形扩展的角度
                         .setTouchShadowRadius(18f)//点击后的阴影扩散范围
-                        .setTouchScaleDownDuration(500)//点击浮现动画时间
+                        .setTouchScaleUpDuration(500)//点击浮现动画时间
                         .setTouchScaleDownDuration(500)//上一个浮现的圆弧回退的动画时间
                         .setTouchScaleSize(15)//点击后圆弧/扇形放大数值
                         .setDrawStrokeOnly(true)//是否只画圆弧【甜甜圈哈哈】，否则画扇形（默认true）
