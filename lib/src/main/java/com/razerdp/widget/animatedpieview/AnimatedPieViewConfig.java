@@ -30,7 +30,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private static final float DEFAULT_SHADOW_BLUR_RADIUS = 18;
     private static final float DEFAULT_TOUCH_EXPAND_ANGLE = 8;
     private static final float DEFAULT_PIE_RADIUS_SCALE = 0.85f;
-    private static final float DEFAULT_TEXT_MARGIN_BOTTOM = 8;
+    private static final float DEFAULT_TEXT_MARGIN_LINE = 8;
     private static final int DEFAULT_TEXT_SIZE = 10;
 
 
@@ -44,7 +44,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private float touchShadowRadius = DEFAULT_SHADOW_BLUR_RADIUS;
     private float touchExpandAngle = DEFAULT_TOUCH_EXPAND_ANGLE;
     private float pieRadiusScale = DEFAULT_PIE_RADIUS_SCALE;
-    private float textMarginBottom = DEFAULT_TEXT_MARGIN_BOTTOM;
+    private float textMarginLine = DEFAULT_TEXT_MARGIN_LINE;
     private int textSize = DEFAULT_TEXT_SIZE;
 
     private volatile boolean reApply;
@@ -379,19 +379,19 @@ public class AnimatedPieViewConfig implements Serializable {
     }
 
     /**
-     * 获取文字与底部描述线的距离
+     * 获取文字与描述线的距离
      */
-    public float getTextMarginBottom() {
-        return textMarginBottom;
+    public float getTextMarginLine() {
+        return textMarginLine;
     }
 
     /**
-     * 设置文字与底部描述线的距离
+     * 设置文字与描述线的距离
      *
-     * @param textMarginBottom 距离
+     * @param textMarginLine 距离
      */
-    public AnimatedPieViewConfig setTextMarginBottom(float textMarginBottom) {
-        this.textMarginBottom = textMarginBottom;
+    public AnimatedPieViewConfig setTextMarginLine(float textMarginLine) {
+        this.textMarginLine = textMarginLine;
         return setReApply(true);
     }
 
@@ -446,7 +446,7 @@ public class AnimatedPieViewConfig implements Serializable {
                     .setOnPieSelectListener(config.getOnPieSelectListener())
                     .setPieRadiusScale(config.getPieRadiusScale())
                     .setDrawText(config.isDrawText())
-                    .setTextMarginBottom(config.getTextMarginBottom())
+                    .setTextMarginLine(config.getTextMarginLine())
                     .setTextSize(config.getTextSize());
             List<IPieInfo> infos = config.getDatas();
             mDatas.clear();

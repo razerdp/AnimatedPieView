@@ -536,7 +536,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                 break;
         }
         lineEndY = lineMiddleY;
-        textStartY = lineMiddleY - mConfig.getTextMarginBottom();
+        textStartY = lineMiddleY - mConfig.getTextMarginLine();
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(6);
@@ -665,7 +665,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                             invalidate();
                         }
                         if (mConfig.getOnPieSelectListener() != null) {
-                            mConfig.getOnPieSelectListener().onSelectPie(clickedInfo.getPieInfo());
+                            mConfig.getOnPieSelectListener().onSelectPie(mCurrentTouchInfo.getPieInfo(), mCurrentTouchInfo.getActionScaleType() == PieInfoImpl.ScaleType.UP);
                         }
 
                     }

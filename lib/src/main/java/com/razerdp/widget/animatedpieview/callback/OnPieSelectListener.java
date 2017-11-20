@@ -9,5 +9,11 @@ import com.razerdp.widget.animatedpieview.data.IPieInfo;
  */
 
 public interface OnPieSelectListener<T extends IPieInfo> {
-    void onSelectPie(@NonNull T pieInfo);
+    /**
+     * 选中的回调
+     *
+     * @param pieInfo   数据实体
+     * @param isScaleUp 是否浮起
+     */
+    void onSelectPie(@NonNull T pieInfo, boolean isScaleUp);
 }
