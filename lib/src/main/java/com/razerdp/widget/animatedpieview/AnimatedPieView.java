@@ -429,9 +429,9 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         if (info == null) return;
         final float scaleSizeInTouch = !mConfig.isDrawStrokeOnly() ? mConfig.getTouchScaleSize() : 0;
         mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch * mScaleDownTime,
-                mDrawRectf.top - scaleSizeInTouch * mScaleDownTime,
-                mDrawRectf.right + scaleSizeInTouch * mScaleDownTime,
-                mDrawRectf.bottom + scaleSizeInTouch * mScaleDownTime);
+                        mDrawRectf.top - scaleSizeInTouch * mScaleDownTime,
+                        mDrawRectf.right + scaleSizeInTouch * mScaleDownTime,
+                        mDrawRectf.bottom + scaleSizeInTouch * mScaleDownTime);
         drawTouchAnimaArc(canvas, info, mScaleDownTime);
     }
 
@@ -439,9 +439,9 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         if (info == null) return;
         final float scaleSizeInTouch = !mConfig.isDrawStrokeOnly() ? mConfig.getTouchScaleSize() : 0;
         mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch * mScaleUpTime,
-                mDrawRectf.top - scaleSizeInTouch * mScaleUpTime,
-                mDrawRectf.right + scaleSizeInTouch * mScaleUpTime,
-                mDrawRectf.bottom + scaleSizeInTouch * mScaleUpTime);
+                        mDrawRectf.top - scaleSizeInTouch * mScaleUpTime,
+                        mDrawRectf.right + scaleSizeInTouch * mScaleUpTime,
+                        mDrawRectf.bottom + scaleSizeInTouch * mScaleUpTime);
         drawTouchAnimaArc(canvas, info, mScaleUpTime);
     }
 
@@ -501,24 +501,28 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                 lineMiddleY = cy - middeLineWidth * absMathSin(-45);
                 lineEndX = lineMiddleX - middeLineWidth;
                 textStartX = lineEndX;
+                textStartY = lineMiddleY - mConfig.getTextMarginLine();
                 break;
             case CENTER_LEFT:
                 lineMiddleX = cx - middeLineWidth;
                 lineMiddleY = cy;
                 lineEndX = lineMiddleX - middeLineWidth;
                 textStartX = lineEndX;
+                textStartY = lineMiddleY - mConfig.getTextMarginLine();
                 break;
             case BOTTOM_LEFT:
                 lineMiddleX = cx - middeLineWidth * absMathCos(-45);
                 lineMiddleY = cy + middeLineWidth * absMathSin(-45);
                 lineEndX = lineMiddleX - middeLineWidth;
                 textStartX = lineEndX;
+                textStartY = lineMiddleY + (mConfig.isDirectText() ? -mConfig.getTextMarginLine() : mConfig.getTextMarginLine() + mConfig.getTextLineStrokeWidth());
                 break;
             case TOP_RIGHT:
                 lineMiddleX = cx + middeLineWidth * absMathCos(45);
                 lineMiddleY = cy - middeLineWidth * absMathSin(45);
                 lineEndX = lineMiddleX + middeLineWidth;
                 textStartX = lineMiddleX;
+                textStartY = lineMiddleY - mConfig.getTextMarginLine();
                 break;
             case CENTER_RIGHT:
                 lineMiddleX = cx + middeLineWidth;
@@ -531,10 +535,10 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                 lineMiddleY = cy + middeLineWidth * absMathSin(45);
                 lineEndX = lineMiddleX + middeLineWidth;
                 textStartX = lineMiddleX;
+                textStartY = lineMiddleY + (mConfig.isDirectText() ? -mConfig.getTextMarginLine() : mConfig.getTextMarginLine() + mConfig.getTextLineStrokeWidth());
                 break;
         }
         lineEndY = lineMiddleY;
-        textStartY = lineMiddleY - mConfig.getTextMarginLine();
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(mConfig.getTextLineStrokeWidth());
@@ -575,10 +579,10 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         mTouchEventPaint.setMaskFilter(timeFactor > 0 ? scaleDownMaskFilter : null);
         mTouchEventPaint.setStrokeWidth(info.getPaint().getStrokeWidth() + (10 * timeFactor));
         canvas.drawArc(mTouchRectf,
-                info.getStartAngle() - (mConfig.getTouchExpandAngle() * timeFactor),
-                info.getSweepAngle() + (mConfig.getTouchExpandAngle() * 2 * timeFactor),
-                !mConfig.isDrawStrokeOnly(),
-                mTouchEventPaint);
+                       info.getStartAngle() - (mConfig.getTouchExpandAngle() * timeFactor),
+                       info.getSweepAngle() + (mConfig.getTouchExpandAngle() * 2 * timeFactor),
+                       !mConfig.isDrawStrokeOnly(),
+                       mTouchEventPaint);
     }
 
     @Override
