@@ -32,6 +32,10 @@ public class AnimatedPieViewConfig implements Serializable {
     private static final float DEFAULT_PIE_RADIUS_SCALE = 0.85f;
     private static final float DEFAULT_TEXT_MARGIN_LINE = 8;
     private static final int DEFAULT_TEXT_SIZE = 10;
+    private static final int DEFAULT_TEXT_POINT_RADIUS = 2;
+    private static final int DEFAULT_TEXT_LINE_STROKE_WIDTH = 4;
+    private static final int DEFAULT_TEXT_LINE_TRANSITION_LENGTH = 32;
+    private static final int DEFAULT_TEXT_LINE_START_MARGIN = 8;
 
 
     private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR = new DecelerateInterpolator(1.2f);
@@ -46,6 +50,10 @@ public class AnimatedPieViewConfig implements Serializable {
     private float pieRadiusScale = DEFAULT_PIE_RADIUS_SCALE;
     private float textMarginLine = DEFAULT_TEXT_MARGIN_LINE;
     private int textSize = DEFAULT_TEXT_SIZE;
+    private int textPointRadius = DEFAULT_TEXT_POINT_RADIUS;
+    private int textLineStrokeWidth = DEFAULT_TEXT_LINE_STROKE_WIDTH;
+    private int textLineTransitionLength = DEFAULT_TEXT_LINE_TRANSITION_LENGTH;
+    private int textLineStartMargin = DEFAULT_TEXT_LINE_START_MARGIN;
 
     private volatile boolean reApply;
     private List<PieInfoImpl> mDatas;
@@ -239,7 +247,7 @@ public class AnimatedPieViewConfig implements Serializable {
      */
     public AnimatedPieViewConfig setTouchScaleUpDuration(long touchScaleUpDuration) {
         this.touchScaleUpDuration = touchScaleUpDuration;
-        return this;
+        return setReApply(true);
     }
 
     /**
@@ -257,7 +265,7 @@ public class AnimatedPieViewConfig implements Serializable {
      */
     public AnimatedPieViewConfig setTouchScaleDownDuration(long touchScaleDownDuration) {
         this.touchScaleDownDuration = touchScaleDownDuration;
-        return this;
+        return setReApply(true);
     }
 
     /**
@@ -412,6 +420,74 @@ public class AnimatedPieViewConfig implements Serializable {
         return setReApply(true);
     }
 
+    /**
+     * 获取描述文字的点
+     */
+    public int getTextPointRadius() {
+        return textPointRadius;
+    }
+
+    /**
+     * 设置描述文字的小点
+     *
+     * @param textPointRadius 点的半径
+     */
+    public AnimatedPieViewConfig setTextPointRadius(int textPointRadius) {
+        this.textPointRadius = textPointRadius;
+        return setReApply(true);
+    }
+
+    /**
+     * 获取描述文字的描述线宽度
+     */
+    public int getTextLineStrokeWidth() {
+        return textLineStrokeWidth;
+    }
+
+    /**
+     * 设置描述文字的描述线宽度
+     *
+     * @param textLineStrokeWidth 宽度（px）
+     */
+    public AnimatedPieViewConfig setTextLineStrokeWidth(int textLineStrokeWidth) {
+        this.textLineStrokeWidth = textLineStrokeWidth;
+        return setReApply(true);
+    }
+
+    /**
+     * 获取描述文字的描述线转折线长度
+     */
+    public int getTextLineTransitionLength() {
+        return textLineTransitionLength;
+    }
+
+    /**
+     * 设置描述文字的描述线转折线长度
+     *
+     * @param textLineTransitionLength 长度（px）
+     */
+    public AnimatedPieViewConfig setTextLineTransitionLength(int textLineTransitionLength) {
+        this.textLineTransitionLength = textLineTransitionLength;
+        return setReApply(true);
+    }
+
+    /**
+     * 获取描述文字的描述线距离圆心的开始距离
+     */
+    public int getTextLineStartMargin() {
+        return textLineStartMargin;
+    }
+
+    /**
+     * 设置描述文字的描述线距离圆心的开始距离
+     *
+     * @param textLineStartMargin 距离(px)
+     */
+    public AnimatedPieViewConfig setTextLineStartMargin(int textLineStartMargin) {
+        this.textLineStartMargin = textLineStartMargin;
+        return setReApply(true);
+    }
+
     protected List<PieInfoImpl> getImplDatas() {
         return new ArrayList<>(mDatas);
     }
@@ -447,7 +523,11 @@ public class AnimatedPieViewConfig implements Serializable {
                     .setPieRadiusScale(config.getPieRadiusScale())
                     .setDrawText(config.isDrawText())
                     .setTextMarginLine(config.getTextMarginLine())
-                    .setTextSize(config.getTextSize());
+                    .setTextSize(config.getTextSize())
+                    .setTextPointRadius(config.getTextPointRadius())
+                    .setTextLineStrokeWidth(config.getTextLineStrokeWidth())
+                    .setTextLineTransitionLength(config.getTextLineTransitionLength())
+                    .setTextLineStartMargin(config.getTextLineStartMargin());
             List<IPieInfo> infos = config.getDatas();
             mDatas.clear();
             for (IPieInfo info : infos) {
