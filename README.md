@@ -13,7 +13,7 @@
 
 --- 
 
-### 进度：
+### 进度 （更新日志->[日志](https://github.com/razerdp/AnimatedPieView/blob/master/UPDATE_LOG.md)）：
   > 文字描述动画
   - ~~有文字描述的甜甜圈~~
   - ~~点击事件回调的甜甜圈~~
