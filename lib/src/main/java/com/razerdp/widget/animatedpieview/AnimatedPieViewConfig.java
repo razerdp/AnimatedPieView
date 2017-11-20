@@ -36,6 +36,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private static final int DEFAULT_TEXT_LINE_STROKE_WIDTH = 4;
     private static final int DEFAULT_TEXT_LINE_TRANSITION_LENGTH = 32;
     private static final int DEFAULT_TEXT_LINE_START_MARGIN = 8;
+    private static final boolean DEFAULT_DIRECT_TEXT = false;
 
 
     private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR = new DecelerateInterpolator(1.2f);
@@ -64,6 +65,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private boolean touchAnimation = true;
     private OnPieSelectListener mOnPieSelectListener;
     private boolean drawText = true;
+    private boolean directText = DEFAULT_DIRECT_TEXT;
 
     public AnimatedPieViewConfig() {
         mPieViewHelper = new AnimatedPieViewHelper();
@@ -488,6 +490,23 @@ public class AnimatedPieViewConfig implements Serializable {
         return setReApply(true);
     }
 
+    /**
+     * 描述文字是否同一个方向
+     */
+    public boolean isDirectText() {
+        return directText;
+    }
+
+    /**
+     * 设置描述文字是否统一方向
+     *
+     * @param directText <p>true：文字将会在描述线上绘制<p>false：文字在1、2象限部分绘制在线的上方，在3、4象限绘制在线的下方
+     */
+    public AnimatedPieViewConfig setDirectText(boolean directText) {
+        this.directText = directText;
+        return setReApply(true);
+    }
+
     protected List<PieInfoImpl> getImplDatas() {
         return new ArrayList<>(mDatas);
     }
@@ -527,7 +546,8 @@ public class AnimatedPieViewConfig implements Serializable {
                     .setTextPointRadius(config.getTextPointRadius())
                     .setTextLineStrokeWidth(config.getTextLineStrokeWidth())
                     .setTextLineTransitionLength(config.getTextLineTransitionLength())
-                    .setTextLineStartMargin(config.getTextLineStartMargin());
+                    .setTextLineStartMargin(config.getTextLineStartMargin())
+                    .setDirectText(config.isDirectText());
             List<IPieInfo> infos = config.getDatas();
             mDatas.clear();
             for (IPieInfo info : infos) {
