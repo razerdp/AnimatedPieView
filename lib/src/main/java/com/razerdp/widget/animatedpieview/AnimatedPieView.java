@@ -295,11 +295,8 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
     private void initView(Context context, AttributeSet attrs) {
         if (mConfig == null) mConfig = new AnimatedPieViewConfig();
-        if (mTouchEventPaint == null) {
+        if (mTouchEventPaint == null)
             mTouchEventPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-            BlurMaskFilter maskFilter = new BlurMaskFilter(18, BlurMaskFilter.Blur.SOLID);
-            mTouchEventPaint.setMaskFilter(maskFilter);
-        }
         mDrawRectf = new RectF();
         mTouchRectf = new RectF();
         mDrawedCachePieInfo = new ArrayList<>();
@@ -475,13 +472,13 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
      */
     private void drawDescDecoration(Canvas canvas, PieInfoImpl info, float drawWidth, float drawHeight, float radius) {
         if (info == null) return;
-        final float pointRadius = radius + UIHelper.dip2px(getContext(), 16) + (mConfig.isDrawStrokeOnly() ? mConfig.getStrokeWidth() / 2 : 0);
+        final float pointRadius = radius + mConfig.getTextLineStartMargin() + (mConfig.isDrawStrokeOnly() ? mConfig.getStrokeWidth() / 2 : 0);
         float cx = (float) (pointRadius * Math.cos(Math.toRadians(info.getMiddleAngle())));
         float cy = (float) (pointRadius * Math.sin(Math.toRadians(info.getMiddleAngle())));
         //画点
         Paint paint = info.getCopyPaint();
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle(cx, cy, UIHelper.dip2px(getContext(), 4), paint);
+        canvas.drawCircle(cx, cy, UIHelper.dip2px(getContext(), mConfig.getTextPointRadius()), paint);
 
         float lineMiddleX = 0;
         float lineMiddleY = 0;
@@ -492,7 +489,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         float textStartX = 0;
         float textStartY = 0;
 
-        float middeLineWidth = UIHelper.dip2px(getContext(), 24);
+        float middeLineWidth = UIHelper.dip2px(getContext(), mConfig.getTextLineTransitionLength());
 
         //画线
         LineGravity gravity = calculateLineGravity(cx, cy);
@@ -539,7 +536,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         textStartY = lineMiddleY - mConfig.getTextMarginLine();
 
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(6);
+        paint.setStrokeWidth(mConfig.getTextLineStrokeWidth());
         paint.setStrokeJoin(Paint.Join.ROUND);
         canvas.drawLine(cx, cy, lineMiddleX, lineMiddleY, paint);
         canvas.drawLine(lineMiddleX, lineMiddleY, lineEndX, lineEndY, paint);
