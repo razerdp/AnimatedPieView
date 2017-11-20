@@ -28,10 +28,12 @@
   
   ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/anima.gif)
   
-   - 文字描述及点击事件
+  - 点击事件
    
    ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/click.gif)
    
+  - 文字描述
+  
    ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/anima_text.gif)
 
 ### 依赖
@@ -51,12 +53,12 @@
 ```java
         AnimatedPieView mAnimatedPieView = findViewById(R.id.animatedPieView);
         AnimatedPieViewConfig config = new AnimatedPieViewConfig();
-        config.setStartAngle(-90)//起始角度偏移
+        config.setStartAngle(-90)// 起始角度偏移
                 .addData(new SimplePieInfo(30, getColor("FFC5FF8C"), "这是第一段"))//数据（实现IPieInfo接口的bean）
                 .addData(new SimplePieInfo(18.0f, getColor("FFFFD28C"), "这是第二段"))
                 ...(尽管addData吧)
-                .setDuration(2000)//持续时间
-                .setInterpolator(new DecelerateInterpolator(2.5f));//插值器
+                .setDuration(2000)// 持续时间
+                .setInterpolator(new DecelerateInterpolator(2.5f));// 插值器
         mAnimatedPieView.applyConfig(config);
         mAnimatedPieView.start();
 ```
@@ -64,22 +66,23 @@
 ### 进阶用法（所有配置都在config，下面的只是展示用哦）：
 ```java
         AnimatedPieViewConfig mConfig=mAnimatedPieView.getConfig();
-        mConfig.setTouchAnimation(true)//点击事件是否播放浮现动画/回退动画（默认true）
-                        .setTouchExpandAngle(15f)//点击后圆弧/扇形扩展的角度
-                        .setTouchShadowRadius(18f)//点击后的阴影扩散范围
-                        .setTouchScaleUpDuration(500)//点击浮现动画时间
-                        .setTouchScaleDownDuration(500)//上一个浮现的圆弧回退的动画时间
-                        .setTouchScaleSize(15)//点击后圆弧/扇形放大数值
-                        .setDrawStrokeOnly(true)//是否只画圆弧【甜甜圈哈哈】，否则画扇形（默认true）
-                        .setStrokeWidth(15)//圆弧（甜甜圈）宽度
-                        .setDuration(2500)//动画时间
-                        .setInterpolator(new LinearInterpolator())//插值器
-                        .setStartAngle(-90f)//开始的角度
+        mConfig.setTouchAnimation(true)// 点击事件是否播放浮现动画/回退动画（默认true）
+                        .setTouchExpandAngle(15f)// 点击后圆弧/扇形扩展的角度
+                        .setTouchShadowRadius(18f)// 点击后的阴影扩散范围
+                        .setTouchScaleUpDuration(500)// 点击浮现动画时间
+                        .setTouchScaleDownDuration(500)// 上一个浮现的圆弧回退的动画时间
+                        .setTouchScaleSize(15)// 点击后圆弧/扇形放大数值
+                        .setDrawStrokeOnly(true)// 是否只画圆弧【甜甜圈哈哈】，否则画扇形（默认true）
+                        .setStrokeWidth(15)// 圆弧（甜甜圈）宽度
+                        .setDuration(2500)// 动画时间
+                        .setInterpolator(new LinearInterpolator())// 插值器
+                        .setStartAngle(-90f)// 开始的角度
                         .setOnPieSelectListener(new OnPieSelectListener<IPieInfo>())//点击事件
-                        .setDrawText(true)//是否绘制文字描述
-                        .setTextSize(12)//绘制的文字大小
-                        .setPieRadiusScale(0.8f)//甜甜圈半径占比
-                        .setConfig(new AnimatedPieViewConfig());//配置（这里的new只是演示哦，可不要学我例子这里直接塞进一个新的config，否则上面的设置都浪费了）
+                        .setDrawText(true)// 是否绘制文字描述
+                        .setTextSize(12)// 绘制的文字大小
+                        .setTextMarginBottom(8)// 绘制文字距离底部描述线的距离
+                        .setPieRadiusScale(0.8f)// 甜甜圈半径占比
+                        .setConfig(new AnimatedPieViewConfig());// 配置（这里的new只是演示哦，可不要学我例子这里直接塞进一个新的config，否则上面的设置都浪费了）
 ```
 
 ---
