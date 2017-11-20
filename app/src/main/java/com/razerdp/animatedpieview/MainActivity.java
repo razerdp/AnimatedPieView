@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 .setDrawText(drawText)
                 .setDuration(2000)
                 .setInterpolator(new DecelerateInterpolator(2.5f))
+                .setTextLineStrokeWidth(4)
                 .setTextSize(12)
                 .setPieRadiusScale(0.8f)
                 .setOnPieSelectListener(new OnPieSelectListener<IPieInfo>() {
