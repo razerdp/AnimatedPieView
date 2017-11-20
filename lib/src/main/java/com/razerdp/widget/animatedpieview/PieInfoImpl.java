@@ -205,6 +205,7 @@
 package com.razerdp.widget.animatedpieview;
 
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.text.TextUtils;
 
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
@@ -231,6 +232,7 @@ final class PieInfoImpl {
     private int strokeWidth;
     private Paint mPaint;
     private Paint mCopyPaint;
+    private Path mLinePath;
     private ScaleType mActionScaleType = ScaleType.DOWN;
 
     private PieInfoImpl(IPieInfo info) {
@@ -250,6 +252,7 @@ final class PieInfoImpl {
 
     private void initPaint(IPieInfo info) {
         if (mPaint == null) mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+        if (mLinePath == null) mLinePath = new Path();
         mPaint.setStyle(drawStrokeOnly ? Paint.Style.STROKE : Paint.Style.FILL);
         mPaint.setStrokeWidth(strokeWidth);
         mPaint.setColor(info.getColor());
@@ -289,6 +292,10 @@ final class PieInfoImpl {
 
     public Paint getPaint() {
         return mPaint;
+    }
+
+    public Path getLinePath() {
+        return mLinePath;
     }
 
     public Paint getCopyPaint() {

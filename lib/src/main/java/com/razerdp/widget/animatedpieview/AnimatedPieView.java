@@ -210,6 +210,7 @@ import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.RectF;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -538,8 +539,12 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(mConfig.getTextLineStrokeWidth());
         paint.setStrokeJoin(Paint.Join.ROUND);
-        canvas.drawLine(cx, cy, lineMiddleX, lineMiddleY, paint);
-        canvas.drawLine(lineMiddleX, lineMiddleY, lineEndX, lineEndY, paint);
+
+        Path path = info.getLinePath();
+        path.moveTo(cx, cy);
+        path.lineTo(lineMiddleX, lineMiddleY);
+        path.lineTo(lineEndX, lineEndY);
+        canvas.drawPath(path, paint);
 
         paint.setStyle(Paint.Style.FILL);
         paint.setTextSize(mConfig.getTextSize());
