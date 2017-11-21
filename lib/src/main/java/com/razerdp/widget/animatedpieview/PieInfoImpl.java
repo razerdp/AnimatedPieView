@@ -234,6 +234,8 @@ final class PieInfoImpl {
     private Paint mCopyPaint;
     private Path mLinePath;
     private ScaleType mActionScaleType = ScaleType.DOWN;
+    private boolean autoDesc;
+    private String autoDescStr;
 
     private PieInfoImpl(IPieInfo info) {
         id = UUID.randomUUID().toString();
@@ -365,6 +367,27 @@ final class PieInfoImpl {
 
     void toggleActionScaleType() {
         mActionScaleType = mActionScaleType == ScaleType.UP ? ScaleType.DOWN : ScaleType.UP;
+    }
+
+    public boolean isAutoDesc() {
+        return autoDesc;
+    }
+
+    public PieInfoImpl setAutoDesc(boolean autoDesc) {
+        this.autoDesc = autoDesc;
+        return this;
+    }
+
+    public String getAutoDescStr() {
+        return autoDescStr;
+    }
+
+    public void setAutoDescStr(String autoDescStr) {
+        this.autoDescStr = autoDescStr;
+    }
+
+    public String getDesc() {
+        return autoDesc && !TextUtils.isEmpty(autoDescStr) ? autoDescStr : mPieInfo.getDesc();
     }
 
     @Override

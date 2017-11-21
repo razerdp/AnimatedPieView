@@ -63,10 +63,11 @@
         mAnimatedPieView.start();
 ```
 
-### 进阶用法（所有配置都在config，下面的只是展示用哦）：
+### 进阶用法（所有配置都在config，and...相信我，我提供大多数配置，但日常用到的，其实不多哈哈）：
 ```java
         AnimatedPieViewConfig mConfig=mAnimatedPieView.getConfig();
         mConfig.setTouchAnimation(true)// 点击事件是否播放浮现动画/回退动画（默认true）
+                        .addData(IPieInfo info, boolean autoDesc)// 添加数据，autoDesc：是否自动补充描述？（百分比）
                         .setTouchExpandAngle(15f)// 点击后圆弧/扇形扩展的角度
                         .setTouchShadowRadius(18f)// 点击后的阴影扩散范围
                         .setTouchScaleUpDuration(500)// 点击浮现动画时间
