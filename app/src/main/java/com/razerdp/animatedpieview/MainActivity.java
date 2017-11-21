@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 .addData(new SimplePieInfo(30, getColor("FF446767")), true)
                 .addData(new SimplePieInfo(18.0f, getColor("FFFFD28C")), true)
                 .addData(new SimplePieInfo(123.0f, getColor("FFbb76b4")), true)
-                .addData(new SimplePieInfo(87.0f, getColor("FFFFD28C")), true)
+                .addData(new SimplePieInfo(87.0f, getColor("FFFFD28C"),"长文字test"), false)
                 .addData(new SimplePieInfo(15.0f, getColor("ff2bbc80")), true)
                 .addData(new SimplePieInfo(55.0f, getColor("ff8be8ff")), true)
                 .addData(new SimplePieInfo(30.0f, getColor("fffa734d")), true)

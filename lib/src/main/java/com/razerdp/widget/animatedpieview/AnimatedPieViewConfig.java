@@ -7,7 +7,6 @@ import android.view.animation.Interpolator;
 
 import com.razerdp.widget.animatedpieview.callback.OnPieSelectListener;
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
-import com.razerdp.widget.animatedpieview.data.SimplePieInfo;
 import com.razerdp.widget.animatedpieview.utils.ToolUtil;
 
 import java.io.Serializable;
@@ -197,8 +196,8 @@ public class AnimatedPieViewConfig implements Serializable {
      */
     public AnimatedPieViewConfig addData(@NonNull IPieInfo info, boolean autoDesc) {
         assert info != null : "不能添加空数据";
-        mDatas.add(PieInfoImpl.create(info).setStrokeWidth(strokeWidth).setDrawStrokeOnly(isStroke));
-        mPieViewHelper.prepare(autoDesc);
+        mDatas.add(PieInfoImpl.create(info).setStrokeWidth(strokeWidth).setDrawStrokeOnly(isStroke).setAutoDesc(autoDesc));
+        mPieViewHelper.prepare();
         return this;
     }
 
@@ -548,9 +547,11 @@ public class AnimatedPieViewConfig implements Serializable {
                     .setTextLineTransitionLength(config.getTextLineTransitionLength())
                     .setTextLineStartMargin(config.getTextLineStartMargin())
                     .setDirectText(config.isDirectText());
-            List<IPieInfo> infos = config.getDatas();
+            List<PieInfoImpl> infos = config.getImplDatas();
             mDatas.clear();
-            addDatas(infos);
+            for (PieInfoImpl info : infos) {
+                addData(info.getPieInfo(), info.isAutoDesc());
+            }
         }
         return this;
     }
@@ -558,7 +559,7 @@ public class AnimatedPieViewConfig implements Serializable {
     protected final class AnimatedPieViewHelper {
         private double sumValue;
 
-        private void prepare(boolean autoDesc) {
+        private void prepare() {
             if (ToolUtil.isListEmpty(mDatas)) return;
             sumValue = 0;
             //算总和
@@ -566,15 +567,7 @@ public class AnimatedPieViewConfig implements Serializable {
                 IPieInfo info = dataImpl.getPieInfo();
                 sumValue += info.getValue();
             }
-            //自动填充auto
-            if (autoDesc) {
-                for (PieInfoImpl data : mDatas) {
-                    if (data.getPieInfo() instanceof SimplePieInfo) {
-                        SimplePieInfo info = (SimplePieInfo) data.getPieInfo();
-                        info.setDesc(sFormateRate.format((info.getValue() / sumValue) * 100) + "%");
-                    }
-                }
-            }
+
             //算每部分的角度
             float start = startAngle;
             for (PieInfoImpl data : mDatas) {
@@ -584,6 +577,10 @@ public class AnimatedPieViewConfig implements Serializable {
                 float endAngle = start + angle;
                 data.setEndAngle(endAngle);
                 start = endAngle;
+                //自动填充描述auto
+                if (data.isAutoDesc()) {
+                    data.setAutoDescStr(sFormateRate.format((data.getPieInfo().getValue() / sumValue) * 100) + "%");
+                }
             }
         }
 
