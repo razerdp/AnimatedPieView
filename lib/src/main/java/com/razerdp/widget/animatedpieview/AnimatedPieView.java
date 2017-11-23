@@ -211,6 +211,7 @@ import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PathMeasure;
 import android.graphics.RectF;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -256,6 +257,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
     private PieViewAnimation mPieViewAnimation;
     private ValueAnimator mTouchScaleUpAnimator;
     private ValueAnimator mTouchScaleDownAnimator;
+    private PathMeasure mPathMeasure;
 
     private TouchHelper mTouchHelper;
 
@@ -298,6 +300,8 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         if (mConfig == null) mConfig = new AnimatedPieViewConfig();
         if (mTouchEventPaint == null)
             mTouchEventPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+        if (mPathMeasure == null)
+            mPathMeasure = new PathMeasure();
         mDrawRectf = new RectF();
         mTouchRectf = new RectF();
         mDrawedCachePieInfo = new ArrayList<>();
@@ -546,13 +550,19 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         paint.setStrokeJoin(Paint.Join.ROUND);
 
         Path path = info.getLinePath();
+        Path measurePathDst = info.getMeasurePathDst();
         path.moveTo(cx, cy);
         path.lineTo(lineMiddleX, lineMiddleY);
         path.lineTo(lineEndX, lineEndY);
-        canvas.drawPath(path, paint);
+        mPathMeasure.nextContour();
+        mPathMeasure.setPath(path, false);
+        float progress = changeAngleToProgress(angle, info);
+        mPathMeasure.getSegment(0, progress * mPathMeasure.getLength(), measurePathDst, true);
+        canvas.drawPath(measurePathDst, paint);
 
         paint.setStyle(Paint.Style.FILL);
         paint.setTextSize(mConfig.getTextSize());
+        paint.setAlpha((int) (255 * progress));
         //画文字
         canvas.drawText(info.getDesc(), textStartX, textStartY, paint);
 
@@ -564,6 +574,13 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
     private float absMathCos(double angdeg) {
         return (float) Math.abs(Math.cos(Math.toRadians(angdeg)));
+    }
+
+    private float changeAngleToProgress(float angle, PieInfoImpl info) {
+        if (info == null) return 1.0f;
+        if (angle < info.getMiddleAngle()) return 0.0f;
+        if (angle >= info.getEndAngle()) return 1.0f;
+        return (angle - info.getMiddleAngle()) / (info.getEndAngle() - info.getMiddleAngle());
     }
 
     /**

@@ -233,6 +233,7 @@ final class PieInfoImpl {
     private Paint mPaint;
     private Paint mCopyPaint;
     private Path mLinePath;
+    private Path mMeasurePathDst;
     private ScaleType mActionScaleType = ScaleType.DOWN;
     private boolean autoDesc;
     private String autoDescStr;
@@ -254,7 +255,16 @@ final class PieInfoImpl {
 
     private void initPaint(IPieInfo info) {
         if (mPaint == null) mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-        if (mLinePath == null) mLinePath = new Path();
+        if (mLinePath == null) {
+            mLinePath = new Path();
+        } else {
+            mLinePath.reset();
+        }
+        if (mMeasurePathDst == null) {
+            mMeasurePathDst = new Path();
+        } else {
+            mMeasurePathDst.reset();
+        }
         mPaint.setStyle(drawStrokeOnly ? Paint.Style.STROKE : Paint.Style.FILL);
         mPaint.setStrokeWidth(strokeWidth);
         mPaint.setColor(info.getColor());
@@ -298,6 +308,10 @@ final class PieInfoImpl {
 
     public Path getLinePath() {
         return mLinePath;
+    }
+
+    public Path getMeasurePathDst() {
+        return mMeasurePathDst;
     }
 
     public Paint getCopyPaint() {
