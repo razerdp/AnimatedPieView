@@ -14,7 +14,8 @@
 --- 
 
 ### 进度 （更新日志->[日志](https://github.com/razerdp/AnimatedPieView/blob/master/UPDATE_LOG.md)）：
-  > 文字描述动画
+  > 唔。。。暂时没想到（点击后指示线让位？指示线动画时间可调配）
+  - ~~文字描述动画~~
   - ~~有文字描述的甜甜圈~~
   - ~~点击事件回调的甜甜圈~~
   - ~~点击动画的甜甜圈~~
@@ -35,6 +36,10 @@
   - 文字描述
   
    ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/anima_text.gif)
+
+  - 文字描述指示线动画
+  
+   ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/anima_line.gif)
 
 ### 依赖
 
