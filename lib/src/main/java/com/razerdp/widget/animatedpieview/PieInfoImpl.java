@@ -209,6 +209,7 @@ import android.graphics.Path;
 import android.text.TextUtils;
 
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
+import com.razerdp.widget.animatedpieview.data.SimplePieInfo;
 import com.razerdp.widget.animatedpieview.utils.DegreeUtil;
 
 import java.util.UUID;
@@ -307,10 +308,14 @@ final class PieInfoImpl {
     }
 
     public Path getLinePath() {
+        //必须要重置，否则path会来回绘制，当点击的越来越多，就会越来越卡顿
+        mLinePath.rewind();
         return mLinePath;
     }
 
     public Path getMeasurePathDst() {
+        //必须要重置，否则path会来回绘制，当点击的越来越多，就会越来越卡顿
+        mMeasurePathDst.rewind();
         return mMeasurePathDst;
     }
 
@@ -397,6 +402,9 @@ final class PieInfoImpl {
     }
 
     public void setAutoDescStr(String autoDescStr) {
+        if (mPieInfo instanceof SimplePieInfo) {
+            ((SimplePieInfo) mPieInfo).setDesc(autoDescStr);
+        }
         this.autoDescStr = autoDescStr;
     }
 
