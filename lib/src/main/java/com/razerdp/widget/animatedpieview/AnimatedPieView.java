@@ -384,33 +384,33 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
         switch (mode) {
             case DRAW:
-                onDrawModeHandle(canvas, width, height, radius);
+                onDrawModeHandle(canvas, radius);
                 break;
             case TOUCH:
-                onTouchModeHandle(canvas, width, height, radius);
+                onTouchModeHandle(canvas, radius);
                 break;
         }
     }
 
-    private void onDrawModeHandle(Canvas canvas, float drawWidth, float drawHeight, float radius) {
+    private void onDrawModeHandle(Canvas canvas, float radius) {
         if (!canvas.isHardwareAccelerated()) {
             setLayerType(View.LAYER_TYPE_HARDWARE, null);
         }
         if (mCurrentInfo != null) {
-            drawCachedInfos(canvas, null, drawWidth, drawHeight, radius);
+            drawCachedInfos(canvas, null, radius);
             canvas.drawArc(mDrawRectf, mCurrentInfo.getStartAngle(), angle - mCurrentInfo.getStartAngle(), !mConfig.isDrawStrokeOnly(), mCurrentInfo.getPaint());
             if (mConfig.isDrawText() && angle >= mCurrentInfo.getMiddleAngle() && angle <= mCurrentInfo.getEndAngle()) {
-                drawDescDecoration(canvas, mCurrentInfo, drawWidth, drawHeight, radius);
+                drawDescDecoration(canvas, mCurrentInfo, radius);
             }
         }
     }
 
-    private void onTouchModeHandle(Canvas canvas, float drawWidth, float drawHeight, float radius) {
+    private void onTouchModeHandle(Canvas canvas, float radius) {
         if (canvas.isHardwareAccelerated()) {
             setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
         if (mCurrentTouchInfo != null) {
-            drawCachedInfos(canvas, mCurrentTouchInfo, drawWidth, drawHeight, radius);
+            drawCachedInfos(canvas, mCurrentTouchInfo, radius);
             final boolean sameClick = mCurrentTouchInfo.equalsWith(mLastTouchInfo);
             if (mLastTouchInfo != null && !sameClick) {
                 switch (mLastTouchInfo.getActionScaleType()) {
@@ -437,9 +437,9 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         if (info == null) return;
         final float scaleSizeInTouch = !mConfig.isDrawStrokeOnly() ? mConfig.getTouchScaleSize() : 0;
         mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch * mScaleDownTime,
-                mDrawRectf.top - scaleSizeInTouch * mScaleDownTime,
-                mDrawRectf.right + scaleSizeInTouch * mScaleDownTime,
-                mDrawRectf.bottom + scaleSizeInTouch * mScaleDownTime);
+                        mDrawRectf.top - scaleSizeInTouch * mScaleDownTime,
+                        mDrawRectf.right + scaleSizeInTouch * mScaleDownTime,
+                        mDrawRectf.bottom + scaleSizeInTouch * mScaleDownTime);
         drawTouchAnimaArc(canvas, info, mScaleDownTime);
     }
 
@@ -447,9 +447,9 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         if (info == null) return;
         final float scaleSizeInTouch = !mConfig.isDrawStrokeOnly() ? mConfig.getTouchScaleSize() : 0;
         mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch * mScaleUpTime,
-                mDrawRectf.top - scaleSizeInTouch * mScaleUpTime,
-                mDrawRectf.right + scaleSizeInTouch * mScaleUpTime,
-                mDrawRectf.bottom + scaleSizeInTouch * mScaleUpTime);
+                        mDrawRectf.top - scaleSizeInTouch * mScaleUpTime,
+                        mDrawRectf.right + scaleSizeInTouch * mScaleUpTime,
+                        mDrawRectf.bottom + scaleSizeInTouch * mScaleUpTime);
         drawTouchAnimaArc(canvas, info, mScaleUpTime);
     }
 
@@ -459,14 +459,14 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
      * @param canvas
      * @param excluded 排除excluded
      */
-    private void drawCachedInfos(Canvas canvas, PieInfoImpl excluded, float drawWidth, float drawHeight, float radius) {
+    private void drawCachedInfos(Canvas canvas, PieInfoImpl excluded, float radius) {
         if (!ToolUtil.isListEmpty(mDrawedCachePieInfo)) {
             for (PieInfoImpl pieInfo : mDrawedCachePieInfo) {
                 if (excluded != null && excluded.equalsWith(pieInfo) && !mConfig.isDrawText()) {
                     continue;
                 }
                 if (mConfig.isDrawText()) {
-                    drawDescDecoration(canvas, pieInfo, drawWidth, drawHeight, radius);
+                    drawDescDecoration(canvas, pieInfo, radius);
                 }
                 canvas.drawArc(mDrawRectf, pieInfo.getStartAngle(), pieInfo.getSweepAngle(), !mConfig.isDrawStrokeOnly(), pieInfo.getPaint());
             }
@@ -479,9 +479,14 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
      * @param canvas
      * @param radius
      */
-    private void drawDescDecoration(Canvas canvas, PieInfoImpl info, float drawWidth, float drawHeight, float radius) {
+    private void drawDescDecoration(Canvas canvas, PieInfoImpl info, float radius) {
         if (info == null) return;
-        final float pointRadius = radius + mConfig.getTextLineStartMargin() + (mConfig.isDrawStrokeOnly() ? mConfig.getStrokeWidth() / 2 : 0);
+
+        //根据touch扩大量修正指示线和描述文字的位置
+        float mCurrentTouchFixPos = info.equalsWith(mCurrentTouchInfo) ? getFixTextPos(info) : 0;
+        float mLastTouchFixPos = info.equalsWith(mLastTouchInfo) ? getFixTextPos(info) : 0;
+
+        final float pointRadius = mCurrentTouchFixPos + mLastTouchFixPos + radius + mConfig.getTextLineStartMargin() + (mConfig.isDrawStrokeOnly() ? mConfig.getStrokeWidth() / 2 : 0);
         float cx = (float) (pointRadius * Math.cos(Math.toRadians(info.getMiddleAngle())));
         float cy = (float) (pointRadius * Math.sin(Math.toRadians(info.getMiddleAngle())));
         //画点
@@ -498,7 +503,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         float textStartX = 0;
         float textStartY = 0;
 
-        float middeLineWidth = UIHelper.dip2px(getContext(), mConfig.getTextLineTransitionLength());
+        float middeLineWidth = mConfig.getTextLineTransitionLength();
         float textLength = paint.measureText(info.getDesc());
 
         //画线
@@ -506,42 +511,42 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
         switch (gravity) {
             case TOP_LEFT:
-                lineMiddleX = cx - middeLineWidth * absMathCos(-45);
-                lineMiddleY = cy - middeLineWidth * absMathSin(-45);
+                lineMiddleX = cx - middeLineWidth * absMathCos(-45) - (mCurrentTouchFixPos + mLastTouchFixPos);
+                lineMiddleY = cy - middeLineWidth * absMathSin(-45) - (mCurrentTouchFixPos + mLastTouchFixPos);
                 lineEndX = lineMiddleX - textLength;
                 textStartX = lineEndX;
                 textStartY = lineMiddleY - mConfig.getTextMarginLine();
                 break;
             case CENTER_LEFT:
-                lineMiddleX = cx - middeLineWidth;
-                lineMiddleY = cy;
+                lineMiddleX = cx - middeLineWidth - (mCurrentTouchFixPos + mLastTouchFixPos);
+                lineMiddleY = cy - (mCurrentTouchFixPos + mLastTouchFixPos);
                 lineEndX = lineMiddleX - textLength;
                 textStartX = lineEndX;
                 textStartY = lineMiddleY - mConfig.getTextMarginLine();
                 break;
             case BOTTOM_LEFT:
-                lineMiddleX = cx - middeLineWidth * absMathCos(-45);
-                lineMiddleY = cy + middeLineWidth * absMathSin(-45);
+                lineMiddleX = cx - middeLineWidth * absMathCos(-45) - (mCurrentTouchFixPos + mLastTouchFixPos);
+                lineMiddleY = cy + middeLineWidth * absMathSin(-45) + (mCurrentTouchFixPos + mLastTouchFixPos);
                 lineEndX = lineMiddleX - textLength;
                 textStartX = lineEndX;
                 textStartY = lineMiddleY + (mConfig.isDirectText() ? -mConfig.getTextMarginLine() : mConfig.getTextMarginLine() + mConfig.getTextLineStrokeWidth());
                 break;
             case TOP_RIGHT:
-                lineMiddleX = cx + middeLineWidth * absMathCos(45);
-                lineMiddleY = cy - middeLineWidth * absMathSin(45);
+                lineMiddleX = cx + middeLineWidth * absMathCos(45) + (mCurrentTouchFixPos + mLastTouchFixPos);
+                lineMiddleY = cy - middeLineWidth * absMathSin(45) - (mCurrentTouchFixPos + mLastTouchFixPos);
                 lineEndX = lineMiddleX + textLength;
                 textStartX = lineMiddleX;
                 textStartY = lineMiddleY - mConfig.getTextMarginLine();
                 break;
             case CENTER_RIGHT:
-                lineMiddleX = cx + middeLineWidth;
+                lineMiddleX = cx + middeLineWidth + (mCurrentTouchFixPos + mLastTouchFixPos);
                 lineMiddleY = cy;
                 lineEndX = lineMiddleX + textLength;
                 textStartX = lineMiddleX;
                 break;
             case BOTTOM_RIGHT:
-                lineMiddleX = cx + middeLineWidth * absMathCos(45);
-                lineMiddleY = cy + middeLineWidth * absMathSin(45);
+                lineMiddleX = cx + middeLineWidth * absMathCos(45) + (mCurrentTouchFixPos + mLastTouchFixPos);
+                lineMiddleY = cy + middeLineWidth * absMathSin(45) + (mCurrentTouchFixPos + mLastTouchFixPos);
                 lineEndX = lineMiddleX + textLength;
                 textStartX = lineMiddleX;
                 textStartY = lineMiddleY + (mConfig.isDirectText() ? -mConfig.getTextMarginLine() : mConfig.getTextMarginLine() + mConfig.getTextLineStrokeWidth());
@@ -572,6 +577,21 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
     }
 
+    private float getFixTextPos(PieInfoImpl info) {
+        if (info == null) return 0;
+        float result = 0;
+        final float scaleSizeInTouch = !mConfig.isDrawStrokeOnly() ? mConfig.getTouchScaleSize() : 10;
+        switch (info.getActionScaleType()) {
+            case UP:
+                result = scaleSizeInTouch * mScaleUpTime;
+                break;
+            case DOWN:
+                result = scaleSizeInTouch * mScaleDownTime;
+                break;
+        }
+        return result;
+    }
+
     private float absMathSin(double angdeg) {
         return (float) Math.abs(Math.sin(Math.toRadians(angdeg)));
     }
@@ -600,10 +620,10 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         mTouchEventPaint.setShadowLayer(mConfig.getTouchShadowRadius() * timeFactor, 0, 0, info.getPaint().getColor());
         mTouchEventPaint.setStrokeWidth(info.getPaint().getStrokeWidth() + (10 * timeFactor));
         canvas.drawArc(mTouchRectf,
-                info.getStartAngle() - (mConfig.getTouchExpandAngle() * timeFactor),
-                info.getSweepAngle() + (mConfig.getTouchExpandAngle() * 2 * timeFactor),
-                !mConfig.isDrawStrokeOnly(),
-                mTouchEventPaint);
+                       info.getStartAngle() - (mConfig.getTouchExpandAngle() * timeFactor),
+                       info.getSweepAngle() + (mConfig.getTouchExpandAngle() * 2 * timeFactor),
+                       !mConfig.isDrawStrokeOnly(),
+                       mTouchEventPaint);
     }
 
     @Override
@@ -674,13 +694,13 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                             mLastTouchInfo = null;
                             mCurrentTouchInfo.toggleActionScaleType();
                         } else {
-                            mCurrentTouchInfo.setActionScaleType(PieInfoImpl.ScaleType.UP);
+                            mCurrentTouchInfo.setActionScaleType(PieInfoImpl.ActionState.UP);
                             if (mLastTouchInfo != null) {
-                                if (mLastTouchInfo.getActionScaleType() == PieInfoImpl.ScaleType.UP) {
-                                    mLastTouchInfo.setActionScaleType(PieInfoImpl.ScaleType.DOWN);
+                                if (mLastTouchInfo.getActionScaleType() == PieInfoImpl.ActionState.UP) {
+                                    mLastTouchInfo.setActionScaleType(PieInfoImpl.ActionState.DOWN);
                                 } else {
                                     //因为指定为当前点击的放大，其他的都保持原样，所以指定为normal
-                                    mLastTouchInfo.setActionScaleType(PieInfoImpl.ScaleType.SKIP);
+                                    mLastTouchInfo.setActionScaleType(PieInfoImpl.ActionState.NORMAL);
                                 }
                             }
                         }
@@ -692,7 +712,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                             invalidate();
                         }
                         if (mConfig.getOnPieSelectListener() != null) {
-                            mConfig.getOnPieSelectListener().onSelectPie(mCurrentTouchInfo.getPieInfo(), mCurrentTouchInfo.getActionScaleType() == PieInfoImpl.ScaleType.UP);
+                            mConfig.getOnPieSelectListener().onSelectPie(mCurrentTouchInfo.getPieInfo(), mCurrentTouchInfo.getActionScaleType() == PieInfoImpl.ActionState.UP);
                         }
 
                     }

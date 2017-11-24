@@ -219,10 +219,10 @@ import java.util.UUID;
  */
 
 final class PieInfoImpl {
-    public enum ScaleType {
+    public enum ActionState {
         UP,
         DOWN,
-        SKIP
+        NORMAL
     }
 
     private final String id;
@@ -235,7 +235,7 @@ final class PieInfoImpl {
     private Paint mCopyPaint;
     private Path mLinePath;
     private Path mMeasurePathDst;
-    private ScaleType mActionScaleType = ScaleType.DOWN;
+    private ActionState mActionActionState = ActionState.DOWN;
     private boolean autoDesc;
     private String autoDescStr;
 
@@ -376,16 +376,16 @@ final class PieInfoImpl {
         return result;
     }
 
-    public ScaleType getActionScaleType() {
-        return mActionScaleType;
+    public ActionState getActionScaleType() {
+        return mActionActionState;
     }
 
-    void setActionScaleType(ScaleType actionScaleType) {
-        mActionScaleType = actionScaleType;
+    void setActionScaleType(ActionState actionActionState) {
+        mActionActionState = actionActionState;
     }
 
     void toggleActionScaleType() {
-        mActionScaleType = mActionScaleType == ScaleType.UP ? ScaleType.DOWN : ScaleType.UP;
+        mActionActionState = mActionActionState == ActionState.UP ? ActionState.DOWN : ActionState.UP;
     }
 
     public boolean isAutoDesc() {

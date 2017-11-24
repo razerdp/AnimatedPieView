@@ -230,7 +230,6 @@ class PieViewAnimation extends Animation {
         }
         if (interpolatedTime >= 0.0f && interpolatedTime <= 1.0f) {
             float angle = 360 * interpolatedTime + mViewConfig.getStartAngle();
-//            angle = Math.max(1.0f, angle);
             PieInfoImpl info = mViewConfig.getHelper().findPieinfoWithAngle(angle);
             if (mHandler != null && info != null) {
                 mHandler.onAnimationProcessing(angle, info);
