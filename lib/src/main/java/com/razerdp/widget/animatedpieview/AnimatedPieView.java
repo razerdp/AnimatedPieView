@@ -207,7 +207,6 @@ package com.razerdp.widget.animatedpieview;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -307,7 +306,6 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         mDrawedCachePieInfo = new ArrayList<>();
         mTouchHelper = new TouchHelper(mConfig);
         applyConfigInternal(mConfig);
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
     private void applyConfigInternal(AnimatedPieViewConfig config) {
@@ -395,6 +393,9 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
     }
 
     private void onDrawModeHandle(Canvas canvas, float drawWidth, float drawHeight, float radius) {
+        if (!canvas.isHardwareAccelerated()) {
+            setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }
         if (mCurrentInfo != null) {
             drawCachedInfos(canvas, null, drawWidth, drawHeight, radius);
             canvas.drawArc(mDrawRectf, mCurrentInfo.getStartAngle(), angle - mCurrentInfo.getStartAngle(), !mConfig.isDrawStrokeOnly(), mCurrentInfo.getPaint());
@@ -405,6 +406,9 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
     }
 
     private void onTouchModeHandle(Canvas canvas, float drawWidth, float drawHeight, float radius) {
+        if (canvas.isHardwareAccelerated()) {
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
         if (mCurrentTouchInfo != null) {
             drawCachedInfos(canvas, mCurrentTouchInfo, drawWidth, drawHeight, radius);
             final boolean sameClick = mCurrentTouchInfo.equalsWith(mLastTouchInfo);
@@ -593,8 +597,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
     private void drawTouchAnimaArc(Canvas canvas, PieInfoImpl info, float timeFactor) {
         if (info == null) return;
         mTouchEventPaint.set(info.getPaint());
-        BlurMaskFilter scaleDownMaskFilter = new BlurMaskFilter(Math.max(1, mConfig.getTouchShadowRadius() * timeFactor), BlurMaskFilter.Blur.SOLID);
-        mTouchEventPaint.setMaskFilter(timeFactor > 0 ? scaleDownMaskFilter : null);
+        mTouchEventPaint.setShadowLayer(mConfig.getTouchShadowRadius() * timeFactor, 0, 0, info.getPaint().getColor());
         mTouchEventPaint.setStrokeWidth(info.getPaint().getStrokeWidth() + (10 * timeFactor));
         canvas.drawArc(mTouchRectf,
                 info.getStartAngle() - (mConfig.getTouchExpandAngle() * timeFactor),
