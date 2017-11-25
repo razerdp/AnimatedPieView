@@ -4,7 +4,7 @@
 
 [![Download](https://api.bintray.com/packages/razerdp/maven/AnimatedPieView/images/download.svg)](https://bintray.com/razerdp/maven/AnimatedPieView/_latestVersion)
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/razerdp/AnimatedPieView/blob/master/LICENSE)
-![Progress](http://progressed.io/bar/85?title=dev_progress)   
+![Progress](http://progressed.io/bar/90?title=dev_progress)
 [![Api](https://img.shields.io/badge/Api-14%2B-green.svg)](https://img.shields.io/badge/Api-14%2B-green.svg)
 [![Author](https://img.shields.io/badge/Author-razerdp-blue.svg)](https://github.com/razerdp) 
 
@@ -14,7 +14,8 @@
 --- 
 
 ### 进度 （更新日志->[日志](https://github.com/razerdp/AnimatedPieView/blob/master/UPDATE_LOG.md)）：
-  > 唔。。。暂时没想到（点击后指示线让位？指示线动画时间可调配）
+  > 唔。。。暂时没想到（如果可以，请提出您的需求）
+  - ~~文字自适应点击动画位置~~
   - ~~文字描述动画~~
   - ~~有文字描述的甜甜圈~~
   - ~~点击事件回调的甜甜圈~~
@@ -31,13 +32,10 @@
   
   - 点击事件
    
-   ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/click.gif)
-   
-  - 文字描述
-  
-   ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/anima_text.gif)
+   ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/anima_click.gif)
 
-  - 文字描述指示线动画
+
+  - 文字描述
   
    ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/anima_line.gif)
 
