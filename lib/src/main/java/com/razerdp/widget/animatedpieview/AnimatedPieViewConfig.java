@@ -31,7 +31,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private static final float DEFAULT_PIE_RADIUS_SCALE = 0.85f;
     private static final float DEFAULT_TEXT_MARGIN_LINE = 8;
     private static final int DEFAULT_TEXT_SIZE = 10;
-    private static final int DEFAULT_TEXT_POINT_RADIUS = 2;
+    private static final int DEFAULT_TEXT_POINT_RADIUS = 4;
     private static final int DEFAULT_TEXT_LINE_STROKE_WIDTH = 4;
     private static final int DEFAULT_TEXT_LINE_TRANSITION_LENGTH = 32;
     private static final int DEFAULT_TEXT_LINE_START_MARGIN = 8;

@@ -28,16 +28,17 @@
  
   - 动画展开
   
-  ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/anima.gif)
+   ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/anima.gif)
   
+  - 文字描述
+
+   ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/anima_line.gif)
+
   - 点击事件
-   
+
    ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/anima_click.gif)
 
 
-  - 文字描述
-  
-   ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/anima_line.gif)
 
 ### 依赖
 

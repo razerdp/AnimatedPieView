@@ -486,13 +486,13 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         float mCurrentTouchFixPos = info.equalsWith(mCurrentTouchInfo) ? getFixTextPos(info) : 0;
         float mLastTouchFixPos = info.equalsWith(mLastTouchInfo) ? getFixTextPos(info) : 0;
 
-        final float pointRadius = mCurrentTouchFixPos + mLastTouchFixPos + radius + mConfig.getTextLineStartMargin() + (mConfig.isDrawStrokeOnly() ? mConfig.getStrokeWidth() / 2 : 0);
-        float cx = (float) (pointRadius * Math.cos(Math.toRadians(info.getMiddleAngle())));
-        float cy = (float) (pointRadius * Math.sin(Math.toRadians(info.getMiddleAngle())));
+        final float pointMargins = mCurrentTouchFixPos + mLastTouchFixPos + radius + mConfig.getTextLineStartMargin() + (mConfig.isDrawStrokeOnly() ? mConfig.getStrokeWidth() / 2 : 0);
+        float cx = (float) (pointMargins * Math.cos(Math.toRadians(info.getMiddleAngle())));
+        float cy = (float) (pointMargins * Math.sin(Math.toRadians(info.getMiddleAngle())));
         //画点
         Paint paint = info.getCopyPaint();
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle(cx, cy, UIHelper.dip2px(getContext(), mConfig.getTextPointRadius()), paint);
+        canvas.drawCircle(cx, cy, mConfig.getTextPointRadius(), paint);
 
         float lineMiddleX = 0;
         float lineMiddleY = 0;
@@ -521,7 +521,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                 lineMiddleX = cx - middeLineWidth - (mCurrentTouchFixPos + mLastTouchFixPos);
                 lineMiddleY = cy - (mCurrentTouchFixPos + mLastTouchFixPos);
                 lineEndX = lineMiddleX - textLength;
-                textStartX = lineEndX;
+                textStartX = lineEndX - mConfig.getTextMarginLine();
                 textStartY = lineMiddleY - mConfig.getTextMarginLine();
                 break;
             case BOTTOM_LEFT:
@@ -541,7 +541,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
             case CENTER_RIGHT:
                 lineMiddleX = cx + middeLineWidth + (mCurrentTouchFixPos + mLastTouchFixPos);
                 lineMiddleY = cy;
-                lineEndX = lineMiddleX + textLength;
+                lineEndX = lineMiddleX + textLength + mConfig.getTextMarginLine();
                 textStartX = lineMiddleX;
                 break;
             case BOTTOM_RIGHT:
