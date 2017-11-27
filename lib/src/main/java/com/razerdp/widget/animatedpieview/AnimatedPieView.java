@@ -223,7 +223,6 @@ import android.view.animation.DecelerateInterpolator;
 
 import com.razerdp.widget.animatedpieview.exception.NoViewConfigException;
 import com.razerdp.widget.animatedpieview.utils.ToolUtil;
-import com.razerdp.widget.animatedpieview.utils.UIHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -437,9 +436,9 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         if (info == null) return;
         final float scaleSizeInTouch = !mConfig.isDrawStrokeOnly() ? mConfig.getTouchScaleSize() : 0;
         mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch * mScaleDownTime,
-                        mDrawRectf.top - scaleSizeInTouch * mScaleDownTime,
-                        mDrawRectf.right + scaleSizeInTouch * mScaleDownTime,
-                        mDrawRectf.bottom + scaleSizeInTouch * mScaleDownTime);
+                mDrawRectf.top - scaleSizeInTouch * mScaleDownTime,
+                mDrawRectf.right + scaleSizeInTouch * mScaleDownTime,
+                mDrawRectf.bottom + scaleSizeInTouch * mScaleDownTime);
         drawTouchAnimaArc(canvas, info, mScaleDownTime);
     }
 
@@ -447,9 +446,9 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         if (info == null) return;
         final float scaleSizeInTouch = !mConfig.isDrawStrokeOnly() ? mConfig.getTouchScaleSize() : 0;
         mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch * mScaleUpTime,
-                        mDrawRectf.top - scaleSizeInTouch * mScaleUpTime,
-                        mDrawRectf.right + scaleSizeInTouch * mScaleUpTime,
-                        mDrawRectf.bottom + scaleSizeInTouch * mScaleUpTime);
+                mDrawRectf.top - scaleSizeInTouch * mScaleUpTime,
+                mDrawRectf.right + scaleSizeInTouch * mScaleUpTime,
+                mDrawRectf.bottom + scaleSizeInTouch * mScaleUpTime);
         drawTouchAnimaArc(canvas, info, mScaleUpTime);
     }
 
@@ -620,10 +619,10 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         mTouchEventPaint.setShadowLayer(mConfig.getTouchShadowRadius() * timeFactor, 0, 0, info.getPaint().getColor());
         mTouchEventPaint.setStrokeWidth(info.getPaint().getStrokeWidth() + (10 * timeFactor));
         canvas.drawArc(mTouchRectf,
-                       info.getStartAngle() - (mConfig.getTouchExpandAngle() * timeFactor),
-                       info.getSweepAngle() + (mConfig.getTouchExpandAngle() * 2 * timeFactor),
-                       !mConfig.isDrawStrokeOnly(),
-                       mTouchEventPaint);
+                info.getStartAngle() - (mConfig.getTouchExpandAngle() * timeFactor),
+                info.getSweepAngle() + (mConfig.getTouchExpandAngle() * 2 * timeFactor),
+                !mConfig.isDrawStrokeOnly(),
+                mTouchEventPaint);
     }
 
     @Override
@@ -678,6 +677,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (!mConfig.isCanTouch()) return super.onTouchEvent(event);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 x = event.getX();

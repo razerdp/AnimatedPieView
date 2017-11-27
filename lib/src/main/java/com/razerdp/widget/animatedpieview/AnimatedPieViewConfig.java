@@ -19,6 +19,8 @@ import java.util.List;
  */
 
 public class AnimatedPieViewConfig implements Serializable {
+    private static final long serialVersionUID = -2285434281608092357L;
+
     private static final DecimalFormat sFormateRate = new DecimalFormat("#.##");
     private static final int DEFAULT_STROKE_WIDTH = 80;
     private static final float DEFAULT_START_ANGLE = -90.0f;
@@ -65,6 +67,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private OnPieSelectListener mOnPieSelectListener;
     private boolean drawText = true;
     private boolean directText = DEFAULT_DIRECT_TEXT;
+    private boolean canTouch = true;
 
     public AnimatedPieViewConfig() {
         mPieViewHelper = new AnimatedPieViewHelper();
@@ -506,6 +509,21 @@ public class AnimatedPieViewConfig implements Serializable {
         return setReApply(true);
     }
 
+    /**
+     * 是否允许甜甜圈可触碰放大
+     */
+    public boolean isCanTouch() {
+        return canTouch;
+    }
+
+    /**
+     * 设置甜甜圈是否允许触碰放大
+     */
+    public AnimatedPieViewConfig setCanTouch(boolean canTouch) {
+        this.canTouch = canTouch;
+        return setReApply(true);
+    }
+
     protected List<PieInfoImpl> getImplDatas() {
         return new ArrayList<>(mDatas);
     }
@@ -546,7 +564,8 @@ public class AnimatedPieViewConfig implements Serializable {
                     .setTextLineStrokeWidth(config.getTextLineStrokeWidth())
                     .setTextLineTransitionLength(config.getTextLineTransitionLength())
                     .setTextLineStartMargin(config.getTextLineStartMargin())
-                    .setDirectText(config.isDirectText());
+                    .setDirectText(config.isDirectText())
+                    .setCanTouch(config.isCanTouch());
             List<PieInfoImpl> infos = config.getImplDatas();
             mDatas.clear();
             for (PieInfoImpl info : infos) {
