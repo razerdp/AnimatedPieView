@@ -222,6 +222,7 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 
 import com.razerdp.widget.animatedpieview.exception.NoViewConfigException;
+import com.razerdp.widget.animatedpieview.utils.AnimationCallbackUtils;
 import com.razerdp.widget.animatedpieview.utils.ToolUtil;
 
 import java.util.ArrayList;
@@ -320,21 +321,10 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         mPieViewAnimation.setDuration(config.getDuration());
         mPieViewAnimation.setInterpolator(config.getInterpolator());
         mPieViewAnimation.bindAnimationHandler(this);
-        mPieViewAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
+        mPieViewAnimation.setAnimationListener(new AnimationCallbackUtils.SimpleAnimationListener() {
             @Override
             public void onAnimationEnd(Animation animation) {
                 isInAnimating = false;
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
             }
         });
         //scale up
@@ -397,7 +387,11 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         }
         if (mCurrentInfo != null) {
             drawCachedInfos(canvas, null, radius);
-            canvas.drawArc(mDrawRectf, mCurrentInfo.getStartAngle(), angle - mCurrentInfo.getStartAngle(), !mConfig.isDrawStrokeOnly(), mCurrentInfo.getPaint());
+            canvas.drawArc(mDrawRectf,
+                    mCurrentInfo.getStartAngle(),
+                    angle - mCurrentInfo.getStartAngle() - mConfig.getSplitAngle(),
+                    !mConfig.isDrawStrokeOnly(),
+                    mCurrentInfo.getPaint());
             if (mConfig.isDrawText() && angle >= mCurrentInfo.getMiddleAngle() && angle <= mCurrentInfo.getEndAngle()) {
                 drawDescDecoration(canvas, mCurrentInfo, radius);
             }
@@ -467,7 +461,15 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                 if (mConfig.isDrawText()) {
                     drawDescDecoration(canvas, pieInfo, radius);
                 }
-                canvas.drawArc(mDrawRectf, pieInfo.getStartAngle(), pieInfo.getSweepAngle(), !mConfig.isDrawStrokeOnly(), pieInfo.getPaint());
+                Paint paint = pieInfo.getCopyPaint();
+                if (checkFocusAlphaValided(mConfig.getFocusAlphaType())) {
+                    paint.setAlpha((int) (255 - (150 * mScaleUpTime)));
+                }
+                canvas.drawArc(mDrawRectf,
+                        pieInfo.getStartAngle(),
+                        pieInfo.getSweepAngle() - mConfig.getSplitAngle(),
+                        !mConfig.isDrawStrokeOnly(),
+                        paint);
             }
         }
     }
@@ -564,7 +566,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         path.lineTo(lineEndX, lineEndY);
         mPathMeasure.nextContour();
         mPathMeasure.setPath(path, false);
-        float progress = changeAngleToProgress(angle, info);
+        float progress = angleToProgress(angle, info);
         mPathMeasure.getSegment(0, progress * mPathMeasure.getLength(), measurePathDst, true);
         canvas.drawPath(measurePathDst, paint);
 
@@ -599,10 +601,10 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         return (float) Math.abs(Math.cos(Math.toRadians(angdeg)));
     }
 
-    private float changeAngleToProgress(float angle, PieInfoImpl info) {
-        if (info == null) return 1.0f;
-        if (angle < info.getMiddleAngle()) return 0.0f;
-        if (angle >= info.getEndAngle()) return 1.0f;
+    private float angleToProgress(float angle, PieInfoImpl info) {
+        if (info == null) return 1f;
+        if (angle < info.getMiddleAngle()) return 0f;
+        if (angle >= info.getEndAngle()) return 1f;
         return (angle - info.getMiddleAngle()) / (info.getEndAngle() - info.getMiddleAngle());
     }
 
@@ -620,7 +622,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         mTouchEventPaint.setStrokeWidth(info.getPaint().getStrokeWidth() + (10 * timeFactor));
         canvas.drawArc(mTouchRectf,
                 info.getStartAngle() - (mConfig.getTouchExpandAngle() * timeFactor),
-                info.getSweepAngle() + (mConfig.getTouchExpandAngle() * 2 * timeFactor),
+                info.getSweepAngle() + (mConfig.getTouchExpandAngle() * 2 * timeFactor) - mConfig.getSplitAngle(),
                 !mConfig.isDrawStrokeOnly(),
                 mTouchEventPaint);
     }
@@ -672,19 +674,19 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
     //-----------------------------------------touch-----------------------------------------
 
-    float x = 0;
-    float y = 0;
+    float touchX = 0;
+    float touchY = 0;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (!mConfig.isCanTouch()) return super.onTouchEvent(event);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                x = event.getX();
-                y = event.getY();
+                touchX = event.getX();
+                touchY = event.getY();
                 return true;
             case MotionEvent.ACTION_UP:
-                PieInfoImpl clickedInfo = mTouchHelper.pointToInfo(x, y);
+                PieInfoImpl clickedInfo = mTouchHelper.pointToInfo(touchX, touchY);
                 if (clickedInfo != null) {
                     if (!isInAnimating) {
                         mLastTouchInfo = mCurrentTouchInfo;
@@ -748,5 +750,21 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
             return startX > 0 ? LineGravity.CENTER_RIGHT : LineGravity.CENTER_LEFT;
         }
         return LineGravity.TOP_RIGHT;
+    }
+
+    private boolean checkFocusAlphaValided(@AnimatedPieViewConfig.FocusAlpha int focusAlpha) {
+        switch (focusAlpha) {
+            case AnimatedPieViewConfig.FOCUS_WITH_ALPHA:
+                return false;
+            case AnimatedPieViewConfig.REV_FOCUS_WITH_ALPHA:
+                return mode == Mode.TOUCH
+                        && mConfig.getFocusAlphaType() == AnimatedPieViewConfig.REV_FOCUS_WITH_ALPHA
+                        && mScaleUpTime > 0
+                        && mCurrentTouchInfo != null
+                        && mCurrentTouchInfo.getActionScaleType() == PieInfoImpl.ActionState.UP;
+            case AnimatedPieViewConfig.FOCUS_WITHOUT_ALPHA:
+                return true;
+        }
+        return false;
     }
 }
