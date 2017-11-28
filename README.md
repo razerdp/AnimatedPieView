@@ -52,9 +52,6 @@
 
 #### 基本使用方式（简单的超乎想像）：
 
-### ps:目前还没全部完成，后续会继续完善的
-
-
 ```java
         AnimatedPieView mAnimatedPieView = findViewById(R.id.animatedPieView);
         AnimatedPieViewConfig config = new AnimatedPieViewConfig();
@@ -97,7 +94,7 @@
                             -false：文字在1、2象限部分绘制在线的上方，在3、4象限绘制在线的下方
                         】
                         .setCanTouch(true)// 是否允许甜甜圈点击放大
-                        ..setSplitAngle(1)// 甜甜圈间隙角度
+                        .setSplitAngle(1)// 甜甜圈间隙角度
                         .setConfig(new AnimatedPieViewConfig());// 配置（这里的new只是演示哦，可不要学我例子这里直接塞进一个新的config，否则上面的设置都浪费了）
 ```
 
