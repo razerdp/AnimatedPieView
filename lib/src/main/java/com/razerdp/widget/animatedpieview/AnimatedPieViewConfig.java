@@ -1,6 +1,7 @@
 package com.razerdp.widget.animatedpieview;
 
 import android.support.annotation.FloatRange;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -10,6 +11,8 @@ import com.razerdp.widget.animatedpieview.data.IPieInfo;
 import com.razerdp.widget.animatedpieview.utils.ToolUtil;
 
 import java.io.Serializable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +23,16 @@ import java.util.List;
 
 public class AnimatedPieViewConfig implements Serializable {
     private static final long serialVersionUID = -2285434281608092357L;
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({FOCUS_WITH_ALPHA, REV_FOCUS_WITH_ALPHA, FOCUS_WITHOUT_ALPHA})
+    public @interface FocusAlpha {
+    }
+
+    public static final int FOCUS_WITH_ALPHA = 0x10;
+    public static final int REV_FOCUS_WITH_ALPHA = 0x11;
+    public static final int FOCUS_WITHOUT_ALPHA = 0x12;
+
 
     private static final DecimalFormat sFormateRate = new DecimalFormat("#.##");
     private static final int DEFAULT_STROKE_WIDTH = 80;
@@ -38,6 +51,8 @@ public class AnimatedPieViewConfig implements Serializable {
     private static final int DEFAULT_TEXT_LINE_TRANSITION_LENGTH = 32;
     private static final int DEFAULT_TEXT_LINE_START_MARGIN = 8;
     private static final boolean DEFAULT_DIRECT_TEXT = false;
+    private static final float DEFAULT_SPLIT_ANGLE = 0.0f;
+    private static final int DEFAULT_FOCUS_ALPHA = FOCUS_WITHOUT_ALPHA;
 
 
     private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR = new DecelerateInterpolator(1.2f);
@@ -56,6 +71,9 @@ public class AnimatedPieViewConfig implements Serializable {
     private int textLineStrokeWidth = DEFAULT_TEXT_LINE_STROKE_WIDTH;
     private int textLineTransitionLength = DEFAULT_TEXT_LINE_TRANSITION_LENGTH;
     private int textLineStartMargin = DEFAULT_TEXT_LINE_START_MARGIN;
+    private float splitAngle = DEFAULT_SPLIT_ANGLE;
+    @FocusAlpha
+    private int focusAlphaType = DEFAULT_FOCUS_ALPHA;
 
     private volatile boolean reApply;
     private List<PieInfoImpl> mDatas;
@@ -524,6 +542,41 @@ public class AnimatedPieViewConfig implements Serializable {
         return setReApply(true);
     }
 
+    /**
+     * 甜甜圈间隙的角度
+     */
+    public float getSplitAngle() {
+        return splitAngle;
+    }
+
+    /**
+     * 设置甜甜圈间隙角度
+     *
+     * @param splitAngle
+     */
+    public AnimatedPieViewConfig setSplitAngle(float splitAngle) {
+        this.splitAngle = Math.abs(splitAngle);
+        return setReApply(true);
+    }
+
+    /**
+     * 焦点甜甜圈alpha模式
+     */
+    @FocusAlpha
+    public int getFocusAlphaType() {
+        return focusAlphaType;
+    }
+
+    /**
+     * 设置焦点甜甜圈alpha模式
+     *
+     * @param focusAlphaType One of {@link #FOCUS_WITH_ALPHA}, {@link #REV_FOCUS_WITH_ALPHA}, or {@link #FOCUS_WITHOUT_ALPHA}.
+     */
+    public AnimatedPieViewConfig setFocusAlphaType(@FocusAlpha int focusAlphaType) {
+        this.focusAlphaType = focusAlphaType;
+        return setReApply(true);
+    }
+
     protected List<PieInfoImpl> getImplDatas() {
         return new ArrayList<>(mDatas);
     }
@@ -565,7 +618,9 @@ public class AnimatedPieViewConfig implements Serializable {
                     .setTextLineTransitionLength(config.getTextLineTransitionLength())
                     .setTextLineStartMargin(config.getTextLineStartMargin())
                     .setDirectText(config.isDirectText())
-                    .setCanTouch(config.isCanTouch());
+                    .setCanTouch(config.isCanTouch())
+                    .setSplitAngle(config.getSplitAngle())
+                    .setFocusAlphaType(config.getFocusAlphaType());
             List<PieInfoImpl> infos = config.getImplDatas();
             mDatas.clear();
             for (PieInfoImpl info : infos) {
@@ -591,8 +646,8 @@ public class AnimatedPieViewConfig implements Serializable {
             float start = startAngle;
             for (PieInfoImpl data : mDatas) {
                 data.setStartAngle(start);
-                float angle = (float) (360.0 * (data.getPieInfo().getValue() / sumValue));
-                angle = Math.max(1.0f, angle);
+                float angle = (float) (360f * (data.getPieInfo().getValue() / sumValue));
+                angle = Math.max(1f, angle);
                 float endAngle = start + angle;
                 data.setEndAngle(endAngle);
                 start = endAngle;
