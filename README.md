@@ -1,6 +1,7 @@
 # AnimatedPieView
 
-#### // 一个好吃的甜甜圈？请问客官要啥口味捏-V-  [English Ver](https://github.com/razerdp/AnimatedPieView/blob/master/README_EN.md)（ps:请别对我的英文有多大信心）
+#### // 一个好吃的甜甜圈？请问客官要啥口味捏-V- 
+#### // [English Ver](https://github.com/razerdp/AnimatedPieView/blob/master/README_EN.md)（ps:请别对我的英文有多大信心）
 
 [![jcenter](https://api.bintray.com/packages/razerdp/maven/AnimatedPieView/images/download.svg)](https://bintray.com/razerdp/maven/AnimatedPieView/_latestVersion)
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/razerdp/AnimatedPieView/blob/master/LICENSE)
