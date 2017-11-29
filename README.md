@@ -13,8 +13,9 @@
 
 --- 
 
-### 进度 （更新日志->[日志](https://github.com/razerdp/AnimatedPieView/blob/master/UPDATE_LOG.md)）：
-  > 允许alpha突出选中的甜甜圈...开发中
+### 开发进度 （更新日志->[日志](https://github.com/razerdp/AnimatedPieView/blob/master/UPDATE_LOG.md)）：
+  > 如果您有别的需求，可以提交您的issue哦，当然，也可以直接修改源码-V-
+  -~~允许alpha突出选中的甜甜圈~~-
   - ~~允许甜甜圈之间含有间隔~~
   - ~~文字自适应点击动画位置~~
   - ~~文字描述动画~~
@@ -95,6 +96,7 @@
                         】
                         .setCanTouch(true)// 是否允许甜甜圈点击放大
                         .setSplitAngle(1)// 甜甜圈间隙角度
+                        .setFocusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV,150)// 焦点甜甜圈的alpha表现形态及alpha削减值
                         .setConfig(new AnimatedPieViewConfig());// 配置（这里的new只是演示哦，可不要学我例子这里直接塞进一个新的config，否则上面的设置都浪费了）
 ```
 

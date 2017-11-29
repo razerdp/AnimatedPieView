@@ -3,7 +3,7 @@
 #### 17/11/27 - ver 1.1.0（未发布）
  - 增加是否允许甜甜圈点击方法`setCanTouch(boolean)`
  - 增加甜甜圈间隙角度`setSplitAngle(float)`
- - 【开发中】焦点甜甜圈的alpha表现形式`setFocusAlphaType()`
+ - 焦点甜甜圈的alpha表现形式`setFocusAlphaType()`
 
 #### 17/11/25 - ver 1.0.8~1.0.9
  - 增加文字自适应动画位置

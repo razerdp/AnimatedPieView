@@ -406,7 +406,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
             drawCachedInfos(canvas, mCurrentTouchInfo, radius);
             final boolean sameClick = mCurrentTouchInfo.equalsWith(mLastTouchInfo);
             if (mLastTouchInfo != null && !sameClick) {
-                switch (mLastTouchInfo.getActionScaleType()) {
+                switch (mLastTouchInfo.getActionScaleState()) {
                     case UP:
                         onScaleUpDraw(canvas, mLastTouchInfo);
                         break;
@@ -415,7 +415,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                         break;
                 }
             }
-            switch (mCurrentTouchInfo.getActionScaleType()) {
+            switch (mCurrentTouchInfo.getActionScaleState()) {
                 case UP:
                     onScaleUpDraw(canvas, mCurrentTouchInfo);
                     break;
@@ -455,15 +455,13 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
     private void drawCachedInfos(Canvas canvas, PieInfoImpl excluded, float radius) {
         if (!ToolUtil.isListEmpty(mDrawedCachePieInfo)) {
             for (PieInfoImpl pieInfo : mDrawedCachePieInfo) {
-                if (excluded != null && excluded.equalsWith(pieInfo) && !mConfig.isDrawText()) {
-                    continue;
-                }
                 if (mConfig.isDrawText()) {
                     drawDescDecoration(canvas, pieInfo, radius);
                 }
                 Paint paint = pieInfo.getCopyPaint();
-                if (checkFocusAlphaValided(mConfig.getFocusAlphaType())) {
-                    paint.setAlpha((int) (255 - (150 * mScaleUpTime)));
+                applyAlphaToPaint(pieInfo, paint);
+                if (excluded != null && excluded.equalsWith(pieInfo)) {
+                    continue;
                 }
                 canvas.drawArc(mDrawRectf,
                         pieInfo.getStartAngle(),
@@ -492,6 +490,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         float cy = (float) (pointMargins * Math.sin(Math.toRadians(info.getMiddleAngle())));
         //画点
         Paint paint = info.getCopyPaint();
+        applyAlphaToPaint(info, paint);
         paint.setStyle(Paint.Style.FILL);
         canvas.drawCircle(cx, cy, mConfig.getTextPointRadius(), paint);
 
@@ -582,7 +581,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         if (info == null) return 0;
         float result = 0;
         final float scaleSizeInTouch = !mConfig.isDrawStrokeOnly() ? mConfig.getTouchScaleSize() : 10;
-        switch (info.getActionScaleType()) {
+        switch (info.getActionScaleState()) {
             case UP:
                 result = scaleSizeInTouch * mScaleUpTime;
                 break;
@@ -620,6 +619,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         mTouchEventPaint.set(info.getPaint());
         mTouchEventPaint.setShadowLayer(mConfig.getTouchShadowRadius() * timeFactor, 0, 0, info.getPaint().getColor());
         mTouchEventPaint.setStrokeWidth(info.getPaint().getStrokeWidth() + (10 * timeFactor));
+        applyAlphaToPaint(info, mTouchEventPaint);
         canvas.drawArc(mTouchRectf,
                 info.getStartAngle() - (mConfig.getTouchExpandAngle() * timeFactor),
                 info.getSweepAngle() + (mConfig.getTouchExpandAngle() * 2 * timeFactor) - mConfig.getSplitAngle(),
@@ -696,13 +696,13 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                             mLastTouchInfo = null;
                             mCurrentTouchInfo.toggleActionScaleType();
                         } else {
-                            mCurrentTouchInfo.setActionScaleType(PieInfoImpl.ActionState.UP);
+                            mCurrentTouchInfo.setActionScaleState(PieInfoImpl.ActionState.UP);
                             if (mLastTouchInfo != null) {
-                                if (mLastTouchInfo.getActionScaleType() == PieInfoImpl.ActionState.UP) {
-                                    mLastTouchInfo.setActionScaleType(PieInfoImpl.ActionState.DOWN);
+                                if (mLastTouchInfo.getActionScaleState() == PieInfoImpl.ActionState.UP) {
+                                    mLastTouchInfo.setActionScaleState(PieInfoImpl.ActionState.DOWN);
                                 } else {
                                     //因为指定为当前点击的放大，其他的都保持原样，所以指定为normal
-                                    mLastTouchInfo.setActionScaleType(PieInfoImpl.ActionState.NORMAL);
+                                    mLastTouchInfo.setActionScaleState(PieInfoImpl.ActionState.NORMAL);
                                 }
                             }
                         }
@@ -714,7 +714,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                             invalidate();
                         }
                         if (mConfig.getOnPieSelectListener() != null) {
-                            mConfig.getOnPieSelectListener().onSelectPie(mCurrentTouchInfo.getPieInfo(), mCurrentTouchInfo.getActionScaleType() == PieInfoImpl.ActionState.UP);
+                            mConfig.getOnPieSelectListener().onSelectPie(mCurrentTouchInfo.getPieInfo(), mCurrentTouchInfo.getActionScaleState() == PieInfoImpl.ActionState.UP);
                         }
 
                     }
@@ -752,19 +752,41 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         return LineGravity.TOP_RIGHT;
     }
 
-    private boolean checkFocusAlphaValided(@AnimatedPieViewConfig.FocusAlpha int focusAlpha) {
-        switch (focusAlpha) {
-            case AnimatedPieViewConfig.FOCUS_WITH_ALPHA:
-                return false;
-            case AnimatedPieViewConfig.REV_FOCUS_WITH_ALPHA:
-                return mode == Mode.TOUCH
-                        && mConfig.getFocusAlphaType() == AnimatedPieViewConfig.REV_FOCUS_WITH_ALPHA
-                        && mScaleUpTime > 0
-                        && mCurrentTouchInfo != null
-                        && mCurrentTouchInfo.getActionScaleType() == PieInfoImpl.ActionState.UP;
-            case AnimatedPieViewConfig.FOCUS_WITHOUT_ALPHA:
-                return true;
+    private void applyAlphaToPaint(PieInfoImpl info, Paint paint) {
+        if (info == null || paint == null) return;
+        if (mode != Mode.TOUCH) {
+            paint.setAlpha(255);
+            return;
         }
-        return false;
+        boolean focused = info.equalsWith(mCurrentTouchInfo);
+        switch (mConfig.getFocusAlphaType()) {
+            case AnimatedPieViewConfig.FOCUS_WITHOUT_ALPHA:
+                paint.setAlpha(255);
+                break;
+            case AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV:
+                boolean alphaDown = !focused
+                        && mCurrentTouchInfo != null
+                        && mCurrentTouchInfo.getActionScaleState() == PieInfoImpl.ActionState.UP;
+                if (focused) {
+                    paint.setAlpha(255);
+                } else {
+                    paint.setAlpha((int) (255 - (150 * (alphaDown ? mScaleUpTime : mScaleDownTime))));
+                }
+                break;
+            case AnimatedPieViewConfig.FOCUS_WITH_ALPHA:
+                boolean alphaDown2 = focused
+                        && mCurrentTouchInfo != null
+                        && mCurrentTouchInfo.getActionScaleState() == PieInfoImpl.ActionState.UP;
+
+                if (focused) {
+                    paint.setAlpha((int) (255 - (150 * (alphaDown2 ? mScaleUpTime : mScaleDownTime))));
+                } else {
+                    paint.setAlpha(255);
+                }
+                break;
+            default:
+                paint.setAlpha(255);
+                break;
+        }
     }
 }
