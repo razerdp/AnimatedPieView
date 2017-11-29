@@ -1,17 +1,17 @@
-package com.razerdp.animatedpieview;
+package com.razerdp.demo;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.razerdp.animatedpieview.R;
+import com.razerdp.popup.PopupSetting;
 import com.razerdp.widget.animatedpieview.AnimatedPieView;
 import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
 import com.razerdp.widget.animatedpieview.callback.OnPieSelectListener;
@@ -22,12 +22,11 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button mButton;
-    private SwitchCompat mNoDonuts;
-    private SwitchCompat mDrawText;
     private final Random random = new Random();
-    private boolean noDonuts = false;
-    private boolean drawText = true;
+    private AnimatedPieView mAnimatedPieView;
+    private Button start;
+    private Button setting;
+    private PopupSetting mPopupSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,21 +36,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        mButton = findViewById(R.id.start);
-        mNoDonuts = findViewById(R.id.no_donuts);
-        mDrawText = findViewById(R.id.draw_text);
-        final AnimatedPieView mAnimatedPieView = findViewById(R.id.animatedPieView);
+        mPopupSetting = new PopupSetting(this);
+        start = findViewById(R.id.start);
+        setting = findViewById(R.id.setting);
+        mAnimatedPieView = findViewById(R.id.animatedPieView);
         AnimatedPieViewConfig config = new AnimatedPieViewConfig();
         config.setStartAngle(-90)
                 .addData(new SimplePieInfo(30, getColor("FF446767")), true)
                 .addData(new SimplePieInfo(18.0f, getColor("FFFFD28C")), true)
                 .addData(new SimplePieInfo(123.0f, getColor("FFbb76b4")), true)
-                .addData(new SimplePieInfo(87.0f, getColor("FFFFD28C"),"长文字test"), false)
+                .addData(new SimplePieInfo(87.0f, getColor("FFFFD28C"), "长文字test"), false)
                 .addData(new SimplePieInfo(15.0f, getColor("ff2bbc80")), true)
                 .addData(new SimplePieInfo(55.0f, getColor("ff8be8ff")), true)
                 .addData(new SimplePieInfo(30.0f, getColor("fffa734d")), true)
                 .addData(new SimplePieInfo(30.0f, getColor("ff957de0")), true)
-                .setDrawText(drawText)
+                .setDrawText(true)
                 .setDuration(2000)
                 .setInterpolator(new DecelerateInterpolator(2.5f))
                 .setTextLineStrokeWidth(4)
@@ -66,28 +65,29 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 })
-                .setSplitAngle(1)
-                .setFocusAlphaType(AnimatedPieViewConfig.REV_FOCUS_WITH_ALPHA);
+                .setFocusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV);
         mAnimatedPieView.applyConfig(config);
 
-        mButton.setOnClickListener(new View.OnClickListener() {
+        mPopupSetting.setOnOkButtonClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAnimatedPieView.getConfig().setDrawStrokeOnly(!noDonuts).setDrawText(drawText);
                 mAnimatedPieView.start();
             }
         });
-        mNoDonuts.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+        start.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                noDonuts = isChecked;
+            public void onClick(View v) {
+                mAnimatedPieView.start();
             }
         });
 
-        mDrawText.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+        setting.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                drawText = isChecked;
+            public void onClick(View v) {
+                if (mAnimatedPieView.isInAnimating()) return;
+                mPopupSetting.showPopupWindow(mAnimatedPieView.getConfig());
             }
         });
 

@@ -376,11 +376,11 @@ final class PieInfoImpl {
         return result;
     }
 
-    public ActionState getActionScaleType() {
+    public ActionState getActionScaleState() {
         return mActionActionState;
     }
 
-    void setActionScaleType(ActionState actionActionState) {
+    void setActionScaleState(ActionState actionActionState) {
         mActionActionState = actionActionState;
     }
 

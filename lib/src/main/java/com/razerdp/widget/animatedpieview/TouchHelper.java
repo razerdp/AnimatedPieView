@@ -221,8 +221,7 @@ public class TouchHelper {
     private float radius;
 
     //因为判断点击时是判断内圆和外圆半径，可能很苛刻，所以这里可以考虑增加点击范围
-    //ps，这个是会被平方的
-    private int expandClickRange = 5;
+    private int expandClickRange = 25;
 
     public TouchHelper(AnimatedPieViewConfig config) {
         mConfig = config;
@@ -244,10 +243,10 @@ public class TouchHelper {
         //点击位置到圆心的直线距离(没开根)
         final double touchDistancePow = Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2);
         //内圆半径<=直线距离<=外圆半径
-        final boolean isTouchInRing = touchDistancePow >= Math.pow(innerCircleRadius + expandClickRange, 2)
-                && touchDistancePow <= Math.pow(exCircleRadius + expandClickRange, 2);
+        final boolean isTouchInRing = touchDistancePow >= expandClickRange + Math.pow(innerCircleRadius, 2)
+                && touchDistancePow <= expandClickRange + Math.pow(exCircleRadius, 2);
         if (!isTouchInRing) return null;
-        return findPieInfoImpl(x, y, touchDistancePow);
+        return findPieInfoImpl(x, y);
     }
 
     /**
@@ -258,10 +257,9 @@ public class TouchHelper {
      *
      * @param x
      * @param y
-     * @param touchDistancePow
      * @return
      */
-    private PieInfoImpl findPieInfoImpl(float x, float y, double touchDistancePow) {
+    private PieInfoImpl findPieInfoImpl(float x, float y) {
         //得到角度
         double touchAngle = Math.toDegrees(Math.atan2(y - centerY, x - centerX));
         if (touchAngle < 0) {

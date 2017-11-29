@@ -25,12 +25,12 @@ public class AnimatedPieViewConfig implements Serializable {
     private static final long serialVersionUID = -2285434281608092357L;
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({FOCUS_WITH_ALPHA, REV_FOCUS_WITH_ALPHA, FOCUS_WITHOUT_ALPHA})
+    @IntDef({FOCUS_WITH_ALPHA, FOCUS_WITH_ALPHA_REV, FOCUS_WITHOUT_ALPHA})
     public @interface FocusAlpha {
     }
 
     public static final int FOCUS_WITH_ALPHA = 0x10;
-    public static final int REV_FOCUS_WITH_ALPHA = 0x11;
+    public static final int FOCUS_WITH_ALPHA_REV = 0x11;
     public static final int FOCUS_WITHOUT_ALPHA = 0x12;
 
 
@@ -53,6 +53,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private static final boolean DEFAULT_DIRECT_TEXT = false;
     private static final float DEFAULT_SPLIT_ANGLE = 0.0f;
     private static final int DEFAULT_FOCUS_ALPHA = FOCUS_WITHOUT_ALPHA;
+    private static final float DEFAULT_FOCUS_ALPHA_CUT = 150;
 
 
     private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR = new DecelerateInterpolator(1.2f);
@@ -74,6 +75,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private float splitAngle = DEFAULT_SPLIT_ANGLE;
     @FocusAlpha
     private int focusAlphaType = DEFAULT_FOCUS_ALPHA;
+    private float focusAlphaCut = DEFAULT_FOCUS_ALPHA_CUT;
 
     private volatile boolean reApply;
     private List<PieInfoImpl> mDatas;
@@ -138,6 +140,17 @@ public class AnimatedPieViewConfig implements Serializable {
     }
 
     /**
+     * 设置起始偏移角度
+     * <strong><p>**任意角度**
+     *
+     * @param startAngle 起始角度（任意）
+     */
+    public AnimatedPieViewConfig setStartAngle(float startAngle) {
+        this.startAngle = startAngle;
+        return setReApply(true);
+    }
+
+    /**
      * 甜甜圈生长动画的插值器
      */
     public Interpolator getInterpolator() {
@@ -172,15 +185,18 @@ public class AnimatedPieViewConfig implements Serializable {
         return setReApply(true);
     }
 
+
     /**
-     * 设置起始偏移角度
-     * <strong><p>**任意角度**
+     * 添加一个数据数组
+     * <p>see @{@link AnimatedPieViewConfig#addData(IPieInfo)}
      *
-     * @param startAngle 起始角度（任意）
+     * @param infos 数据实体数组
      */
-    public AnimatedPieViewConfig setStartAngle(float startAngle) {
-        this.startAngle = startAngle;
-        return setReApply(true);
+    public AnimatedPieViewConfig addDatas(@NonNull List<IPieInfo> infos) {
+        for (IPieInfo info : infos) {
+            addData(info);
+        }
+        return this;
     }
 
     /**
@@ -194,20 +210,6 @@ public class AnimatedPieViewConfig implements Serializable {
     }
 
     /**
-     * 添加一个数据数组
-     * <p>see @{@link AnimatedPieViewConfig#addData(IPieInfo)}
-     *
-     * @param infos 数据实体数组
-     */
-    public AnimatedPieViewConfig addDatas(@NonNull List<IPieInfo> infos) {
-        if (infos == null) return this;
-        for (IPieInfo info : infos) {
-            addData(info);
-        }
-        return this;
-    }
-
-    /**
      * 添加一个数据实体用于绘制/控制甜甜圈
      * <p>该数据必须实现接口：{@link IPieInfo}
      *
@@ -217,6 +219,7 @@ public class AnimatedPieViewConfig implements Serializable {
      */
     public AnimatedPieViewConfig addData(@NonNull IPieInfo info, boolean autoDesc) {
         assert info != null : "不能添加空数据";
+        if (info == null) return this;
         mDatas.add(PieInfoImpl.create(info).setStrokeWidth(strokeWidth).setDrawStrokeOnly(isStroke).setAutoDesc(autoDesc));
         mPieViewHelper.prepare();
         return this;
@@ -251,7 +254,7 @@ public class AnimatedPieViewConfig implements Serializable {
 
     public AnimatedPieViewConfig setTouchScaleSize(float touchScaleSize) {
         this.touchScaleSize = touchScaleSize;
-        return this;
+        return setReApply(true);
     }
 
     /**
@@ -304,7 +307,7 @@ public class AnimatedPieViewConfig implements Serializable {
      */
     public AnimatedPieViewConfig setTouchShadowRadius(float touchShadowRadius) {
         this.touchShadowRadius = touchShadowRadius;
-        return this;
+        return setReApply(true);
     }
 
     /**
@@ -321,7 +324,7 @@ public class AnimatedPieViewConfig implements Serializable {
      */
     public AnimatedPieViewConfig setTouchExpandAngle(float touchExpandAngle) {
         this.touchExpandAngle = touchExpandAngle;
-        return this;
+        return setReApply(true);
     }
 
     /**
@@ -339,7 +342,7 @@ public class AnimatedPieViewConfig implements Serializable {
      */
     public AnimatedPieViewConfig setTouchAnimation(boolean touchAnimation) {
         this.touchAnimation = touchAnimation;
-        return this;
+        return setReApply(true);
     }
 
     /**
@@ -364,7 +367,7 @@ public class AnimatedPieViewConfig implements Serializable {
         if (pieRadiusScale <= 0.0f) pieRadiusScale = 0.0f;
         if (pieRadiusScale > 1.0f) pieRadiusScale = 1.0f;
         this.pieRadiusScale = pieRadiusScale;
-        return this;
+        return setReApply(true);
     }
 
     /**
@@ -405,7 +408,7 @@ public class AnimatedPieViewConfig implements Serializable {
      */
     public <T extends IPieInfo> AnimatedPieViewConfig setOnPieSelectListener(OnPieSelectListener<T> onPieSelectListener) {
         mOnPieSelectListener = onPieSelectListener;
-        return this;
+        return setReApply(true);
     }
 
     /**
@@ -570,11 +573,29 @@ public class AnimatedPieViewConfig implements Serializable {
     /**
      * 设置焦点甜甜圈alpha模式
      *
-     * @param focusAlphaType One of {@link #FOCUS_WITH_ALPHA}, {@link #REV_FOCUS_WITH_ALPHA}, or {@link #FOCUS_WITHOUT_ALPHA}.
+     * @param focusAlphaType One of {@link #FOCUS_WITH_ALPHA}, {@link #FOCUS_WITH_ALPHA_REV}, or {@link #FOCUS_WITHOUT_ALPHA}.
      */
     public AnimatedPieViewConfig setFocusAlphaType(@FocusAlpha int focusAlphaType) {
+        return setFocusAlphaType(focusAlphaType, focusAlphaCut);
+    }
+
+    /**
+     * 设置焦点甜甜圈alpha模式
+     *
+     * @param focusAlphaType One of {@link #FOCUS_WITH_ALPHA}, {@link #FOCUS_WITH_ALPHA_REV}, or {@link #FOCUS_WITHOUT_ALPHA}
+     * @param alphaCutDown   cut down alpha when focus touch
+     */
+    public AnimatedPieViewConfig setFocusAlphaType(@FocusAlpha int focusAlphaType, @FloatRange(from = 0, to = 255) float alphaCutDown) {
         this.focusAlphaType = focusAlphaType;
+        this.focusAlphaCut = Math.min(255, Math.abs(alphaCutDown));
         return setReApply(true);
+    }
+
+    /**
+     * 获取焦点甜甜圈的alpha削减范围
+     */
+    public float getFocusAlphaCut() {
+        return focusAlphaCut;
     }
 
     protected List<PieInfoImpl> getImplDatas() {
@@ -620,7 +641,7 @@ public class AnimatedPieViewConfig implements Serializable {
                     .setDirectText(config.isDirectText())
                     .setCanTouch(config.isCanTouch())
                     .setSplitAngle(config.getSplitAngle())
-                    .setFocusAlphaType(config.getFocusAlphaType());
+                    .setFocusAlphaType(config.getFocusAlphaType(),config.getFocusAlphaCut());
             List<PieInfoImpl> infos = config.getImplDatas();
             mDatas.clear();
             for (PieInfoImpl info : infos) {
