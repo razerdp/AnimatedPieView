@@ -1,6 +1,5 @@
 package com.razerdp.widget.animatedpieview.utils;
 
-import android.animation.Animator;
 import android.view.animation.Animation;
 
 /**
@@ -10,30 +9,6 @@ import android.view.animation.Animation;
  */
 
 public class AnimationCallbackUtils {
-
-
-    public static abstract class SimpleAnimatorListener implements Animator.AnimatorListener {
-
-        @Override
-        public void onAnimationStart(Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationCancel(Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationRepeat(Animator animation) {
-
-        }
-    }
 
     public static abstract class SimpleAnimationListener implements Animation.AnimationListener {
         @Override

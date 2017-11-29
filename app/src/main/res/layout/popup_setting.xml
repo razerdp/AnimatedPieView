@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#8f000000"
+    >
+
+    <RelativeLayout
+        android:id="@+id/popup_anima"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="32dp"
+        android:background="@android:color/white"
+        >
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="16dp"
+                android:paddingTop="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:text="Setting"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"/>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_donuts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="甜甜圈（ring-chat）"
+                    android:textColor="#666666"/>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="绘制文字（draw text）"
+                    android:textColor="#666666"/>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_touch_animation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="点击动画（click animation）"
+                    android:textColor="#666666"/>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_direct_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="文字同一方向（direct text）"
+                    android:textColor="#666666"/>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_can_touch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="能否点击（touchable）"
+                    android:textColor="#666666"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_duration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="动画时间（setDuration）"
+                    android:padding="8dp"
+                    android:textColorHint="#888888"
+                    >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:paddingLeft="8dp"
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_start_angle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="起始角度（setStartAngle）"
+                    android:padding="8dp"
+                    android:textColorHint="#888888"
+                    >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberSigned"
+                        android:paddingLeft="8dp"
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_touch_scale_size"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="点击后放大数值，只对饼图有效（setTouchScaleSize）"
+                    android:padding="8dp"
+                    android:textColorHint="#888888"
+                    >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:paddingLeft="8dp"
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_touch_scale_up_duration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="点击浮现动画时间（setTouchScaleUpDuration）"
+                    android:padding="8dp"
+                    android:textColorHint="#888888"
+                    >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:paddingLeft="8dp"
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_touch_scale_down_duration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="上一个浮现的圆弧回退的动画时间（setTouchScaleDownDuration）"
+                    android:padding="8dp"
+                    android:textColorHint="#888888"
+                    >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:paddingLeft="8dp"
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_touch_shadow_radius"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="点击后的阴影扩散范围（setTouchShadowRadius）"
+                    android:padding="8dp"
+                    android:textColorHint="#888888"
+                    >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:paddingLeft="8dp"
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_touch_expand_angle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="点击后圆弧/扇形扩展的角度（setTouchExpandAngle）"
+                    android:padding="8dp"
+                    android:textColorHint="#888888"
+                    >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:paddingLeft="8dp"
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_pie_radius_scale"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="甜甜圈半径占比（setPieRadiusScale）"
+                    android:padding="8dp"
+                    android:textColorHint="#888888"
+                    >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:paddingLeft="8dp"
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_text_margin_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="绘制文字与描述线的距离（setTextMarginLine）"
+                    android:padding="8dp"
+                    android:textColorHint="#888888"
+                    >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:paddingLeft="8dp"
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_text_size"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="绘制的文字大小（setTextSize）"
+                    android:padding="8dp"
+                    android:textColorHint="#888888"
+                    >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:paddingLeft="8dp"
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_text_point_radius"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="设置描述文字的开始小点的大小（setTextPointRadius）"
+                    android:padding="8dp"
+                    android:textColorHint="#888888"
+                    >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:paddingLeft="8dp"
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_text_line_stroke_width"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="设置描述文字的指示线宽度（setTextLineStrokeWidth）"
+                    android:padding="8dp"
+                    android:textColorHint="#888888"
+                    >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:paddingLeft="8dp"
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_text_line_transition_length"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="设置描述文字的指示线折角处长度（setTextLineTransitionLength）"
+                    android:padding="8dp"
+                    android:textColorHint="#888888"
+                    >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:paddingLeft="8dp"
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_text_line_start_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="设置描述文字的指示线开始距离外圆半径的大小（setTextLineStartMargin）"
+                    android:padding="8dp"
+                    android:textColorHint="#888888"
+                    >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:paddingLeft="8dp"
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_split_angle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="甜甜圈间隙角度（setSplitAngle）"
+                    android:padding="8dp"
+                    android:textColorHint="#888888"
+                    >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:paddingLeft="8dp"
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E5E5E5"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:padding="8dp"
+                    android:text="焦点甜甜圈的alpha表现形态及alpha削减值（setFocusAlphaType）"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_focus_alpha_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="alpha cut（setFocusAlphaType）"
+                    android:padding="8dp"
+                    android:textColorHint="#888888"
+                    >
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:paddingLeft="8dp"
+                        android:textColor="#333333"
+                        android:textSize="12sp"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp"
+                    >
+
+                    <android.support.v7.widget.AppCompatRadioButton
+                        android:id="@+id/radio_focus_with_alpha"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="FOCUS_WITH_ALPHA"
+                        android:textColor="#666666"
+                        android:textSize="12sp"/>
+
+                    <android.support.v7.widget.AppCompatRadioButton
+                        android:id="@+id/radio_focus_with_alpha_rev"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="FOCUS_WITH_ALPHA_REV"
+                        android:textColor="#666666"
+                        android:textSize="12sp"/>
+
+                    <android.support.v7.widget.AppCompatRadioButton
+                        android:id="@+id/radio_focus_without_alpha"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="FOCUS_WITHOUT_ALPHA"
+                        android:textColor="#666666"
+                        android:textSize="12sp"/>
+                </RadioGroup>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:background="#E5E5E5"/>
+
+                <Button
+                    android:id="@+id/btn_ok"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_btn"
+                    android:text="OK"
+                    android:textColor="@android:color/white"/>
+
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+</RelativeLayout>

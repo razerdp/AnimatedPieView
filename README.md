@@ -1,6 +1,7 @@
 # AnimatedPieView
 
-#### // 一个好吃的甜甜圈？请问客官要啥口味捏-V-
+#### // 一个好吃的甜甜圈？请问客官要啥口味捏-V- 
+#### // [English Ver](https://github.com/razerdp/AnimatedPieView/blob/master/README_EN.md)（ps:请别对我的英文有多大信心）
 
 [![jcenter](https://api.bintray.com/packages/razerdp/maven/AnimatedPieView/images/download.svg)](https://bintray.com/razerdp/maven/AnimatedPieView/_latestVersion)
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/razerdp/AnimatedPieView/blob/master/LICENSE)
@@ -13,8 +14,9 @@
 
 --- 
 
-### 进度 （更新日志->[日志](https://github.com/razerdp/AnimatedPieView/blob/master/UPDATE_LOG.md)）：
-  > 允许alpha突出选中的甜甜圈...开发中
+### 开发进度 （更新日志->[日志](https://github.com/razerdp/AnimatedPieView/blob/master/UPDATE_LOG.md)）：
+  > 如果您有别的需求，可以提交您的issue哦，当然，也可以直接修改源码-V-
+  -~~允许alpha突出选中的甜甜圈~~-
   - ~~允许甜甜圈之间含有间隔~~
   - ~~文字自适应点击动画位置~~
   - ~~文字描述动画~~
@@ -26,20 +28,15 @@
   - ~~动画长大的甜甜圈~~
 
 ### 主要功能：
- 
-  - 动画展开
-  
-   ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/anima.gif)
-  
-  - 文字描述
-
-   ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/anima_line.gif)
-
-  - 点击事件
-
-   ![image](https://github.com/razerdp/AnimatedPieView/blob/master/art/anima_click.gif)
-
-
+| 描述        | 方法    |  预览  |
+| --------   | :-----   | ---- |
+| 动画生长        | --      |   ![pie_animation](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_animation.gif)    |
+| 饼图/甜甜圈转换        | setDrawStrokeOnly(boolean)      |   ![pie_switch](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_switch.gif)    |
+| 角度间隙       | setSplitAngle(float)      |   ![pie_split_angle](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_split_angle.gif)    |
+| 绘制文字       | setDrawText(true)      |   ![pie_with_text](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_with_text.gif)    |
+| 点击效果       | setCanTouch(true) / setOnPieSelectListener()    |   ![pie_click_effect](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_click_effect.gif)    |
+| 焦点甜甜圈效果 (反向)      | setFocusAlphaType(<br>AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV,150<br>)    |   ![pie_click_with_focus_alpha_type_rev](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_click_with_focus_alpha_type_rev.gif)    |
+| 焦点甜甜圈效果       | setFocusAlphaType(<br>AnimatedPieViewConfig.FOCUS_WITH_ALPHA,150<br>)    |   ![pie_click_with_focus_alpha_type](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_click_with_focus_alpha_type.gif)    |
 
 ### 依赖
 
@@ -74,7 +71,7 @@
                         .setTouchShadowRadius(18f)// 点击后的阴影扩散范围
                         .setTouchScaleUpDuration(500)// 点击浮现动画时间
                         .setTouchScaleDownDuration(500)// 上一个浮现的圆弧回退的动画时间
-                        .setTouchScaleSize(15)// 点击后圆弧/扇形放大数值
+                        .setTouchScaleSize(15)// 点击后扇形放大数值,，只对饼图有效
                         .setDrawStrokeOnly(true)// 是否只画圆弧【甜甜圈哈哈】，否则画扇形（默认true）
                         .setStrokeWidth(15)// 圆弧（甜甜圈）宽度
                         .setDuration(2500)// 动画时间
@@ -95,6 +92,7 @@
                         】
                         .setCanTouch(true)// 是否允许甜甜圈点击放大
                         .setSplitAngle(1)// 甜甜圈间隙角度
+                        .setFocusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV,150)// 焦点甜甜圈的alpha表现形态及alpha削减值
                         .setConfig(new AnimatedPieViewConfig());// 配置（这里的new只是演示哦，可不要学我例子这里直接塞进一个新的config，否则上面的设置都浪费了）
 ```
 
