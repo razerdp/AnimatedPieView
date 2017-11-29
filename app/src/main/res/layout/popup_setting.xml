@@ -119,7 +119,7 @@
                     android:id="@+id/input_touch_scale_size"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="点击后放大数值（setTouchScaleSize）"
+                    android:hint="点击后放大数值，只对饼图有效（setTouchScaleSize）"
                     android:padding="8dp"
                     android:textColorHint="#888888"
                     >
