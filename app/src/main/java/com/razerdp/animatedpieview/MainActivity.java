@@ -66,8 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 })
-                .setSplitAngle(1)
-                .setFocusAlphaType(AnimatedPieViewConfig.FOCUS_WITHOUT_ALPHA);
+                .setFocusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV);
         mAnimatedPieView.applyConfig(config);
 
         mButton.setOnClickListener(new View.OnClickListener() {

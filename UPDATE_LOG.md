@@ -1,6 +1,6 @@
 # AnimatedPieView更新日志
 
-#### 17/11/27 - ver 1.1.0（未发布）
+#### 17/11/29 - ver 1.1.0
  - 增加是否允许甜甜圈点击方法`setCanTouch(boolean)`
  - 增加甜甜圈间隙角度`setSplitAngle(float)`
  - 焦点甜甜圈的alpha表现形式`setFocusAlphaType()`
