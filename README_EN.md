@@ -70,7 +70,7 @@ Use in gradle（please replace {latestVersion} to the donload badge verision）
                         .setTouchShadowRadius(18f)// shadow radius for pie when touch
                         .setTouchScaleUpDuration(500)// scale-up animation duration for focused paragraph
                         .setTouchScaleDownDuration(500)// scale-down animation duration for focused paragraph
-                        .setTouchScaleSize(15)// scale size for focused paragraph
+                        .setTouchScaleSize(15)// scale size for focused paragraph,only support for pie-chart
                         .setDrawStrokeOnly(true)// draw ring-chat or pie-chat（default : true）
                         .setStrokeWidth(15)// stroke width for ring-chat
                         .setDuration(2500)// animation draw duration

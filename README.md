@@ -71,7 +71,7 @@
                         .setTouchShadowRadius(18f)// 点击后的阴影扩散范围
                         .setTouchScaleUpDuration(500)// 点击浮现动画时间
                         .setTouchScaleDownDuration(500)// 上一个浮现的圆弧回退的动画时间
-                        .setTouchScaleSize(15)// 点击后圆弧/扇形放大数值
+                        .setTouchScaleSize(15)// 点击后扇形放大数值,，只对饼图有效
                         .setDrawStrokeOnly(true)// 是否只画圆弧【甜甜圈哈哈】，否则画扇形（默认true）
                         .setStrokeWidth(15)// 圆弧（甜甜圈）宽度
                         .setDuration(2500)// 动画时间
