@@ -774,7 +774,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                 if (focused) {
                     paint.setAlpha(255);
                 } else {
-                    paint.setAlpha((int) (255 - (150 * (alphaDown ? mScaleUpTime : mScaleDownTime))));
+                    paint.setAlpha((int) (255 - (mConfig.getFocusAlphaCut() * (alphaDown ? mScaleUpTime : mScaleDownTime))));
                 }
                 break;
             case AnimatedPieViewConfig.FOCUS_WITH_ALPHA:
@@ -783,7 +783,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                         && mCurrentTouchInfo.getActionScaleState() == PieInfoImpl.ActionState.UP;
 
                 if (focused) {
-                    paint.setAlpha((int) (255 - (150 * (alphaDown2 ? mScaleUpTime : mScaleDownTime))));
+                    paint.setAlpha((int) (255 - (mConfig.getFocusAlphaCut() * (alphaDown2 ? mScaleUpTime : mScaleDownTime))));
                 } else {
                     paint.setAlpha(255);
                 }
