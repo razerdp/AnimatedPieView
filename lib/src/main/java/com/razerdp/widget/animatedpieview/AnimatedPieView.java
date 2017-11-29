@@ -654,6 +654,10 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         return mConfig;
     }
 
+    public boolean isInAnimating() {
+        return isInAnimating;
+    }
+
     public void applyConfig(AnimatedPieViewConfig config) {
         applyConfigInternal(config);
     }

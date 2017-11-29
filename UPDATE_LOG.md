@@ -4,6 +4,7 @@
  - 增加是否允许甜甜圈点击方法`setCanTouch(boolean)`
  - 增加甜甜圈间隙角度`setSplitAngle(float)`
  - 焦点甜甜圈的alpha表现形式`setFocusAlphaType()`
+ - 更新demo使用例子
 
 #### 17/11/25 - ver 1.0.8~1.0.9
  - 增加文字自适应动画位置
