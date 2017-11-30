@@ -3,8 +3,8 @@ package com.razerdp.widget.animatedpieview;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 
 import com.razerdp.widget.animatedpieview.callback.OnPieSelectListener;
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
@@ -56,7 +56,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private static final float DEFAULT_FOCUS_ALPHA_CUT = 150;
 
 
-    private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR = new DecelerateInterpolator(1.2f);
+    private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR = new LinearInterpolator();
 
     private int strokeWidth = DEFAULT_STROKE_WIDTH;
     private float startAngle = DEFAULT_START_ANGLE;
@@ -641,7 +641,7 @@ public class AnimatedPieViewConfig implements Serializable {
                     .setDirectText(config.isDirectText())
                     .setCanTouch(config.isCanTouch())
                     .setSplitAngle(config.getSplitAngle())
-                    .setFocusAlphaType(config.getFocusAlphaType(),config.getFocusAlphaCut());
+                    .setFocusAlphaType(config.getFocusAlphaType(), config.getFocusAlphaCut());
             List<PieInfoImpl> infos = config.getImplDatas();
             mDatas.clear();
             for (PieInfoImpl info : infos) {
@@ -660,14 +660,14 @@ public class AnimatedPieViewConfig implements Serializable {
             //算总和
             for (PieInfoImpl dataImpl : mDatas) {
                 IPieInfo info = dataImpl.getPieInfo();
-                sumValue += info.getValue();
+                sumValue += Math.abs(info.getValue());
             }
 
             //算每部分的角度
             float start = startAngle;
             for (PieInfoImpl data : mDatas) {
                 data.setStartAngle(start);
-                float angle = (float) (360f * (data.getPieInfo().getValue() / sumValue));
+                float angle = (float) (360f * (Math.abs(data.getPieInfo().getValue()) / sumValue));
                 angle = Math.max(1f, angle);
                 float endAngle = start + angle;
                 data.setEndAngle(endAngle);
