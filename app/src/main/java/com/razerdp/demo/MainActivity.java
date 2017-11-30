@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -52,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
                 .addData(new SimplePieInfo(30.0f, getColor("ff957de0")), true)
                 .setDrawText(true)
                 .setDuration(2000)
-                .setInterpolator(new DecelerateInterpolator(2.5f))
                 .setTextLineStrokeWidth(4)
                 .setTextSize(12)
                 .setPieRadiusScale(0.8f)
