@@ -14,20 +14,20 @@ public class DebugLogUtil {
     private static final String TAG = "DebugLogUtil";
     public static boolean LOG_SHOW = true;
 
-    public static void logAngles(List<PieInfoImpl> pieInfos) {
+    public static void logAngles(List<InternalPieInfo> pieInfos) {
         if (!LOG_SHOW) return;
         if (!ToolUtil.isListEmpty(pieInfos)) {
-            for (PieInfoImpl pieInfo : pieInfos) {
+            for (InternalPieInfo pieInfo : pieInfos) {
                 logAngles(pieInfo);
             }
         }
     }
 
-    public static void logAngles(PieInfoImpl pieInfo) {
+    public static void logAngles(InternalPieInfo pieInfo) {
         logAngles("", pieInfo);
     }
 
-    public static void logAngles(String pre, PieInfoImpl pieInfo) {
+    public static void logAngles(String pre, InternalPieInfo pieInfo) {
         if (!LOG_SHOW) return;
         if (pieInfo != null) {
             Log.i(TAG, pre + "值： " + pieInfo.getPieInfo().getValue() + "    开始角度: " + pieInfo.getStartAngle() + "    结束角度： " + pieInfo.getEndAngle());
@@ -44,7 +44,7 @@ public class DebugLogUtil {
         logTouchAngle("点击角度： ", angle);
     }
 
-    public static void findTouchInfo(PieInfoImpl info) {
+    public static void findTouchInfo(InternalPieInfo info) {
         if (!LOG_SHOW || info == null) return;
         Log.i(TAG, "找到点击的info: " + info.toString());
     }

@@ -1,8 +1,10 @@
 package com.razerdp.widget.animatedpieview;
 
+import android.graphics.Paint;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
@@ -78,7 +80,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private float focusAlphaCut = DEFAULT_FOCUS_ALPHA_CUT;
 
     private volatile boolean reApply;
-    private List<PieInfoImpl> mDatas;
+    private List<InternalPieInfo> mDatas;
     private AnimatedPieViewHelper mPieViewHelper;
     private Interpolator mInterpolator = DEFAULT_ANIMATION_INTERPOLATOR;
     private boolean isStroke = true;
@@ -88,6 +90,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private boolean drawText = true;
     private boolean directText = DEFAULT_DIRECT_TEXT;
     private boolean canTouch = true;
+    private Paint.Cap strokePaintCap = Paint.Cap.BUTT;
 
     public AnimatedPieViewConfig() {
         mPieViewHelper = new AnimatedPieViewHelper();
@@ -220,7 +223,12 @@ public class AnimatedPieViewConfig implements Serializable {
     public AnimatedPieViewConfig addData(@NonNull IPieInfo info, boolean autoDesc) {
         assert info != null : "不能添加空数据";
         if (info == null) return this;
-        mDatas.add(PieInfoImpl.create(info).setStrokeWidth(strokeWidth).setDrawStrokeOnly(isStroke).setAutoDesc(autoDesc));
+        InternalPieInfo internalPieInfo = InternalPieInfo.create(info)
+                                                         .setStrokeWidth(strokeWidth)
+                                                         .setDrawStrokeOnly(isStroke)
+                                                         .setAutoDesc(autoDesc)
+                                                         .setPaintStrokeCap(strokePaintCap);
+        mDatas.add(internalPieInfo);
         mPieViewHelper.prepare();
         return this;
     }
@@ -239,7 +247,7 @@ public class AnimatedPieViewConfig implements Serializable {
      */
     public List<IPieInfo> getDatas() {
         List<IPieInfo> result = new ArrayList<>();
-        for (PieInfoImpl data : mDatas) {
+        for (InternalPieInfo data : mDatas) {
             result.add(data.getPieInfo());
         }
         return result;
@@ -598,7 +606,25 @@ public class AnimatedPieViewConfig implements Serializable {
         return focusAlphaCut;
     }
 
-    protected List<PieInfoImpl> getImplDatas() {
+    /**
+     * 笔刷样式
+     */
+    public Paint.Cap getStrokePaintCap() {
+        return strokePaintCap;
+    }
+
+    /**
+     * 设置笔刷样式
+     *
+     * @param strokePaintCap 设置笔刷样式
+     */
+    public AnimatedPieViewConfig setStrokePaintCap(@NonNull Paint.Cap strokePaintCap) {
+        if (strokePaintCap == null) strokePaintCap = Paint.Cap.BUTT;
+        this.strokePaintCap = strokePaintCap;
+        return setReApply(true);
+    }
+
+    protected List<InternalPieInfo> getImplDatas() {
         return new ArrayList<>(mDatas);
     }
 
@@ -641,10 +667,11 @@ public class AnimatedPieViewConfig implements Serializable {
                     .setDirectText(config.isDirectText())
                     .setCanTouch(config.isCanTouch())
                     .setSplitAngle(config.getSplitAngle())
-                    .setFocusAlphaType(config.getFocusAlphaType(), config.getFocusAlphaCut());
-            List<PieInfoImpl> infos = config.getImplDatas();
+                    .setFocusAlphaType(config.getFocusAlphaType(), config.getFocusAlphaCut())
+                    .setStrokePaintCap(config.getStrokePaintCap());
+            List<InternalPieInfo> infos = config.getImplDatas();
             mDatas.clear();
-            for (PieInfoImpl info : infos) {
+            for (InternalPieInfo info : infos) {
                 addData(info.getPieInfo(), info.isAutoDesc());
             }
         }
@@ -653,19 +680,20 @@ public class AnimatedPieViewConfig implements Serializable {
 
     protected final class AnimatedPieViewHelper {
         private double sumValue;
+        private InternalPieInfo lastFoundInfo;
 
         private void prepare() {
             if (ToolUtil.isListEmpty(mDatas)) return;
             sumValue = 0;
             //算总和
-            for (PieInfoImpl dataImpl : mDatas) {
+            for (InternalPieInfo dataImpl : mDatas) {
                 IPieInfo info = dataImpl.getPieInfo();
                 sumValue += Math.abs(info.getValue());
             }
 
             //算每部分的角度
             float start = startAngle;
-            for (PieInfoImpl data : mDatas) {
+            for (InternalPieInfo data : mDatas) {
                 data.setStartAngle(start);
                 float angle = (float) (360f * (Math.abs(data.getPieInfo().getValue()) / sumValue));
                 float endAngle = start + angle;
@@ -678,10 +706,16 @@ public class AnimatedPieViewConfig implements Serializable {
             }
         }
 
-        public PieInfoImpl findPieinfoWithAngle(float angle) {
+        public InternalPieInfo findPieinfoWithAngle(float angle) {
             if (ToolUtil.isListEmpty(mDatas)) return null;
-            for (PieInfoImpl data : mDatas) {
-                if (data.isInAngleRange(angle)) return data;
+            if (lastFoundInfo != null && lastFoundInfo.isInAngleRange(angle)) {
+                return lastFoundInfo;
+            }
+            for (InternalPieInfo info : mDatas) {
+                if (info.isInAngleRange(angle)) {
+                    lastFoundInfo = info;
+                    return info;
+                }
             }
             return null;
         }

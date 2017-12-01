@@ -218,7 +218,7 @@ import java.util.UUID;
  * Created by 大灯泡 on 2017/11/7.
  */
 
-final class PieInfoImpl {
+final class InternalPieInfo {
     public enum ActionState {
         UP,
         DOWN,
@@ -239,7 +239,7 @@ final class PieInfoImpl {
     private boolean autoDesc;
     private String autoDescStr;
 
-    private PieInfoImpl(IPieInfo info) {
+    private InternalPieInfo(IPieInfo info) {
         id = UUID.randomUUID().toString();
         this.mPieInfo = info;
         initPaint(info);
@@ -249,7 +249,7 @@ final class PieInfoImpl {
         return id;
     }
 
-    public boolean equalsWith(PieInfoImpl info) {
+    public boolean equalsWith(InternalPieInfo info) {
         if (info == null) return false;
         return TextUtils.equals(info.getId(), id);
     }
@@ -275,8 +275,8 @@ final class PieInfoImpl {
         mCopyPaint.set(mPaint);
     }
 
-    public static PieInfoImpl create(IPieInfo info) {
-        return new PieInfoImpl(info);
+    public static InternalPieInfo create(IPieInfo info) {
+        return new InternalPieInfo(info);
     }
 
     public IPieInfo getPieInfo() {
@@ -332,14 +332,14 @@ final class PieInfoImpl {
         return drawStrokeOnly;
     }
 
-    public PieInfoImpl setDrawStrokeOnly(boolean drawStrokeOnly) {
+    public InternalPieInfo setDrawStrokeOnly(boolean drawStrokeOnly) {
         if (this.drawStrokeOnly == drawStrokeOnly) return this;
         this.drawStrokeOnly = drawStrokeOnly;
         initPaint(mPieInfo);
         return this;
     }
 
-    public PieInfoImpl setStrokeWidth(int width) {
+    public InternalPieInfo setStrokeWidth(int width) {
         this.strokeWidth = width;
         mPaint.setStrokeWidth(width);
         return this;
@@ -392,7 +392,7 @@ final class PieInfoImpl {
         return autoDesc;
     }
 
-    public PieInfoImpl setAutoDesc(boolean autoDesc) {
+    public InternalPieInfo setAutoDesc(boolean autoDesc) {
         this.autoDesc = autoDesc;
         return this;
     }
@@ -410,6 +410,13 @@ final class PieInfoImpl {
 
     public String getDesc() {
         return autoDesc && !TextUtils.isEmpty(autoDescStr) ? autoDescStr : mPieInfo.getDesc();
+    }
+
+    public InternalPieInfo setPaintStrokeCap(Paint.Cap cap) {
+        if (mPaint!=null) {
+            mPaint.setStrokeCap(cap);
+        }
+        return this;
     }
 
     @Override

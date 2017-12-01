@@ -233,7 +233,7 @@ public class TouchHelper {
         this.radius = radius;
     }
 
-    public PieInfoImpl pointToInfo(float x, float y) {
+    public InternalPieInfo pointToInfo(float x, float y) {
         final boolean isStrokeOnly = mConfig.isDrawStrokeOnly();
         final float strokeWidth = mConfig.getStrokeWidth();
         //外圆半径
@@ -259,14 +259,14 @@ public class TouchHelper {
      * @param y
      * @return
      */
-    private PieInfoImpl findPieInfoImpl(float x, float y) {
+    private InternalPieInfo findPieInfoImpl(float x, float y) {
         //得到角度
         double touchAngle = Math.toDegrees(Math.atan2(y - centerY, x - centerX));
         if (touchAngle < 0) {
             touchAngle += 360.0f;
         }
         Log.i(TAG, "角度: " + touchAngle);
-        for (PieInfoImpl pieInfo : mConfig.getImplDatas()) {
+        for (InternalPieInfo pieInfo : mConfig.getImplDatas()) {
             if (pieInfo.isTouchInAngleRange((float) touchAngle)) {
                 return pieInfo;
             }
