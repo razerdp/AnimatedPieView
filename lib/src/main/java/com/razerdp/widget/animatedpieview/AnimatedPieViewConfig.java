@@ -668,7 +668,6 @@ public class AnimatedPieViewConfig implements Serializable {
             for (PieInfoImpl data : mDatas) {
                 data.setStartAngle(start);
                 float angle = (float) (360f * (Math.abs(data.getPieInfo().getValue()) / sumValue));
-                angle = Math.max(1f, angle);
                 float endAngle = start + angle;
                 data.setEndAngle(endAngle);
                 start = endAngle;
