@@ -1,8 +1,9 @@
 # AnimatedPieView更新日志
 
-#### 17/11/30 - ver 1.1.1【未发布】
+#### 17/11/30 - ver 1.1.1
  - `AnimatedPieViewConfig.AnimatedPieViewHelper#prepare()`计算值的时候采取绝对值，对负数容错
- - 默认插值器取`LinearInterpolator`，并考虑后期去掉插值器定义方法[issue#2](https://github.com/razerdp/AnimatedPieView/issues/2)
+ - 默认插值器取`LinearInterpolator`，暂时去掉插值器定义方法，如果解决了再开放[issue#2](https://github.com/razerdp/AnimatedPieView/issues/2)
+ - 去掉最小角度为1的实现（当数值为0的时候）
 
 #### 17/11/29 - ver 1.1.0
  - 增加是否允许甜甜圈点击方法`setCanTouch(boolean)`

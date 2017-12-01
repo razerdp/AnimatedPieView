@@ -153,17 +153,17 @@ public class AnimatedPieViewConfig implements Serializable {
     /**
      * 甜甜圈生长动画的插值器
      */
-    public Interpolator getInterpolator() {
+    Interpolator getInterpolator() {
         return mInterpolator;
     }
 
     /**
-     * 设置甜甜圈生长动画插值器
+     * 设置甜甜圈生长动画插值器（暂时关闭，#issue 2，解决了的话再开放）
      *
      * @param interpolator 插值器，不建议用{@link android.view.animation.OvershootInterpolator}，可能会
      *                     出现意料之外的效果
      */
-    public AnimatedPieViewConfig setInterpolator(Interpolator interpolator) {
+    private AnimatedPieViewConfig setInterpolator(Interpolator interpolator) {
         mInterpolator = interpolator;
         return setReApply(true);
     }
