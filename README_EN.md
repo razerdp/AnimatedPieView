@@ -56,7 +56,6 @@ Use in gradle（please replace {latestVersion} to the donload badge verision）
                 .addData(new SimplePieInfo(18.0f, getColor("FFFFD28C"), "这是第二段"))
                 ...(尽管addData吧)
                 .setDuration(2000)// animation draw duration
-                .setInterpolator(new DecelerateInterpolator(2.5f));
         mAnimatedPieView.applyConfig(config);
         mAnimatedPieView.start();
 ```
@@ -74,7 +73,6 @@ Use in gradle（please replace {latestVersion} to the donload badge verision）
                         .setDrawStrokeOnly(true)// draw ring-chat or pie-chat（default : true）
                         .setStrokeWidth(15)// stroke width for ring-chat
                         .setDuration(2500)// animation draw duration
-                        .setInterpolator(new LinearInterpolator())// interpolator for animation
                         .setStartAngle(-90f)// the start offset angle
                         .setOnPieSelectListener(new OnPieSelectListener<IPieInfo>())//click callback
                         .setDrawText(true)// can draw description (default : true)

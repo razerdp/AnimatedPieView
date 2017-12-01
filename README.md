@@ -57,7 +57,6 @@
                 .addData(new SimplePieInfo(18.0f, getColor("FFFFD28C"), "这是第二段"))
                 ...(尽管addData吧)
                 .setDuration(2000)// 持续时间
-                .setInterpolator(new DecelerateInterpolator(2.5f));// 插值器
         mAnimatedPieView.applyConfig(config);
         mAnimatedPieView.start();
 ```
@@ -75,7 +74,6 @@
                         .setDrawStrokeOnly(true)// 是否只画圆弧【甜甜圈哈哈】，否则画扇形（默认true）
                         .setStrokeWidth(15)// 圆弧（甜甜圈）宽度
                         .setDuration(2500)// 动画时间
-                        .setInterpolator(new LinearInterpolator())// 插值器
                         .setStartAngle(-90f)// 开始的角度
                         .setOnPieSelectListener(new OnPieSelectListener<IPieInfo>())//点击事件
                         .setDrawText(true)// 是否绘制文字描述
