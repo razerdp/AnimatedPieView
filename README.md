@@ -91,6 +91,7 @@
                         .setCanTouch(true)// 是否允许甜甜圈点击放大
                         .setSplitAngle(1)// 甜甜圈间隙角度
                         .setFocusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV,150)// 焦点甜甜圈的alpha表现形态及alpha削减值
+                        .setStrokePaintCap(Paint.Cap.ROUND)// 笔刷的样式
                         .setConfig(new AnimatedPieViewConfig());// 配置（这里的new只是演示哦，可不要学我例子这里直接塞进一个新的config，否则上面的设置都浪费了）
 ```
 

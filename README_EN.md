@@ -90,6 +90,7 @@ Use in gradle（please replace {latestVersion} to the donload badge verision）
                         .setCanTouch(true)// allow touch to scale-up
                         .setSplitAngle(1)// clearance angle
                         .setFocusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV,150)// alpha animation on focused
+                        .setStrokePaintCap(Paint.Cap.ROUND)// set the cap for the paint
                         .setConfig(new AnimatedPieViewConfig());// apply another config to current config（this will override all option,just show this api here,Not necessary to achieve）
 ```
 
