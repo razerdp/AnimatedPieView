@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 .addData(new SimplePieInfo(30.0f, getColor("fffa734d")), true)
                 .addData(new SimplePieInfo(30.0f, getColor("ff957de0")), true)
                 .setDrawText(true)
-                .setDuration(2000)
+                .setDuration(1200)
                 .setTextLineStrokeWidth(4)
                 .setTextSize(12)
                 .setPieRadiusScale(0.8f)
