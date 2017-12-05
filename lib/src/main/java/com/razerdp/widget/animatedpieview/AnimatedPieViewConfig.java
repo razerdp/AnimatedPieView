@@ -4,7 +4,6 @@ import android.graphics.Paint;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
@@ -53,7 +52,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private static final int DEFAULT_TEXT_LINE_TRANSITION_LENGTH = 32;
     private static final int DEFAULT_TEXT_LINE_START_MARGIN = 8;
     private static final boolean DEFAULT_DIRECT_TEXT = false;
-    private static final float DEFAULT_SPLIT_ANGLE = 0.0f;
+    private static final float DEFAULT_SPLIT_ANGLE = 0;
     private static final int DEFAULT_FOCUS_ALPHA = FOCUS_WITHOUT_ALPHA;
     private static final float DEFAULT_FOCUS_ALPHA_CUT = 150;
 
@@ -195,7 +194,7 @@ public class AnimatedPieViewConfig implements Serializable {
      *
      * @param infos 数据实体数组
      */
-    public AnimatedPieViewConfig addDatas(@NonNull List<IPieInfo> infos) {
+    public AnimatedPieViewConfig addDatas(@NonNull List<? extends IPieInfo> infos) {
         for (IPieInfo info : infos) {
             addData(info);
         }

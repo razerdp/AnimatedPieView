@@ -325,6 +325,8 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
             @Override
             public void onAnimationEnd(Animation animation) {
                 isInAnimating = false;
+                //释放硬件加速
+                setLayerType(View.LAYER_TYPE_NONE, null);
             }
         });
         //scale up
@@ -356,19 +358,19 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mConfig.isReApply()) {
-            applyConfigInternal(mConfig);
-        }
         super.onDraw(canvas);
         if (!mConfig.isReady()) return;
 
-        final float width = getWidth() - getPaddingLeft() - getPaddingRight();
-        final float height = getHeight() - getPaddingTop() - getPaddingBottom();
+        float width = getWidth() - getPaddingLeft() - getPaddingRight();
+        float height = getHeight() - getPaddingTop() - getPaddingBottom();
 
-        canvas.translate(width / 2, height / 2);
+        float centerX = width / 2;
+        float centerY = height / 2;
+
+        canvas.translate(centerX, centerY);
         //半径
-        final float radius = Math.min(width, height) / 2 * mConfig.getPieRadiusScale();
-        mTouchHelper.setPieParam(width / 2, height / 2, radius);
+        float radius = Math.min(width, height) / 2 * mConfig.getPieRadiusScale();
+        mTouchHelper.setPieParam(centerX, centerY, radius);
         mDrawRectf.set(-radius, -radius, radius, radius);
 
         switch (mode) {
@@ -382,11 +384,8 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
     }
 
     private void onDrawModeHandle(Canvas canvas, float radius) {
-        if (!canvas.isHardwareAccelerated()) {
-            setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        }
         if (mCurrentInfo != null) {
-            drawCachedInfos(canvas, null, radius);
+            drawCachedInfos(canvas, mCurrentInfo, radius);
             canvas.drawArc(mDrawRectf,
                     mCurrentInfo.getStartAngle(),
                     angle - mCurrentInfo.getStartAngle() - mConfig.getSplitAngle(),
@@ -399,9 +398,6 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
     }
 
     private void onTouchModeHandle(Canvas canvas, float radius) {
-        if (canvas.isHardwareAccelerated()) {
-            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
         if (mCurrentTouchInfo != null) {
             drawCachedInfos(canvas, mCurrentTouchInfo, radius);
             final boolean sameClick = mCurrentTouchInfo.equalsWith(mLastTouchInfo);
@@ -640,7 +636,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                     }
                 }
                 if (!hasAdded) {
-                    DebugLogUtil.logAngles("超出角度", mCurrentInfo);
+                    DebugLogUtil.logAngles("添加到缓存", mCurrentInfo);
                     mDrawedCachePieInfo.add(mCurrentInfo);
                 }
             }
@@ -667,6 +663,9 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         if (isInAnimating) {
             return;
         }
+        if (mConfig.isReApply()) {
+            applyConfigInternal(mConfig);
+        }
         isInAnimating = true;
         mDrawRectf.setEmpty();
         mTouchRectf.setEmpty();
@@ -674,6 +673,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         mDrawedCachePieInfo.clear();
         clearAnimation();
         startAnimation(mPieViewAnimation);
+        DebugLogUtil.logAngles("start  >>  ", mConfig.getImplDatas());
     }
 
     //-----------------------------------------touch-----------------------------------------
@@ -737,6 +737,9 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         if (mode == Mode.DRAW) {
             mCurrentTouchInfo = null;
             mLastTouchInfo = null;
+            setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        } else if (mode == Mode.TOUCH) {
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
         this.mode = mode;
     }

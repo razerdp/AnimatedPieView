@@ -9,8 +9,7 @@
 [![Api](https://img.shields.io/badge/Api-14%2B-green.svg)](https://img.shields.io/badge/Api-14%2B-green.svg)
 [![Author](https://img.shields.io/badge/Author-razerdp-blue.svg)](https://github.com/razerdp) 
 
-
-### 这是一个可爱的甜甜圈，也许是一个圆饼图，包含着动画和点击效果，目前仍在维护和不断加料中
+### 因为一些历史原因~~（撸代码时对于硬件加速的使用有点随意。。。）~~导致了重大性能问题，强烈建议更新到1.1.3或以上版本
 
 --- 
 

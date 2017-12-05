@@ -269,7 +269,6 @@ final class InternalPieInfo {
         mPaint.setStyle(drawStrokeOnly ? Paint.Style.STROKE : Paint.Style.FILL);
         mPaint.setStrokeWidth(strokeWidth);
         mPaint.setColor(info.getColor());
-        mPaint.setStrokeJoin(Paint.Join.MITER);
 
         if (mCopyPaint == null) mCopyPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         mCopyPaint.set(mPaint);
@@ -335,7 +334,7 @@ final class InternalPieInfo {
     public InternalPieInfo setDrawStrokeOnly(boolean drawStrokeOnly) {
         if (this.drawStrokeOnly == drawStrokeOnly) return this;
         this.drawStrokeOnly = drawStrokeOnly;
-        initPaint(mPieInfo);
+        mPaint.setStyle(drawStrokeOnly ? Paint.Style.STROKE : Paint.Style.FILL);
         return this;
     }
 
@@ -413,14 +412,16 @@ final class InternalPieInfo {
     }
 
     public InternalPieInfo setPaintStrokeCap(Paint.Cap cap) {
-        if (mPaint!=null) {
-            mPaint.setStrokeCap(cap);
-        }
+        mPaint.setStrokeCap(cap);
         return this;
     }
 
     @Override
     public String toString() {
-        return "值： " + getPieInfo().getValue() + "    开始角度: " + getStartAngle() + "    结束角度： " + getEndAngle();
+        return "值： " + getPieInfo().getValue()
+                + "    开始角度: " + getStartAngle()
+                + "    结束角度： " + getEndAngle()
+                +'\n'
+                + "    paint类型  >>  "+mPaint.getStyle();
     }
 }
