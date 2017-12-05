@@ -8,6 +8,8 @@
 [![Api](https://img.shields.io/badge/Api-14%2B-green.svg)](https://img.shields.io/badge/Api-14%2B-green.svg)
 [![Author](https://img.shields.io/badge/Author-razerdp-blue.svg)](https://github.com/razerdp) 
 
+### we have fix some serious bugs from 1.1.3.for more stable,we suggest you to update to 1.1.3
+
 --- 
 
 ### Developement Plan：

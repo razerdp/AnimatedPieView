@@ -14,6 +14,15 @@ public class DebugLogUtil {
     private static final String TAG = "DebugLogUtil";
     public static boolean LOG_SHOW = true;
 
+    public static void logAngles(String pre, List<InternalPieInfo> pieInfos) {
+        if (!LOG_SHOW) return;
+        if (!ToolUtil.isListEmpty(pieInfos)) {
+            for (InternalPieInfo pieInfo : pieInfos) {
+                logAngles(pre, pieInfo);
+            }
+        }
+    }
+
     public static void logAngles(List<InternalPieInfo> pieInfos) {
         if (!LOG_SHOW) return;
         if (!ToolUtil.isListEmpty(pieInfos)) {
@@ -30,7 +39,7 @@ public class DebugLogUtil {
     public static void logAngles(String pre, InternalPieInfo pieInfo) {
         if (!LOG_SHOW) return;
         if (pieInfo != null) {
-            Log.i(TAG, pre + "值： " + pieInfo.getPieInfo().getValue() + "    开始角度: " + pieInfo.getStartAngle() + "    结束角度： " + pieInfo.getEndAngle());
+            Log.i(TAG, pre + pieInfo.toString());
         }
     }
 

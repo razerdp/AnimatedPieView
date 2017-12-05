@@ -1,5 +1,11 @@
 # AnimatedPieView更新日志
 
+### 17/12/5 - ver 1.1.3
+ - 优化的硬件加速，修复之前放在onDraw()里面设置LayoutType的巨大错误。。。
+ - 优化demo
+ - config修复`addDatas()`泛型的问题
+ - config的重复应用迁移到`start()`方法
+
 ### 17/12/2 - ver 1.1.2
  - 优化动画中寻找角度实体类的方法，减少循环->`AnimatedPieViewHelper#findPieinfoWithAngle()`
  - 增加画笔的笔端样式
