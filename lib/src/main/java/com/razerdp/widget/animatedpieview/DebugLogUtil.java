@@ -12,7 +12,7 @@ import java.util.List;
 
 public class DebugLogUtil {
     private static final String TAG = "DebugLogUtil";
-    public static boolean LOG_SHOW = true;
+    public static boolean LOG_SHOW = false;
 
     public static void logAngles(String pre, List<InternalPieInfo> pieInfos) {
         if (!LOG_SHOW) return;
