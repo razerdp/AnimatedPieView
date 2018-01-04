@@ -15,6 +15,7 @@
 
 ### 开发进度 （更新日志->[日志](https://github.com/razerdp/AnimatedPieView/blob/master/UPDATE_LOG.md)）：
   > 如果您有别的需求，可以提交您的issue哦，当然，也可以直接修改源码-V-
+  
   -~~允许alpha突出选中的甜甜圈~~-
   - ~~允许甜甜圈之间含有间隔~~
   - ~~文字自适应点击动画位置~~
