@@ -1,7 +1,8 @@
-# AnimatedPieView
-
-#### // 一个好吃的甜甜圈？请问客官要啥口味捏-V- 
-#### // [English Ver](https://github.com/razerdp/AnimatedPieView/blob/master/README_EN.md)（ps:请别对我的英文有多大信心）
+AnimatedPieView
+---
+**一个好吃的甜甜圈？请问客官要啥口味捏-V-**
+ 
+// [English Ver](https://github.com/razerdp/AnimatedPieView/blob/master/README_EN.md)（ps:请别对我的英文有多大信心）
 
 [![jcenter](https://api.bintray.com/packages/razerdp/maven/AnimatedPieView/images/download.svg)](https://bintray.com/razerdp/maven/AnimatedPieView/_latestVersion)
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/razerdp/AnimatedPieView/blob/master/LICENSE)
@@ -9,25 +10,36 @@
 [![Api](https://img.shields.io/badge/Api-14%2B-green.svg)](https://img.shields.io/badge/Api-14%2B-green.svg)
 [![Author](https://img.shields.io/badge/Author-razerdp-blue.svg)](https://github.com/razerdp) 
 
-### 因为一些历史原因~~（撸代码时对于硬件加速的使用有点随意。。。）~~导致了重大性能问题，强烈建议更新到1.1.3或以上版本
+**因为一些历史原因~~（撸代码时对于硬件加速的使用有点随意。。。）~~导致了重大性能问题，强烈建议更新到1.1.3或以上版本**
 
 --- 
 
-### 开发进度 （更新日志->[日志](https://github.com/razerdp/AnimatedPieView/blob/master/UPDATE_LOG.md)）：
+ChangeLog
+---
+
+  * 1.1.4
+    * 修复了甜甜圈点击范围的问题
+    * 修复了甜甜圈之间存在微弱偏差的问题
+
+开发进度 （更新日志->[日志](https://github.com/razerdp/AnimatedPieView/blob/master/UPDATE_LOG.md)）
+---
+
   > 如果您有别的需求，可以提交您的issue哦，当然，也可以直接修改源码-V-
   
-  -~~允许alpha突出选中的甜甜圈~~-
-  - ~~允许甜甜圈之间含有间隔~~
-  - ~~文字自适应点击动画位置~~
-  - ~~文字描述动画~~
-  - ~~有文字描述的甜甜圈~~
-  - ~~点击事件回调的甜甜圈~~
-  - ~~点击动画的甜甜圈~~
-  - ~~可以点击的甜甜圈~~
-  - ~~可以变成大饼的甜甜圈~~
-  - ~~动画长大的甜甜圈~~
+  * ~~允许alpha突出选中的甜甜圈~~
+  * ~~允许甜甜圈之间含有间隔~~
+  * ~~文字自适应点击动画位置~~
+  * ~~文字描述动画~~
+  * ~~有文字描述的甜甜圈~~
+  * ~~点击事件回调的甜甜圈~~
+  * ~~点击动画的甜甜圈~~
+  * ~~可以点击的甜甜圈~~
+  * ~~可以变成大饼的甜甜圈~~
+  * ~~动画长大的甜甜圈~~
 
-### 主要功能：
+主要功能
+---
+
 | 描述        | 方法    |  预览  |
 | --------   | :-----   | ---- |
 | 动画生长        | --      |   ![pie_animation](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_animation.gif)    |
@@ -38,7 +50,8 @@
 | 焦点甜甜圈效果 (反向)      | setFocusAlphaType(<br>AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV,150<br>)    |   ![pie_click_with_focus_alpha_type_rev](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_click_with_focus_alpha_type_rev.gif)    |
 | 焦点甜甜圈效果       | setFocusAlphaType(<br>AnimatedPieViewConfig.FOCUS_WITH_ALPHA,150<br>)    |   ![pie_click_with_focus_alpha_type](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_click_with_focus_alpha_type.gif)    |
 
-### 依赖
+依赖
+---
 
 添加依赖（请把{latestVersion}替换成上面的jcenter标签所示版本）
 ```xml
@@ -47,7 +60,8 @@
 	}
 ```
 
-#### 基本使用方式（简单的超乎想像）：
+基本使用方式（简单的超乎想像）
+---
 
 ```java
         AnimatedPieView mAnimatedPieView = findViewById(R.id.animatedPieView);
@@ -61,7 +75,9 @@
         mAnimatedPieView.start();
 ```
 
-### 进阶用法（所有配置都在config，and...相信我，我提供大多数配置，但日常用到的，其实不多哈哈）：
+进阶用法（所有配置都在config，and...相信我，我提供大多数配置，但日常用到的，其实不多哈哈）
+---
+
 ```java
         AnimatedPieViewConfig mConfig=mAnimatedPieView.getConfig();
         mConfig.setTouchAnimation(true)// 点击事件是否播放浮现动画/回退动画（默认true）
@@ -97,16 +113,25 @@
 
 ---
 
-### 打赏（您的支持是我维护的动力-V-愿意的话，金额随意）
-![wechat](https://github.com/razerdp/AnimatedPieView/blob/master/art/wechat.jpg)
+打赏（看在我那么努力维护的份上。。。给个零食呗~）
+---
 
-### 控件思路【按思路顺序更新】
- - [自定义控件——弄个甜甜圈吧（1）： 起源](http://www.jianshu.com/p/b2a2d82e107e)
- - [自定义控件——弄个甜甜圈吧（2）： 搭建](http://www.jianshu.com/p/562c525ff927)
- - [自定义控件——弄个甜甜圈吧（3）： 动画篇【生长动画】](http://www.jianshu.com/p/f7842a97cb3e)
- - 编写中...
+| 微信 |支付宝 | 
+| ---- | ---- | 
+| ![](https://github.com/razerdp/FriendCircle/blob/master/wechat.png)      | ![](https://github.com/razerdp/FriendCircle/blob/master/alipay.png) |
 
-### LICENSE
+
+控件思路【按思路顺序更新】
+---
+
+ * [自定义控件——弄个甜甜圈吧（1）： 起源](http://www.jianshu.com/p/b2a2d82e107e)
+ * [自定义控件——弄个甜甜圈吧（2）： 搭建](http://www.jianshu.com/p/562c525ff927)
+ * [自定义控件——弄个甜甜圈吧（3）： 动画篇【生长动画】](http://www.jianshu.com/p/f7842a97cb3e)
+ * 编写中...
+
+LICENSE
+---
+
 Apache-2.0
    
    

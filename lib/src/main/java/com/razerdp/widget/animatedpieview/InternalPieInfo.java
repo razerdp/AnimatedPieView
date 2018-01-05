@@ -421,7 +421,7 @@ final class InternalPieInfo {
         return "值： " + getPieInfo().getValue()
                 + "    开始角度: " + getStartAngle()
                 + "    结束角度： " + getEndAngle()
-                +'\n'
-                + "    paint类型  >>  "+mPaint.getStyle();
+                + '\n'
+                + "    paint类型  >>  " + mPaint.getStyle();
     }
 }

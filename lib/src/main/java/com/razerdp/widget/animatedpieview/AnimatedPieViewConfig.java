@@ -52,7 +52,7 @@ public class AnimatedPieViewConfig implements Serializable {
     private static final int DEFAULT_TEXT_LINE_TRANSITION_LENGTH = 32;
     private static final int DEFAULT_TEXT_LINE_START_MARGIN = 8;
     private static final boolean DEFAULT_DIRECT_TEXT = false;
-    private static final float DEFAULT_SPLIT_ANGLE = 0;
+    private static final float DEFAULT_SPLIT_ANGLE = 0.0f;
     private static final int DEFAULT_FOCUS_ALPHA = FOCUS_WITHOUT_ALPHA;
     private static final float DEFAULT_FOCUS_ALPHA_CUT = 150;
 

@@ -296,6 +296,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
     }
 
     private void initView(Context context, AttributeSet attrs) {
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         if (mConfig == null) mConfig = new AnimatedPieViewConfig();
         if (mTouchEventPaint == null)
             mTouchEventPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
@@ -326,7 +327,6 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
             public void onAnimationEnd(Animation animation) {
                 isInAnimating = false;
                 //释放硬件加速
-                setLayerType(View.LAYER_TYPE_NONE, null);
             }
         });
         //scale up
@@ -737,9 +737,6 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         if (mode == Mode.DRAW) {
             mCurrentTouchInfo = null;
             mLastTouchInfo = null;
-            setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        } else if (mode == Mode.TOUCH) {
-            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
         this.mode = mode;
     }

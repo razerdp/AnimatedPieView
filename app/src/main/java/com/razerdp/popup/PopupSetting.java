@@ -1,7 +1,6 @@
 package com.razerdp.popup;
 
 import android.content.Context;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatRadioButton;
@@ -15,38 +14,39 @@ import com.razerdp.animatedpieview.R;
 import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
 
 import razerdp.basepopup.BasePopupWindow;
+import razerdp.blur.PopupBlurOption;
 
 /**
  * Created by 大灯泡 on 2017/11/29.
  */
 public class PopupSetting extends BasePopupWindow {
-    public SwitchCompat switchDonuts;
-    public SwitchCompat switchText;
-    public SwitchCompat switchTouchAnimation;
-    public SwitchCompat switchDirectText;
-    public SwitchCompat switchCanTouch;
-    public TextInputLayout inputDuration;
-    public TextInputLayout inputStartAngle;
-    public TextInputLayout inputTouchScaleSize;
-    public TextInputLayout inputTouchScaleUpDuration;
-    public TextInputLayout inputTouchScaleDownDuration;
-    public TextInputLayout inputTouchShadowRadius;
-    public TextInputLayout inputTouchExpandAngle;
-    public TextInputLayout inputPieRadiusScale;
-    public TextInputLayout inputTextMarginLine;
-    public TextInputLayout inputTextSize;
-    public TextInputLayout inputTextPointRadius;
-    public TextInputLayout inputTextLineStrokeWidth;
-    public TextInputLayout inputTextLineTransitionLength;
-    public TextInputLayout inputTextLineStartMargin;
-    public TextInputLayout inputSplitAngle;
-    public TextInputLayout inputFocusAlphaType;
-    public AppCompatRadioButton radioFocusWithAlpha;
-    public AppCompatRadioButton radioFocusWithAlphaRev;
-    public AppCompatRadioButton radioFocusWithoutAlpha;
-    public AppCompatRadioButton radioCapButt;
-    public AppCompatRadioButton radioCapRound;
-    public AppCompatRadioButton radioCapSquare;
+    private SwitchCompat switchDonuts;
+    private SwitchCompat switchText;
+    private SwitchCompat switchTouchAnimation;
+    private SwitchCompat switchDirectText;
+    private SwitchCompat switchCanTouch;
+    private TextInputLayout inputDuration;
+    private TextInputLayout inputStartAngle;
+    private TextInputLayout inputTouchScaleSize;
+    private TextInputLayout inputTouchScaleUpDuration;
+    private TextInputLayout inputTouchScaleDownDuration;
+    private TextInputLayout inputTouchShadowRadius;
+    private TextInputLayout inputTouchExpandAngle;
+    private TextInputLayout inputPieRadiusScale;
+    private TextInputLayout inputTextMarginLine;
+    private TextInputLayout inputTextSize;
+    private TextInputLayout inputTextPointRadius;
+    private TextInputLayout inputTextLineStrokeWidth;
+    private TextInputLayout inputTextLineTransitionLength;
+    private TextInputLayout inputTextLineStartMargin;
+    private TextInputLayout inputSplitAngle;
+    private TextInputLayout inputFocusAlphaType;
+    private AppCompatRadioButton radioFocusWithAlpha;
+    private AppCompatRadioButton radioFocusWithAlphaRev;
+    private AppCompatRadioButton radioFocusWithoutAlpha;
+    private AppCompatRadioButton radioCapButt;
+    private AppCompatRadioButton radioCapRound;
+    private AppCompatRadioButton radioCapSquare;
 
     public Button btnOk;
 
@@ -57,6 +57,13 @@ public class PopupSetting extends BasePopupWindow {
     public PopupSetting(Context context) {
         super(context);
         setBackPressEnable(false);
+        setBlurBackgroundEnable(true, new OnBlurOptionInitListener() {
+            @Override
+            public void onCreateBlurOption(PopupBlurOption option) {
+                option.setBlurInDuration(500).setBlurOutDuration(500);
+
+            }
+        });
         findView();
     }
 
@@ -102,24 +109,24 @@ public class PopupSetting extends BasePopupWindow {
     private void setConfig(AnimatedPieViewConfig viewConfig) {
         if (viewConfig == null) return;
         viewConfig.setDrawStrokeOnly(!switchDonuts.isChecked())
-                  .setDrawText(switchText.isChecked())
-                  .setTouchAnimation(switchTouchAnimation.isChecked())
-                  .setDirectText(switchDirectText.isChecked())
-                  .setCanTouch(switchCanTouch.isChecked())
-                  .setDuration(getTextLong(inputDuration, viewConfig.getDuration()))
-                  .setStartAngle(getTextFloat(inputStartAngle, viewConfig.getStartAngle()))
-                  .setTouchScaleSize(getTextFloat(inputTouchScaleSize, viewConfig.getTouchScaleSize()))
-                  .setTouchScaleUpDuration(getTextLong(inputTouchScaleUpDuration, viewConfig.getTouchScaleUpDuration()))
-                  .setTouchScaleDownDuration(getTextLong(inputTouchScaleDownDuration, viewConfig.getTouchScaleDownDuration()))
-                  .setTouchShadowRadius(getTextFloat(inputTouchShadowRadius, viewConfig.getTouchShadowRadius()))
-                  .setTouchExpandAngle(getTextFloat(inputTouchExpandAngle, viewConfig.getTouchExpandAngle()))
-                  .setPieRadiusScale(getTextFloat(inputPieRadiusScale, viewConfig.getPieRadiusScale()))
-                  .setTextMarginLine(getTextFloat(inputTextMarginLine, viewConfig.getTextMarginLine()))
-                  .setTextSize(getTextInt(inputTextSize, viewConfig.getTextSize()))
-                  .setTextPointRadius(getTextInt(inputTextPointRadius, viewConfig.getTextPointRadius()))
-                  .setTextLineStrokeWidth(getTextInt(inputTextLineStrokeWidth, viewConfig.getTextLineStrokeWidth()))
-                  .setTextLineTransitionLength(getTextInt(inputTextLineTransitionLength, viewConfig.getTextLineTransitionLength()))
-                  .setSplitAngle(getTextFloat(inputSplitAngle, viewConfig.getSplitAngle()));
+                .setDrawText(switchText.isChecked())
+                .setTouchAnimation(switchTouchAnimation.isChecked())
+                .setDirectText(switchDirectText.isChecked())
+                .setCanTouch(switchCanTouch.isChecked())
+                .setDuration(getTextLong(inputDuration, viewConfig.getDuration()))
+                .setStartAngle(getTextFloat(inputStartAngle, viewConfig.getStartAngle()))
+                .setTouchScaleSize(getTextFloat(inputTouchScaleSize, viewConfig.getTouchScaleSize()))
+                .setTouchScaleUpDuration(getTextLong(inputTouchScaleUpDuration, viewConfig.getTouchScaleUpDuration()))
+                .setTouchScaleDownDuration(getTextLong(inputTouchScaleDownDuration, viewConfig.getTouchScaleDownDuration()))
+                .setTouchShadowRadius(getTextFloat(inputTouchShadowRadius, viewConfig.getTouchShadowRadius()))
+                .setTouchExpandAngle(getTextFloat(inputTouchExpandAngle, viewConfig.getTouchExpandAngle()))
+                .setPieRadiusScale(getTextFloat(inputPieRadiusScale, viewConfig.getPieRadiusScale()))
+                .setTextMarginLine(getTextFloat(inputTextMarginLine, viewConfig.getTextMarginLine()))
+                .setTextSize(getTextInt(inputTextSize, viewConfig.getTextSize()))
+                .setTextPointRadius(getTextInt(inputTextPointRadius, viewConfig.getTextPointRadius()))
+                .setTextLineStrokeWidth(getTextInt(inputTextLineStrokeWidth, viewConfig.getTextLineStrokeWidth()))
+                .setTextLineTransitionLength(getTextInt(inputTextLineTransitionLength, viewConfig.getTextLineTransitionLength()))
+                .setSplitAngle(getTextFloat(inputSplitAngle, viewConfig.getSplitAngle()));
 
         float alphaCut = getTextFloat(inputFocusAlphaType, viewConfig.getFocusAlphaCut());
         if (radioFocusWithoutAlpha.isChecked()) {
@@ -130,7 +137,7 @@ public class PopupSetting extends BasePopupWindow {
             viewConfig.setFocusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV, alphaCut);
         }
 
-       if (radioCapButt.isChecked()) {
+        if (radioCapButt.isChecked()) {
             viewConfig.setStrokePaintCap(Paint.Cap.BUTT);
         } else if (radioCapRound.isChecked()) {
             viewConfig.setStrokePaintCap(Paint.Cap.ROUND);
