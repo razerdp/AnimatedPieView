@@ -12,14 +12,6 @@ AnimatedPieView
 
 **因为一些历史原因~~（撸代码时对于硬件加速的使用有点随意。。。）~~导致了重大性能问题，强烈建议更新到1.1.3或以上版本**
 
---- 
-
-ChangeLog
----
-
-  * 1.1.4
-    * 修复了甜甜圈点击范围的问题
-    * 修复了甜甜圈之间存在微弱偏差的问题
 
 开发进度 （更新日志->[日志](https://github.com/razerdp/AnimatedPieView/blob/master/UPDATE_LOG.md)）
 ---
