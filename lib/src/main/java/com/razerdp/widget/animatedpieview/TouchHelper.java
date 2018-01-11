@@ -212,7 +212,7 @@ import android.util.Log;
  * 点击事件helper
  */
 
-public class TouchHelper {
+class TouchHelper {
     private static final String TAG = "TouchHelper";
     private AnimatedPieViewConfig mConfig;
     //圆心
@@ -223,23 +223,23 @@ public class TouchHelper {
     //因为判断点击时是判断内圆和外圆半径，可能很苛刻，所以这里可以考虑增加点击范围
     private int expandClickRange = 25;
 
-    public TouchHelper(AnimatedPieViewConfig config) {
+    TouchHelper(AnimatedPieViewConfig config) {
         mConfig = config;
     }
 
-    public void setPieParam(float centerX, float centerY, float radius) {
+    void setPieParam(float centerX, float centerY, float radius) {
         this.centerX = centerX;
         this.centerY = centerY;
         this.radius = radius;
     }
 
-    public InternalPieInfo pointToInfo(float x, float y) {
+    InternalPieInfo pointToInfo(float x, float y) {
         final boolean isStrokeOnly = mConfig.isDrawStrokeOnly();
         final float strokeWidth = mConfig.getStrokeWidth();
         //外圆半径
-        final float exCircleRadius = radius;
+        final float exCircleRadius = isStrokeOnly ? radius + strokeWidth / 2 : radius;
         //内圆半径
-        final float innerCircleRadius = isStrokeOnly ? exCircleRadius - strokeWidth : 0;
+        final float innerCircleRadius = isStrokeOnly ? radius - strokeWidth / 2 : 0;
         //点击位置到圆心的直线距离(没开根)
         final double touchDistancePow = Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2);
         //内圆半径<=直线距离<=外圆半径
