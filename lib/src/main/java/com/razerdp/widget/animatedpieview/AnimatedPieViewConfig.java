@@ -75,8 +75,8 @@ public class AnimatedPieViewConfig implements Serializable {
     private int textLineStartMargin = DEFAULT_TEXT_LINE_START_MARGIN;
     private float splitAngle = DEFAULT_SPLIT_ANGLE;
     @FocusAlpha
-    private int focusAlphaType = DEFAULT_FOCUS_ALPHA;
-    private float focusAlphaCut = DEFAULT_FOCUS_ALPHA_CUT;
+    int focusAlphaType = DEFAULT_FOCUS_ALPHA;
+    float focusAlphaCut = DEFAULT_FOCUS_ALPHA_CUT;
 
     private volatile boolean reApply;
     private List<InternalPieInfo> mDatas;
@@ -101,7 +101,7 @@ public class AnimatedPieViewConfig implements Serializable {
      *
      * @return true：甜甜圈<br>false：饼图
      */
-    public boolean isDrawStrokeOnly() {
+    public boolean isStrokeOnly() {
         return isStroke;
     }
 
@@ -110,9 +110,9 @@ public class AnimatedPieViewConfig implements Serializable {
      *
      * @param stroke <br>true：甜甜圈<br>false：饼图
      */
-    public AnimatedPieViewConfig setDrawStrokeOnly(boolean stroke) {
+    public AnimatedPieViewConfig strokeOnly(boolean stroke) {
         isStroke = stroke;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
@@ -129,9 +129,9 @@ public class AnimatedPieViewConfig implements Serializable {
      *
      * @param strokeWidth 线宽
      */
-    public AnimatedPieViewConfig setStrokeWidth(int strokeWidth) {
+    public AnimatedPieViewConfig strokeWidth(int strokeWidth) {
         this.strokeWidth = strokeWidth;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
@@ -147,15 +147,15 @@ public class AnimatedPieViewConfig implements Serializable {
      *
      * @param startAngle 起始角度（任意）
      */
-    public AnimatedPieViewConfig setStartAngle(float startAngle) {
+    public AnimatedPieViewConfig startAngle(float startAngle) {
         this.startAngle = startAngle;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
      * 甜甜圈生长动画的插值器
      */
-    Interpolator getInterpolator() {
+    Interpolator getAnimationInterpolator() {
         return mInterpolator;
     }
 
@@ -165,15 +165,15 @@ public class AnimatedPieViewConfig implements Serializable {
      * @param interpolator 插值器，不建议用{@link android.view.animation.OvershootInterpolator}，可能会
      *                     出现意料之外的效果
      */
-    private AnimatedPieViewConfig setInterpolator(Interpolator interpolator) {
+    private AnimatedPieViewConfig animationInterpolator(Interpolator interpolator) {
         mInterpolator = interpolator;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
      * 生长动画时间
      */
-    public long getDuration() {
+    public long getAnimationDrawDuration() {
         return duration;
     }
 
@@ -182,9 +182,9 @@ public class AnimatedPieViewConfig implements Serializable {
      *
      * @param duration 动画时间
      */
-    public AnimatedPieViewConfig setDuration(long duration) {
+    public AnimatedPieViewConfig animationDrawDuration(long duration) {
         this.duration = duration;
-        return setReApply(true);
+        return reApply(true);
     }
 
 
@@ -223,10 +223,10 @@ public class AnimatedPieViewConfig implements Serializable {
         assert info != null : "不能添加空数据";
         if (info == null) return this;
         InternalPieInfo internalPieInfo = InternalPieInfo.create(info)
-                                                         .setStrokeWidth(strokeWidth)
-                                                         .setDrawStrokeOnly(isStroke)
-                                                         .setAutoDesc(autoDesc)
-                                                         .setPaintStrokeCap(strokePaintCap);
+                .setStrokeWidth(strokeWidth)
+                .setDrawStrokeOnly(isStroke)
+                .setAutoDesc(autoDesc)
+                .setPaintStrokeCap(strokePaintCap);
         mDatas.add(internalPieInfo);
         mPieViewHelper.prepare();
         return this;
@@ -236,7 +236,7 @@ public class AnimatedPieViewConfig implements Serializable {
         return reApply;
     }
 
-    protected AnimatedPieViewConfig setReApply(boolean reApply) {
+    protected AnimatedPieViewConfig reApply(boolean reApply) {
         this.reApply = reApply;
         return this;
     }
@@ -259,9 +259,9 @@ public class AnimatedPieViewConfig implements Serializable {
         return touchScaleSize;
     }
 
-    public AnimatedPieViewConfig setTouchScaleSize(float touchScaleSize) {
+    public AnimatedPieViewConfig touchScaleSize(float touchScaleSize) {
         this.touchScaleSize = touchScaleSize;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
@@ -273,13 +273,13 @@ public class AnimatedPieViewConfig implements Serializable {
 
     /**
      * 设置点击浮现动画时间
-     * <p>缩小归位动画时间{@link AnimatedPieViewConfig#setTouchScaleDownDuration(long)}
+     * <p>缩小归位动画时间{@link AnimatedPieViewConfig#touchScaleDownDuration(long)}
      *
      * @param touchScaleUpDuration 时间
      */
-    public AnimatedPieViewConfig setTouchScaleUpDuration(long touchScaleUpDuration) {
+    public AnimatedPieViewConfig touchScaleUpDuration(long touchScaleUpDuration) {
         this.touchScaleUpDuration = touchScaleUpDuration;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
@@ -291,13 +291,13 @@ public class AnimatedPieViewConfig implements Serializable {
 
     /**
      * 设置缩小归位动画时间
-     * <p>点击放大动画时间{@link AnimatedPieViewConfig#setTouchScaleUpDuration(long)} (long)}
+     * <p>点击放大动画时间{@link AnimatedPieViewConfig#touchScaleUpDuration(long)} (long)}
      *
      * @param touchScaleDownDuration 时间
      */
-    public AnimatedPieViewConfig setTouchScaleDownDuration(long touchScaleDownDuration) {
+    public AnimatedPieViewConfig touchScaleDownDuration(long touchScaleDownDuration) {
         this.touchScaleDownDuration = touchScaleDownDuration;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
@@ -312,9 +312,9 @@ public class AnimatedPieViewConfig implements Serializable {
      *
      * @param touchShadowRadius 阴影大小
      */
-    public AnimatedPieViewConfig setTouchShadowRadius(float touchShadowRadius) {
+    public AnimatedPieViewConfig touchShadowRadius(float touchShadowRadius) {
         this.touchShadowRadius = touchShadowRadius;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
@@ -329,15 +329,15 @@ public class AnimatedPieViewConfig implements Serializable {
      *
      * @param touchExpandAngle 角度（不建议太大）
      */
-    public AnimatedPieViewConfig setTouchExpandAngle(float touchExpandAngle) {
+    public AnimatedPieViewConfig touchExpandAngle(float touchExpandAngle) {
         this.touchExpandAngle = touchExpandAngle;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
      * 是否播放点击动画（否的情况下会直接绘制而不产生动画过渡）
      */
-    public boolean isTouchAnimation() {
+    public boolean isTouchWithAnimation() {
         return touchAnimation;
     }
 
@@ -347,16 +347,16 @@ public class AnimatedPieViewConfig implements Serializable {
      * @param touchAnimation <br>true：启动点击动画过渡<br>false：关闭点击动画过渡
      * @return
      */
-    public AnimatedPieViewConfig setTouchAnimation(boolean touchAnimation) {
+    public AnimatedPieViewConfig touchWithAnimation(boolean touchAnimation) {
         this.touchAnimation = touchAnimation;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
      * 获取甜甜圈半径比例
      * <p>该比例是针对View大小，将会影响到甜甜圈绘制半径（减去padding）
      * <p>当绘制文字的时候，默认固定为0.55f
-     * <p>文字绘制开关：{@link AnimatedPieViewConfig#setDrawText(boolean)}
+     * <p>文字绘制开关：{@link AnimatedPieViewConfig#drawDescText(boolean)}
      */
     public float getPieRadiusScale() {
         return drawText ? 0.55f : pieRadiusScale;
@@ -366,15 +366,15 @@ public class AnimatedPieViewConfig implements Serializable {
      * 设置甜甜圈半径比例
      * <p>该比例是针对View大小，将会影响到甜甜圈绘制半径（减去padding）
      * <p>当绘制文字的时候，默认固定为0.55f
-     * <p>文字绘制开关：{@link AnimatedPieViewConfig#setDrawText(boolean)}
+     * <p>文字绘制开关：{@link AnimatedPieViewConfig#drawDescText(boolean)}
      *
      * @param pieRadiusScale 半径比例，不能超过1
      */
-    public AnimatedPieViewConfig setPieRadiusScale(@FloatRange(from = 0.0f, to = 1.0f) float pieRadiusScale) {
+    public AnimatedPieViewConfig pieRadiusScale(@FloatRange(from = 0.0f, to = 1.0f) float pieRadiusScale) {
         if (pieRadiusScale <= 0.0f) pieRadiusScale = 0.0f;
         if (pieRadiusScale > 1.0f) pieRadiusScale = 1.0f;
         this.pieRadiusScale = pieRadiusScale;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
@@ -382,7 +382,7 @@ public class AnimatedPieViewConfig implements Serializable {
      * <p>当{@link AnimatedPieViewConfig#addData(IPieInfo, boolean)}第二个参数为true时，文字描述强制为显示百分比
      * <p>当{@link AnimatedPieViewConfig#addData(IPieInfo, boolean)}第二个参数为false时，文字描述显示为数据的desc{@link IPieInfo#getDesc()}
      */
-    public boolean isDrawText() {
+    public boolean isDrawDescText() {
         return drawText;
     }
 
@@ -393,9 +393,9 @@ public class AnimatedPieViewConfig implements Serializable {
      *
      * @param drawText 是否绘制文字
      */
-    public AnimatedPieViewConfig setDrawText(boolean drawText) {
+    public AnimatedPieViewConfig drawDescText(boolean drawText) {
         this.drawText = drawText;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
@@ -413,9 +413,9 @@ public class AnimatedPieViewConfig implements Serializable {
      * @param onPieSelectListener 监听事件
      * @param <T>                 传入接口{@link IPieInfo}的数据实体类，缺省值默认为Object
      */
-    public <T extends IPieInfo> AnimatedPieViewConfig setOnPieSelectListener(OnPieSelectListener<T> onPieSelectListener) {
+    public <T extends IPieInfo> AnimatedPieViewConfig pieSelectListener(OnPieSelectListener<T> onPieSelectListener) {
         mOnPieSelectListener = onPieSelectListener;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
@@ -430,9 +430,9 @@ public class AnimatedPieViewConfig implements Serializable {
      *
      * @param textMarginLine 距离
      */
-    public AnimatedPieViewConfig setTextMarginLine(float textMarginLine) {
+    public AnimatedPieViewConfig textMarginLine(float textMarginLine) {
         this.textMarginLine = textMarginLine;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
@@ -447,15 +447,15 @@ public class AnimatedPieViewConfig implements Serializable {
      *
      * @param textSize 文字大小(px)
      */
-    public AnimatedPieViewConfig setTextSize(int textSize) {
+    public AnimatedPieViewConfig textSize(int textSize) {
         this.textSize = textSize;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
      * 获取描述文字的点
      */
-    public int getTextPointRadius() {
+    public int getDescGuidePointRadius() {
         return textPointRadius;
     }
 
@@ -464,15 +464,15 @@ public class AnimatedPieViewConfig implements Serializable {
      *
      * @param textPointRadius 点的半径
      */
-    public AnimatedPieViewConfig setTextPointRadius(int textPointRadius) {
+    public AnimatedPieViewConfig descGuidePointRadius(int textPointRadius) {
         this.textPointRadius = textPointRadius;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
      * 获取描述文字的指示线宽度
      */
-    public int getTextLineStrokeWidth() {
+    public int getTextGuideLineStrokeWidth() {
         return textLineStrokeWidth;
     }
 
@@ -481,9 +481,9 @@ public class AnimatedPieViewConfig implements Serializable {
      *
      * @param textLineStrokeWidth 宽度（px）
      */
-    public AnimatedPieViewConfig setTextLineStrokeWidth(int textLineStrokeWidth) {
+    public AnimatedPieViewConfig textGuideLineStrokeWidth(int textLineStrokeWidth) {
         this.textLineStrokeWidth = textLineStrokeWidth;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
@@ -500,7 +500,7 @@ public class AnimatedPieViewConfig implements Serializable {
      */
     public AnimatedPieViewConfig setTextLineTransitionLength(int textLineTransitionLength) {
         this.textLineTransitionLength = textLineTransitionLength;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
@@ -517,7 +517,7 @@ public class AnimatedPieViewConfig implements Serializable {
      */
     public AnimatedPieViewConfig setTextLineStartMargin(int textLineStartMargin) {
         this.textLineStartMargin = textLineStartMargin;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
@@ -532,9 +532,9 @@ public class AnimatedPieViewConfig implements Serializable {
      *
      * @param directText <p>true：文字将会在指示线上绘制<p>false：文字在1、2象限部分绘制在线的上方，在3、4象限绘制在线的下方
      */
-    public AnimatedPieViewConfig setDirectText(boolean directText) {
+    public AnimatedPieViewConfig directText(boolean directText) {
         this.directText = directText;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
@@ -547,9 +547,9 @@ public class AnimatedPieViewConfig implements Serializable {
     /**
      * 设置甜甜圈是否允许触碰放大
      */
-    public AnimatedPieViewConfig setCanTouch(boolean canTouch) {
+    public AnimatedPieViewConfig canTouch(boolean canTouch) {
         this.canTouch = canTouch;
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
@@ -564,9 +564,9 @@ public class AnimatedPieViewConfig implements Serializable {
      *
      * @param splitAngle
      */
-    public AnimatedPieViewConfig setSplitAngle(float splitAngle) {
+    public AnimatedPieViewConfig splitAngle(float splitAngle) {
         this.splitAngle = Math.abs(splitAngle);
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
@@ -582,8 +582,8 @@ public class AnimatedPieViewConfig implements Serializable {
      *
      * @param focusAlphaType One of {@link #FOCUS_WITH_ALPHA}, {@link #FOCUS_WITH_ALPHA_REV}, or {@link #FOCUS_WITHOUT_ALPHA}.
      */
-    public AnimatedPieViewConfig setFocusAlphaType(@FocusAlpha int focusAlphaType) {
-        return setFocusAlphaType(focusAlphaType, focusAlphaCut);
+    public AnimatedPieViewConfig focusAlphaType(@FocusAlpha int focusAlphaType) {
+        return focusAlphaType(focusAlphaType, focusAlphaCut);
     }
 
     /**
@@ -592,10 +592,10 @@ public class AnimatedPieViewConfig implements Serializable {
      * @param focusAlphaType One of {@link #FOCUS_WITH_ALPHA}, {@link #FOCUS_WITH_ALPHA_REV}, or {@link #FOCUS_WITHOUT_ALPHA}
      * @param alphaCutDown   cut down alpha when focus touch
      */
-    public AnimatedPieViewConfig setFocusAlphaType(@FocusAlpha int focusAlphaType, @FloatRange(from = 0, to = 255) float alphaCutDown) {
+    public AnimatedPieViewConfig focusAlphaType(@FocusAlpha int focusAlphaType, @FloatRange(from = 0, to = 255) float alphaCutDown) {
         this.focusAlphaType = focusAlphaType;
         this.focusAlphaCut = Math.min(255, Math.abs(alphaCutDown));
-        return setReApply(true);
+        return reApply(true);
     }
 
     /**
@@ -617,10 +617,10 @@ public class AnimatedPieViewConfig implements Serializable {
      *
      * @param strokePaintCap 设置笔刷样式
      */
-    public AnimatedPieViewConfig setStrokePaintCap(@NonNull Paint.Cap strokePaintCap) {
+    public AnimatedPieViewConfig strokePaintCap(@NonNull Paint.Cap strokePaintCap) {
         if (strokePaintCap == null) strokePaintCap = Paint.Cap.BUTT;
         this.strokePaintCap = strokePaintCap;
-        return setReApply(true);
+        return reApply(true);
     }
 
     protected List<InternalPieInfo> getImplDatas() {
@@ -643,31 +643,31 @@ public class AnimatedPieViewConfig implements Serializable {
      */
     public AnimatedPieViewConfig setConfig(AnimatedPieViewConfig config) {
         if (config != null) {
-            setStrokeWidth(config.getStrokeWidth())
-                    .setDuration(config.getDuration())
-                    .setInterpolator(config.getInterpolator())
-                    .setStartAngle(config.getStartAngle())
-                    .setDrawStrokeOnly(config.isDrawStrokeOnly())
-                    .setTouchScaleSize(config.getTouchScaleSize())
-                    .setTouchScaleUpDuration(config.getTouchScaleUpDuration())
-                    .setTouchScaleDownDuration(config.getTouchScaleDownDuration())
-                    .setTouchShadowRadius(config.getTouchShadowRadius())
-                    .setTouchExpandAngle(config.getTouchExpandAngle())
-                    .setTouchAnimation(config.isTouchAnimation())
-                    .setOnPieSelectListener(config.getOnPieSelectListener())
-                    .setPieRadiusScale(config.getPieRadiusScale())
-                    .setDrawText(config.isDrawText())
-                    .setTextMarginLine(config.getTextMarginLine())
-                    .setTextSize(config.getTextSize())
-                    .setTextPointRadius(config.getTextPointRadius())
-                    .setTextLineStrokeWidth(config.getTextLineStrokeWidth())
+            strokeWidth(config.getStrokeWidth())
+                    .animationDrawDuration(config.getAnimationDrawDuration())
+                    .animationInterpolator(config.getAnimationInterpolator())
+                    .startAngle(config.getStartAngle())
+                    .strokeOnly(config.isStrokeOnly())
+                    .touchScaleSize(config.getTouchScaleSize())
+                    .touchScaleUpDuration(config.getTouchScaleUpDuration())
+                    .touchScaleDownDuration(config.getTouchScaleDownDuration())
+                    .touchShadowRadius(config.getTouchShadowRadius())
+                    .touchExpandAngle(config.getTouchExpandAngle())
+                    .touchWithAnimation(config.isTouchWithAnimation())
+                    .pieSelectListener(config.getOnPieSelectListener())
+                    .pieRadiusScale(config.getPieRadiusScale())
+                    .drawDescText(config.isDrawDescText())
+                    .textMarginLine(config.getTextMarginLine())
+                    .textSize(config.getTextSize())
+                    .descGuidePointRadius(config.getDescGuidePointRadius())
+                    .textGuideLineStrokeWidth(config.getTextGuideLineStrokeWidth())
                     .setTextLineTransitionLength(config.getTextLineTransitionLength())
                     .setTextLineStartMargin(config.getTextLineStartMargin())
-                    .setDirectText(config.isDirectText())
-                    .setCanTouch(config.isCanTouch())
-                    .setSplitAngle(config.getSplitAngle())
-                    .setFocusAlphaType(config.getFocusAlphaType(), config.getFocusAlphaCut())
-                    .setStrokePaintCap(config.getStrokePaintCap());
+                    .directText(config.isDirectText())
+                    .canTouch(config.isCanTouch())
+                    .splitAngle(config.getSplitAngle())
+                    .focusAlphaType(config.getFocusAlphaType(), config.getFocusAlphaCut())
+                    .strokePaintCap(config.getStrokePaintCap());
             List<InternalPieInfo> infos = config.getImplDatas();
             mDatas.clear();
             for (InternalPieInfo info : infos) {

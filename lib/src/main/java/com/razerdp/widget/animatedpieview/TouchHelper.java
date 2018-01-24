@@ -234,7 +234,7 @@ class TouchHelper {
     }
 
     InternalPieInfo pointToInfo(float x, float y) {
-        final boolean isStrokeOnly = mConfig.isDrawStrokeOnly();
+        final boolean isStrokeOnly = mConfig.isStrokeOnly();
         final float strokeWidth = mConfig.getStrokeWidth();
         //外圆半径
         final float exCircleRadius = isStrokeOnly ? radius + strokeWidth / 2 : radius;
