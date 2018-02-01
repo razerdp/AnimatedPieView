@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 
 import com.razerdp.animatedpieview.R;
-import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
+import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig2;
 
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.blur.PopupBlurOption;
@@ -50,7 +50,7 @@ public class PopupSetting extends BasePopupWindow {
 
     public Button btnOk;
 
-    AnimatedPieViewConfig viewConfig;
+    AnimatedPieViewConfig2 viewConfig;
 
     private View.OnClickListener mOnClickListener;
 
@@ -95,18 +95,18 @@ public class PopupSetting extends BasePopupWindow {
         mOnClickListener = onClickListener;
     }
 
-    public void showPopupWindow(AnimatedPieViewConfig viewConfig) {
+    public void showPopupWindow(AnimatedPieViewConfig2 viewConfig) {
         if (viewConfig == null) return;
         applyConfigToView(viewConfig);
         super.showPopupWindow();
     }
 
-    public void dismiss(AnimatedPieViewConfig viewConfig) {
+    public void dismiss(AnimatedPieViewConfig2 viewConfig) {
         setConfig(viewConfig);
         super.dismiss();
     }
 
-    private void setConfig(AnimatedPieViewConfig viewConfig) {
+    private void setConfig(AnimatedPieViewConfig2 viewConfig) {
         if (viewConfig == null) return;
         viewConfig.strokeOnly(!switchDonuts.isChecked())
                 .drawDescText(switchText.isChecked())
@@ -130,11 +130,11 @@ public class PopupSetting extends BasePopupWindow {
 
         float alphaCut = getTextFloat(inputFocusAlphaType, viewConfig.getFocusAlphaCut());
         if (radioFocusWithoutAlpha.isChecked()) {
-            viewConfig.focusAlphaType(AnimatedPieViewConfig.FOCUS_WITHOUT_ALPHA, alphaCut);
+            viewConfig.focusAlphaType(AnimatedPieViewConfig2.FOCUS_WITHOUT_ALPHA, alphaCut);
         } else if (radioFocusWithAlpha.isChecked()) {
-            viewConfig.focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA, alphaCut);
+            viewConfig.focusAlphaType(AnimatedPieViewConfig2.FOCUS_WITH_ALPHA, alphaCut);
         } else if (radioFocusWithAlphaRev.isChecked()) {
-            viewConfig.focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV, alphaCut);
+            viewConfig.focusAlphaType(AnimatedPieViewConfig2.FOCUS_WITH_ALPHA_REV, alphaCut);
         }
 
         if (radioCapButt.isChecked()) {
@@ -198,7 +198,7 @@ public class PopupSetting extends BasePopupWindow {
         });
     }
 
-    private void applyConfigToView(AnimatedPieViewConfig viewConfig) {
+    private void applyConfigToView(AnimatedPieViewConfig2 viewConfig) {
         this.viewConfig = viewConfig;
         switchDonuts.setChecked(!viewConfig.isStrokeOnly());
         switchText.setChecked(viewConfig.isDrawDescText());
@@ -224,13 +224,13 @@ public class PopupSetting extends BasePopupWindow {
         setText(inputFocusAlphaType, viewConfig.getFocusAlphaCut());
 
         switch (viewConfig.getFocusAlphaType()) {
-            case AnimatedPieViewConfig.FOCUS_WITH_ALPHA:
+            case AnimatedPieViewConfig2.FOCUS_WITH_ALPHA:
                 radioFocusWithAlpha.setChecked(true);
                 break;
-            case AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV:
+            case AnimatedPieViewConfig2.FOCUS_WITH_ALPHA_REV:
                 radioFocusWithAlphaRev.setChecked(true);
                 break;
-            case AnimatedPieViewConfig.FOCUS_WITHOUT_ALPHA:
+            case AnimatedPieViewConfig2.FOCUS_WITHOUT_ALPHA:
                 radioFocusWithoutAlpha.setChecked(true);
                 break;
         }

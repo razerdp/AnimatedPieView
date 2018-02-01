@@ -215,10 +215,10 @@ import com.razerdp.widget.animatedpieview.exception.NoViewConfigException;
  */
 
 class PieViewAnimation extends Animation {
-    private AnimatedPieViewConfig mViewConfig;
+    private AnimatedPieViewConfig2 mViewConfig;
     private AnimationHandler mHandler;
 
-    public PieViewAnimation(AnimatedPieViewConfig viewConfig) {
+    public PieViewAnimation(AnimatedPieViewConfig2 viewConfig) {
         mViewConfig = viewConfig;
     }
 

@@ -252,7 +252,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
     private Mode mode = Mode.DRAW;
 
-    private AnimatedPieViewConfig mConfig;
+    private AnimatedPieViewConfig2 mConfig;
     private PieViewAnimation mPieViewAnimation;
     private ValueAnimator mTouchScaleUpAnimator;
     private ValueAnimator mTouchScaleDownAnimator;
@@ -297,7 +297,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
     private void initView(Context context, AttributeSet attrs) {
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        if (mConfig == null) mConfig = new AnimatedPieViewConfig();
+        if (mConfig == null) mConfig = new AnimatedPieViewConfig2();
         if (mTouchEventPaint == null)
             mTouchEventPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         if (mPathMeasure == null)
@@ -309,14 +309,14 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         applyConfigInternal(mConfig);
     }
 
-    private void applyConfigInternal(AnimatedPieViewConfig config) {
+    private void applyConfigInternal(AnimatedPieViewConfig2 config) {
         if (config == null) throw new NoViewConfigException("请使用config进行配置");
         mConfig.setConfig(config);
         buildAnima(mConfig);
         if (mConfig.isReApply()) config.reApply(false);
     }
 
-    private void buildAnima(AnimatedPieViewConfig config) {
+    private void buildAnima(AnimatedPieViewConfig2 config) {
         //anim
         if (mPieViewAnimation == null) mPieViewAnimation = new PieViewAnimation(config);
         mPieViewAnimation.setDuration(config.getAnimationDrawDuration());
@@ -646,7 +646,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         invalidate();
     }
 
-    public AnimatedPieViewConfig getConfig() {
+    public AnimatedPieViewConfig2 getConfig() {
         return mConfig;
     }
 
@@ -654,7 +654,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         return isInAnimating;
     }
 
-    public void applyConfig(AnimatedPieViewConfig config) {
+    public void applyConfig(AnimatedPieViewConfig2 config) {
         applyConfigInternal(config);
     }
 
@@ -764,10 +764,10 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
         }
         boolean focused = info.equalsWith(mCurrentTouchInfo);
         switch (mConfig.getFocusAlphaType()) {
-            case AnimatedPieViewConfig.FOCUS_WITHOUT_ALPHA:
+            case AnimatedPieViewConfig2.FOCUS_WITHOUT_ALPHA:
                 paint.setAlpha(255);
                 break;
-            case AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV:
+            case AnimatedPieViewConfig2.FOCUS_WITH_ALPHA_REV:
                 boolean alphaDown = !focused
                         && mCurrentTouchInfo != null
                         && mCurrentTouchInfo.getActionScaleState() == InternalPieInfo.ActionState.UP;
@@ -777,7 +777,7 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
                     paint.setAlpha((int) (255 - (mConfig.getFocusAlphaCut() * (alphaDown ? mScaleUpTime : mScaleDownTime))));
                 }
                 break;
-            case AnimatedPieViewConfig.FOCUS_WITH_ALPHA:
+            case AnimatedPieViewConfig2.FOCUS_WITH_ALPHA:
                 boolean alphaDown2 = focused
                         && mCurrentTouchInfo != null
                         && mCurrentTouchInfo.getActionScaleState() == InternalPieInfo.ActionState.UP;

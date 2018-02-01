@@ -214,7 +214,7 @@ import android.util.Log;
 
 class TouchHelper {
     private static final String TAG = "TouchHelper";
-    private AnimatedPieViewConfig mConfig;
+    private AnimatedPieViewConfig2 mConfig;
     //圆心
     private float centerX;
     private float centerY;
@@ -223,7 +223,7 @@ class TouchHelper {
     //因为判断点击时是判断内圆和外圆半径，可能很苛刻，所以这里可以考虑增加点击范围
     private int expandClickRange = 25;
 
-    TouchHelper(AnimatedPieViewConfig config) {
+    TouchHelper(AnimatedPieViewConfig2 config) {
         mConfig = config;
     }
 

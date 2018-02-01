@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.razerdp.animatedpieview.R;
 import com.razerdp.popup.PopupSetting;
 import com.razerdp.widget.animatedpieview.AnimatedPieView;
-import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
+import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig2;
 import com.razerdp.widget.animatedpieview.callback.OnPieSelectListener;
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
 import com.razerdp.widget.animatedpieview.data.SimplePieInfo;
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         start = findViewById(R.id.start);
         setting = findViewById(R.id.setting);
         mAnimatedPieView = findViewById(R.id.animatedPieView);
-        AnimatedPieViewConfig config = new AnimatedPieViewConfig();
+        AnimatedPieViewConfig2 config = new AnimatedPieViewConfig2();
         config.startAngle(-90)
                 .animationDrawDuration(0)
                 .addData(new SimplePieInfo(30, getColor("FF446767")), true)
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 })
-                .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV);
+                .focusAlphaType(AnimatedPieViewConfig2.FOCUS_WITH_ALPHA_REV);
         mAnimatedPieView.applyConfig(config);
 
         mPopupSetting.setOnOkButtonClickListener(new View.OnClickListener() {
