@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
         setting = findViewById(R.id.setting);
         mAnimatedPieView = findViewById(R.id.animatedPieView);
         AnimatedPieViewConfig config = new AnimatedPieViewConfig();
-        config.setStartAngle(-90)
-                .setDuration(0)
+        config.startAngle(-90)
+                .animationDrawDuration(0)
                 .addData(new SimplePieInfo(30, getColor("FF446767")), true)
                 .addData(new SimplePieInfo(18.0f, getColor("FFFFD28C")), true)
                 .addData(new SimplePieInfo(123.0f, getColor("FFbb76b4")), true)
@@ -50,12 +50,12 @@ public class MainActivity extends AppCompatActivity {
                 .addData(new SimplePieInfo(55.0f, getColor("ff8be8ff")), true)
                 .addData(new SimplePieInfo(30.0f, getColor("fffa734d")), true)
                 .addData(new SimplePieInfo(30.0f, getColor("ff957de0")), true)
-                .setDrawText(true)
-                .setDuration(1200)
-                .setTextLineStrokeWidth(4)
-                .setTextSize(12)
-                .setPieRadiusScale(0.8f)
-                .setOnPieSelectListener(new OnPieSelectListener<IPieInfo>() {
+                .drawDescText(true)
+                .animationDrawDuration(1200)
+                .textGuideLineStrokeWidth(4)
+                .textSize(12)
+                .pieRadiusScale(0.8f)
+                .pieSelectListener(new OnPieSelectListener<IPieInfo>() {
                     @Override
                     public void onSelectPie(@NonNull IPieInfo pieInfo, boolean isScaleUp) {
                         if (isScaleUp) {
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 })
-                .setFocusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV);
+                .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV);
         mAnimatedPieView.applyConfig(config);
 
         mPopupSetting.setOnOkButtonClickListener(new View.OnClickListener() {
