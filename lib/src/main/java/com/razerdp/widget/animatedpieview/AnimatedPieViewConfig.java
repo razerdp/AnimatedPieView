@@ -1,5 +1,6 @@
 package com.razerdp.widget.animatedpieview;
 
+import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -46,18 +47,27 @@ public class AnimatedPieViewConfig {
     private static final long DEFAULT_TOUCH_FLOATDOWN_DURATION = 800;
     private static final float DEFAULT_SHADOW_BLUR_RADIUS = 18;
     private static final float DEFAULT_FLOAT_EXPAND_ANGLE = 8;
+    private static final float DEFAULT_DESC_TEXT_SIZE = 12;
+    private static final float DEFAULT_SPLIT_ANGLE = 0;
 
 
     //=============================================================option
 
     private int strokeWidth = DEFAULT_STROKE_WIDTH;
-    private float startDegree = DEFAULT_START_DEGREE;
+    private float startAngle = DEFAULT_START_DEGREE;
     private long duration = DEFAULT_ANIMATION_DURATION;
     private long floatUpDuration = DEFAULT_TOUCH_FLOATUP_DURATION;
     private long floatDownDuration = DEFAULT_TOUCH_FLOATDOWN_DURATION;
     private float floatShadowRadius = DEFAULT_SHADOW_BLUR_RADIUS;
     private float floatExpandDegree = DEFAULT_FLOAT_EXPAND_ANGLE;
     private String autoDescStringFormat = DEFAULT_AUTO_DESC_FORMAT;
+    private boolean autoSize = true;
+    private float pieRadius = 0;
+    private float pieRadiusRatio = 0.85f;
+    private float textSize = DEFAULT_DESC_TEXT_SIZE;
+    private boolean drawText = false;
+    private float splitAngle = DEFAULT_SPLIT_ANGLE;
+    private boolean animPie = true;
 
 
     private boolean strokeMode = true;
@@ -65,14 +75,17 @@ public class AnimatedPieViewConfig {
 
     private List<Pair<IPieInfo, Boolean>> mDatas;
 
+    public AnimatedPieViewConfig() {
+        mDatas = new ArrayList<>();
+    }
 
     public AnimatedPieViewConfig strokeWidth(int strokeWidth) {
         this.strokeWidth = strokeWidth;
         return this;
     }
 
-    public AnimatedPieViewConfig startDegree(float startDegree) {
-        this.startDegree = startDegree;
+    public AnimatedPieViewConfig startAngle(float startAngle) {
+        this.startAngle = startAngle;
         return this;
     }
 
@@ -103,6 +116,42 @@ public class AnimatedPieViewConfig {
 
     public AnimatedPieViewConfig autoDescStringFormat(String autoDescStringFormat) {
         this.autoDescStringFormat = autoDescStringFormat;
+        return this;
+    }
+
+    public AnimatedPieViewConfig autoSize(boolean autoSize) {
+        this.autoSize = autoSize;
+        return this;
+    }
+
+    public AnimatedPieViewConfig pieRadius(float pieRadius) {
+        this.pieRadius = pieRadius;
+        return this;
+    }
+
+    public AnimatedPieViewConfig pieRadiusRatio(@FloatRange(from = 0f, to = 1f) float pieRadiusRatio) {
+        this.pieRadiusRatio = pieRadiusRatio;
+        return this;
+    }
+
+
+    public AnimatedPieViewConfig textSize(float textSize) {
+        this.textSize = textSize;
+        return this;
+    }
+
+    public AnimatedPieViewConfig drawText(boolean drawText) {
+        this.drawText = drawText;
+        return this;
+    }
+
+    public AnimatedPieViewConfig splitAngle(float splitAngle) {
+        this.splitAngle = splitAngle;
+        return this;
+    }
+
+    public AnimatedPieViewConfig animaPie(boolean animaPie) {
+        this.animPie = animaPie;
         return this;
     }
 
@@ -145,8 +194,8 @@ public class AnimatedPieViewConfig {
         return strokeWidth;
     }
 
-    public float getStartDegree() {
-        return startDegree;
+    public float getStartAngle() {
+        return startAngle;
     }
 
     public long getDuration() {
@@ -173,6 +222,34 @@ public class AnimatedPieViewConfig {
         return autoDescStringFormat;
     }
 
+    public boolean isAutoSize() {
+        return autoSize;
+    }
+
+    public float getPieRadius() {
+        return pieRadius;
+    }
+
+    public float getPieRadiusRatio() {
+        return pieRadiusRatio;
+    }
+
+    public float getTextSize() {
+        return textSize;
+    }
+
+    public boolean isDrawText() {
+        return drawText;
+    }
+
+    public float getSplitAngle() {
+        return splitAngle;
+    }
+
+    public boolean isAnimPie() {
+        return animPie;
+    }
+
     public boolean isStrokeMode() {
         return strokeMode;
     }
@@ -189,19 +266,11 @@ public class AnimatedPieViewConfig {
     }
 
     /**
-     * @deprecated Use {@link #getStartDegree()} instead..
-     */
-    @Deprecated
-    public float getStartAngle() {
-        return getStartDegree();
-    }
-
-    /**
-     * @deprecated Use {@link #startDegree(float)} instead..
+     * @deprecated Use {@link #startAngle(float)} instead..
      */
     @Deprecated
     public AnimatedPieViewConfig setStartAngle(float startAngle) {
-        return startDegree(startAngle);
+        return startAngle(startAngle);
     }
 
 

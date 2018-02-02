@@ -20,7 +20,7 @@ public interface IPieView {
 
     public AnimatedPieViewConfig getConfig();
 
-    View getChartView();
+    View getPieView();
 
     void onCallInvalidate();
 }

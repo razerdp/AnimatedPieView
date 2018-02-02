@@ -1,7 +1,6 @@
 package com.razerdp.popup;
 
 import android.content.Context;
-import android.graphics.Paint;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.SwitchCompat;
@@ -11,7 +10,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 
 import com.razerdp.animatedpieview.R;
-import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig2;
+import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
 
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.blur.PopupBlurOption;
@@ -50,7 +49,7 @@ public class PopupSetting extends BasePopupWindow {
 
     public Button btnOk;
 
-    AnimatedPieViewConfig2 viewConfig;
+    AnimatedPieViewConfig viewConfig;
 
     private View.OnClickListener mOnClickListener;
 
@@ -93,58 +92,6 @@ public class PopupSetting extends BasePopupWindow {
 
     public void setOnOkButtonClickListener(View.OnClickListener onClickListener) {
         mOnClickListener = onClickListener;
-    }
-
-    public void showPopupWindow(AnimatedPieViewConfig2 viewConfig) {
-        if (viewConfig == null) return;
-        applyConfigToView(viewConfig);
-        super.showPopupWindow();
-    }
-
-    public void dismiss(AnimatedPieViewConfig2 viewConfig) {
-        setConfig(viewConfig);
-        super.dismiss();
-    }
-
-    private void setConfig(AnimatedPieViewConfig2 viewConfig) {
-        if (viewConfig == null) return;
-        viewConfig.strokeOnly(!switchDonuts.isChecked())
-                .drawDescText(switchText.isChecked())
-                .touchWithAnimation(switchTouchAnimation.isChecked())
-                .directText(switchDirectText.isChecked())
-                .canTouch(switchCanTouch.isChecked())
-                .animationDrawDuration(getTextLong(inputDuration, viewConfig.getAnimationDrawDuration()))
-                .startAngle(getTextFloat(inputStartAngle, viewConfig.getStartAngle()))
-                .touchScaleSize(getTextFloat(inputTouchScaleSize, viewConfig.getTouchScaleSize()))
-                .touchScaleUpDuration(getTextLong(inputTouchScaleUpDuration, viewConfig.getTouchScaleUpDuration()))
-                .touchScaleDownDuration(getTextLong(inputTouchScaleDownDuration, viewConfig.getTouchScaleDownDuration()))
-                .touchShadowRadius(getTextFloat(inputTouchShadowRadius, viewConfig.getTouchShadowRadius()))
-                .touchExpandAngle(getTextFloat(inputTouchExpandAngle, viewConfig.getTouchExpandAngle()))
-                .pieRadiusScale(getTextFloat(inputPieRadiusScale, viewConfig.getPieRadiusScale()))
-                .textMarginLine(getTextFloat(inputTextMarginLine, viewConfig.getTextMarginLine()))
-                .textSize(getTextInt(inputTextSize, viewConfig.getTextSize()))
-                .descGuidePointRadius(getTextInt(inputTextPointRadius, viewConfig.getDescGuidePointRadius()))
-                .textGuideLineStrokeWidth(getTextInt(inputTextLineStrokeWidth, viewConfig.getTextGuideLineStrokeWidth()))
-                .setTextLineTransitionLength(getTextInt(inputTextLineTransitionLength, viewConfig.getTextLineTransitionLength()))
-                .splitAngle(getTextFloat(inputSplitAngle, viewConfig.getSplitAngle()));
-
-        float alphaCut = getTextFloat(inputFocusAlphaType, viewConfig.getFocusAlphaCut());
-        if (radioFocusWithoutAlpha.isChecked()) {
-            viewConfig.focusAlphaType(AnimatedPieViewConfig2.FOCUS_WITHOUT_ALPHA, alphaCut);
-        } else if (radioFocusWithAlpha.isChecked()) {
-            viewConfig.focusAlphaType(AnimatedPieViewConfig2.FOCUS_WITH_ALPHA, alphaCut);
-        } else if (radioFocusWithAlphaRev.isChecked()) {
-            viewConfig.focusAlphaType(AnimatedPieViewConfig2.FOCUS_WITH_ALPHA_REV, alphaCut);
-        }
-
-        if (radioCapButt.isChecked()) {
-            viewConfig.strokePaintCap(Paint.Cap.BUTT);
-        } else if (radioCapRound.isChecked()) {
-            viewConfig.strokePaintCap(Paint.Cap.ROUND);
-        } else if (radioCapSquare.isChecked()) {
-            viewConfig.strokePaintCap(Paint.Cap.SQUARE);
-        }
-
     }
 
     private void findView() {
@@ -198,6 +145,59 @@ public class PopupSetting extends BasePopupWindow {
         });
     }
 
+    public void dismiss(AnimatedPieViewConfig viewConfig) {
+//        setConfig(viewConfig);
+        super.dismiss();
+    }
+
+   /* public void showPopupWindow(AnimatedPieViewConfig2 viewConfig) {
+        if (viewConfig == null) return;
+        applyConfigToView(viewConfig);
+        super.showPopupWindow();
+    }
+
+
+    private void setConfig(AnimatedPieViewConfig2 viewConfig) {
+        if (viewConfig == null) return;
+        viewConfig.strokeOnly(!switchDonuts.isChecked())
+                .drawDescText(switchText.isChecked())
+                .touchWithAnimation(switchTouchAnimation.isChecked())
+                .directText(switchDirectText.isChecked())
+                .canTouch(switchCanTouch.isChecked())
+                .animationDrawDuration(getTextLong(inputDuration, viewConfig.getAnimationDrawDuration()))
+                .startAngle(getTextFloat(inputStartAngle, viewConfig.getStartAngle()))
+                .touchScaleSize(getTextFloat(inputTouchScaleSize, viewConfig.getTouchScaleSize()))
+                .touchScaleUpDuration(getTextLong(inputTouchScaleUpDuration, viewConfig.getTouchScaleUpDuration()))
+                .touchScaleDownDuration(getTextLong(inputTouchScaleDownDuration, viewConfig.getTouchScaleDownDuration()))
+                .touchShadowRadius(getTextFloat(inputTouchShadowRadius, viewConfig.getTouchShadowRadius()))
+                .touchExpandAngle(getTextFloat(inputTouchExpandAngle, viewConfig.getTouchExpandAngle()))
+                .pieRadiusScale(getTextFloat(inputPieRadiusScale, viewConfig.getPieRadiusScale()))
+                .textMarginLine(getTextFloat(inputTextMarginLine, viewConfig.getTextMarginLine()))
+                .textSize(getTextInt(inputTextSize, viewConfig.getTextSize()))
+                .descGuidePointRadius(getTextInt(inputTextPointRadius, viewConfig.getDescGuidePointRadius()))
+                .textGuideLineStrokeWidth(getTextInt(inputTextLineStrokeWidth, viewConfig.getTextGuideLineStrokeWidth()))
+                .setTextLineTransitionLength(getTextInt(inputTextLineTransitionLength, viewConfig.getTextLineTransitionLength()))
+                .splitAngle(getTextFloat(inputSplitAngle, viewConfig.getSplitAngle()));
+
+        float alphaCut = getTextFloat(inputFocusAlphaType, viewConfig.getFocusAlphaCut());
+        if (radioFocusWithoutAlpha.isChecked()) {
+            viewConfig.focusAlphaType(AnimatedPieViewConfig2.FOCUS_WITHOUT_ALPHA, alphaCut);
+        } else if (radioFocusWithAlpha.isChecked()) {
+            viewConfig.focusAlphaType(AnimatedPieViewConfig2.FOCUS_WITH_ALPHA, alphaCut);
+        } else if (radioFocusWithAlphaRev.isChecked()) {
+            viewConfig.focusAlphaType(AnimatedPieViewConfig2.FOCUS_WITH_ALPHA_REV, alphaCut);
+        }
+
+        if (radioCapButt.isChecked()) {
+            viewConfig.strokePaintCap(Paint.Cap.BUTT);
+        } else if (radioCapRound.isChecked()) {
+            viewConfig.strokePaintCap(Paint.Cap.ROUND);
+        } else if (radioCapSquare.isChecked()) {
+            viewConfig.strokePaintCap(Paint.Cap.SQUARE);
+        }
+
+    }
+
     private void applyConfigToView(AnimatedPieViewConfig2 viewConfig) {
         this.viewConfig = viewConfig;
         switchDonuts.setChecked(!viewConfig.isStrokeOnly());
@@ -249,7 +249,7 @@ public class PopupSetting extends BasePopupWindow {
                 break;
         }
     }
-
+*/
 
     private void setText(TextInputLayout v, Object str) {
         if (v == null) return;

@@ -204,29 +204,18 @@
  */
 package com.razerdp.widget.animatedpieview;
 
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PathMeasure;
-import android.graphics.RectF;
 import android.os.Build;
-import android.support.annotation.NonNull;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
 
-import com.razerdp.widget.animatedpieview.exception.NoViewConfigException;
-import com.razerdp.widget.animatedpieview.utils.AnimationCallbackUtils;
-import com.razerdp.widget.animatedpieview.utils.ToolUtil;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.razerdp.widget.animatedpieview.manager.PieManager;
+import com.razerdp.widget.animatedpieview.render.PieChartRender;
 
 /**
  * Created by 大灯泡 on 2017/11/7.
@@ -234,45 +223,12 @@ import java.util.List;
  * 好吃的甜甜圈？请问要什么口味呢
  */
 
-public class AnimatedPieView extends View implements PieViewAnimation.AnimationHandler {
+public class AnimatedPieView extends View implements IPieView {
     protected final String TAG = this.getClass().getSimpleName();
 
-    private enum Mode {
-        DRAW, TOUCH
-    }
-
-    private enum LineGravity {
-        TOP_RIGHT,
-        BOTTOM_RIGHT,
-        TOP_LEFT,
-        BOTTOM_LEFT,
-        CENTER_RIGHT,
-        CENTER_LEFT;
-    }
-
-    private Mode mode = Mode.DRAW;
-
-    private AnimatedPieViewConfig2 mConfig;
-    private PieViewAnimation mPieViewAnimation;
-    private ValueAnimator mTouchScaleUpAnimator;
-    private ValueAnimator mTouchScaleDownAnimator;
-    private PathMeasure mPathMeasure;
-
-    private TouchHelper mTouchHelper;
-
-    private volatile float angle;
-    private volatile float mScaleUpTime;
-    private volatile float mScaleDownTime;
-    private InternalPieInfo mCurrentInfo;
-    private InternalPieInfo mCurrentTouchInfo;
-    private InternalPieInfo mLastTouchInfo;
-    private RectF mDrawRectf;
-    private RectF mTouchRectf;
-    private List<InternalPieInfo> mDrawedCachePieInfo;
-
-    private volatile boolean isInAnimating;
-
-    private Paint mTouchEventPaint;
+    private AnimatedPieViewConfig mConfig;
+    private PieChartRender mPieChartRender;
+    private PieManager mPieManager;
 
 
     public AnimatedPieView(Context context) {
@@ -297,500 +253,74 @@ public class AnimatedPieView extends View implements PieViewAnimation.AnimationH
 
     private void initView(Context context, AttributeSet attrs) {
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        if (mConfig == null) mConfig = new AnimatedPieViewConfig2();
-        if (mTouchEventPaint == null)
-            mTouchEventPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-        if (mPathMeasure == null)
-            mPathMeasure = new PathMeasure();
-        mDrawRectf = new RectF();
-        mTouchRectf = new RectF();
-        mDrawedCachePieInfo = new ArrayList<>();
-        mTouchHelper = new TouchHelper(mConfig);
-        applyConfigInternal(mConfig);
+        mPieManager = new PieManager(this);
+        mPieChartRender = new PieChartRender(this);
     }
-
-    private void applyConfigInternal(AnimatedPieViewConfig2 config) {
-        if (config == null) throw new NoViewConfigException("请使用config进行配置");
-        mConfig.setConfig(config);
-        buildAnima(mConfig);
-        if (mConfig.isReApply()) config.reApply(false);
-    }
-
-    private void buildAnima(AnimatedPieViewConfig2 config) {
-        //anim
-        if (mPieViewAnimation == null) mPieViewAnimation = new PieViewAnimation(config);
-        mPieViewAnimation.setDuration(config.getAnimationDrawDuration());
-        mPieViewAnimation.setInterpolator(config.getAnimationInterpolator());
-        mPieViewAnimation.bindAnimationHandler(this);
-        mPieViewAnimation.setAnimationListener(new AnimationCallbackUtils.SimpleAnimationListener() {
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                isInAnimating = false;
-                //释放硬件加速
-            }
-        });
-        //scale up
-        if (mTouchScaleUpAnimator == null)
-            mTouchScaleUpAnimator = ValueAnimator.ofFloat(0.0f, 1.0f);
-        mTouchScaleUpAnimator.setDuration(config.getTouchScaleUpDuration());
-        mTouchScaleUpAnimator.setInterpolator(new DecelerateInterpolator());
-        mTouchScaleUpAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mScaleUpTime = (float) animation.getAnimatedValue();
-                invalidate();
-            }
-        });
-        //scaleDown
-        if (mTouchScaleDownAnimator == null)
-            mTouchScaleDownAnimator = ValueAnimator.ofFloat(1.0f, 0.0f);
-        mTouchScaleDownAnimator.setDuration(config.getTouchScaleDownDuration());
-        mTouchScaleDownAnimator.setInterpolator(new DecelerateInterpolator());
-        mTouchScaleDownAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mScaleDownTime = (float) animation.getAnimatedValue();
-                invalidate();
-            }
-        });
-    }
-
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        if (!mConfig.isReady()) return;
-
-        float width = getWidth() - getPaddingLeft() - getPaddingRight();
-        float height = getHeight() - getPaddingTop() - getPaddingBottom();
-
-        float centerX = width / 2;
-        float centerY = height / 2;
-
-        canvas.translate(centerX, centerY);
-        //半径
-        float radius = Math.min(width, height) / 2 * mConfig.getPieRadiusScale();
-        mTouchHelper.setPieParam(centerX, centerY, radius);
-        mDrawRectf.set(-radius, -radius, radius, radius);
-
-        switch (mode) {
-            case DRAW:
-                onDrawModeHandle(canvas, radius);
-                break;
-            case TOUCH:
-                onTouchModeHandle(canvas, radius);
-                break;
-        }
-    }
-
-    private void onDrawModeHandle(Canvas canvas, float radius) {
-        if (mCurrentInfo != null) {
-            drawCachedInfos(canvas, mCurrentInfo, radius);
-            canvas.drawArc(mDrawRectf,
-                    mCurrentInfo.getStartAngle(),
-                    angle - mCurrentInfo.getStartAngle() - mConfig.getSplitAngle(),
-                    !mConfig.isStrokeOnly(),
-                    mCurrentInfo.getPaint());
-            if (mConfig.isDrawDescText() && angle >= mCurrentInfo.getMiddleAngle() && angle <= mCurrentInfo.getEndAngle()) {
-                drawDescDecoration(canvas, mCurrentInfo, radius);
-            }
-        }
-    }
-
-    private void onTouchModeHandle(Canvas canvas, float radius) {
-        if (mCurrentTouchInfo != null) {
-            drawCachedInfos(canvas, mCurrentTouchInfo, radius);
-            final boolean sameClick = mCurrentTouchInfo.equalsWith(mLastTouchInfo);
-            if (mLastTouchInfo != null && !sameClick) {
-                switch (mLastTouchInfo.getActionScaleState()) {
-                    case UP:
-                        onScaleUpDraw(canvas, mLastTouchInfo);
-                        break;
-                    case DOWN:
-                        onScaleDownDraw(canvas, mLastTouchInfo);
-                        break;
-                }
-            }
-            switch (mCurrentTouchInfo.getActionScaleState()) {
-                case UP:
-                    onScaleUpDraw(canvas, mCurrentTouchInfo);
-                    break;
-                case DOWN:
-                    onScaleDownDraw(canvas, mCurrentTouchInfo);
-                    break;
-            }
-        }
-    }
-
-    private void onScaleDownDraw(Canvas canvas, InternalPieInfo info) {
-        if (info == null) return;
-        final float scaleSizeInTouch = !mConfig.isStrokeOnly() ? mConfig.getTouchScaleSize() : 0;
-        mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch * mScaleDownTime,
-                mDrawRectf.top - scaleSizeInTouch * mScaleDownTime,
-                mDrawRectf.right + scaleSizeInTouch * mScaleDownTime,
-                mDrawRectf.bottom + scaleSizeInTouch * mScaleDownTime);
-        drawTouchAnimaArc(canvas, info, mScaleDownTime);
-    }
-
-    private void onScaleUpDraw(Canvas canvas, InternalPieInfo info) {
-        if (info == null) return;
-        final float scaleSizeInTouch = !mConfig.isStrokeOnly() ? mConfig.getTouchScaleSize() : 0;
-        mTouchRectf.set(mDrawRectf.left - scaleSizeInTouch * mScaleUpTime,
-                mDrawRectf.top - scaleSizeInTouch * mScaleUpTime,
-                mDrawRectf.right + scaleSizeInTouch * mScaleUpTime,
-                mDrawRectf.bottom + scaleSizeInTouch * mScaleUpTime);
-        drawTouchAnimaArc(canvas, info, mScaleUpTime);
-    }
-
-    /**
-     * 绘制缓存的圆环
-     *
-     * @param canvas
-     * @param excluded 排除excluded
-     */
-    private void drawCachedInfos(Canvas canvas, InternalPieInfo excluded, float radius) {
-        if (!ToolUtil.isListEmpty(mDrawedCachePieInfo)) {
-            for (InternalPieInfo pieInfo : mDrawedCachePieInfo) {
-                if (mConfig.isDrawDescText()) {
-                    drawDescDecoration(canvas, pieInfo, radius);
-                }
-                Paint paint = pieInfo.getCopyPaint();
-                applyAlphaToPaint(pieInfo, paint);
-                if (excluded != null && excluded.equalsWith(pieInfo)) {
-                    continue;
-                }
-                canvas.drawArc(mDrawRectf,
-                        pieInfo.getStartAngle(),
-                        pieInfo.getSweepAngle() - mConfig.getSplitAngle(),
-                        !mConfig.isStrokeOnly(),
-                        paint);
-            }
-        }
-    }
-
-    /**
-     * 绘制描述的点和线以及文字
-     *
-     * @param canvas
-     * @param radius
-     */
-    private void drawDescDecoration(Canvas canvas, InternalPieInfo info, float radius) {
-        if (info == null) return;
-
-        //根据touch扩大量修正指示线和描述文字的位置
-        float mCurrentTouchFixPos = info.equalsWith(mCurrentTouchInfo) ? getFixTextPos(info) : 0;
-        float mLastTouchFixPos = info.equalsWith(mLastTouchInfo) ? getFixTextPos(info) : 0;
-
-        final float pointMargins = mCurrentTouchFixPos + mLastTouchFixPos + radius + mConfig.getTextLineStartMargin() + (mConfig.isStrokeOnly() ? mConfig.getStrokeWidth() / 2 : 0);
-        float cx = (float) (pointMargins * Math.cos(Math.toRadians(info.getMiddleAngle())));
-        float cy = (float) (pointMargins * Math.sin(Math.toRadians(info.getMiddleAngle())));
-        //画点
-        Paint paint = info.getCopyPaint();
-        applyAlphaToPaint(info, paint);
-        paint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle(cx, cy, mConfig.getDescGuidePointRadius(), paint);
-
-        float lineMiddleX = 0;
-        float lineMiddleY = 0;
-
-        float lineEndX = 0;
-        float lineEndY = 0;
-
-        float textStartX = 0;
-        float textStartY = 0;
-
-        float middeLineWidth = mConfig.getTextLineTransitionLength();
-        float textLength = paint.measureText(info.getDesc());
-
-        //画线
-        LineGravity gravity = calculateLineGravity(cx, cy);
-
-        switch (gravity) {
-            case TOP_LEFT:
-                lineMiddleX = cx - middeLineWidth * absMathCos(-45) - (mCurrentTouchFixPos + mLastTouchFixPos);
-                lineMiddleY = cy - middeLineWidth * absMathSin(-45) - (mCurrentTouchFixPos + mLastTouchFixPos);
-                lineEndX = lineMiddleX - textLength;
-                textStartX = lineEndX;
-                textStartY = lineMiddleY - mConfig.getTextMarginLine();
-                break;
-            case CENTER_LEFT:
-                lineMiddleX = cx - middeLineWidth - (mCurrentTouchFixPos + mLastTouchFixPos);
-                lineMiddleY = cy - (mCurrentTouchFixPos + mLastTouchFixPos);
-                lineEndX = lineMiddleX - textLength;
-                textStartX = lineEndX - mConfig.getTextMarginLine();
-                textStartY = lineMiddleY - mConfig.getTextMarginLine();
-                break;
-            case BOTTOM_LEFT:
-                lineMiddleX = cx - middeLineWidth * absMathCos(-45) - (mCurrentTouchFixPos + mLastTouchFixPos);
-                lineMiddleY = cy + middeLineWidth * absMathSin(-45) + (mCurrentTouchFixPos + mLastTouchFixPos);
-                lineEndX = lineMiddleX - textLength;
-                textStartX = lineEndX;
-                textStartY = lineMiddleY + (mConfig.isDirectText() ? -mConfig.getTextMarginLine() : mConfig.getTextMarginLine() + mConfig.getTextGuideLineStrokeWidth());
-                break;
-            case TOP_RIGHT:
-                lineMiddleX = cx + middeLineWidth * absMathCos(45) + (mCurrentTouchFixPos + mLastTouchFixPos);
-                lineMiddleY = cy - middeLineWidth * absMathSin(45) - (mCurrentTouchFixPos + mLastTouchFixPos);
-                lineEndX = lineMiddleX + textLength;
-                textStartX = lineMiddleX;
-                textStartY = lineMiddleY - mConfig.getTextMarginLine();
-                break;
-            case CENTER_RIGHT:
-                lineMiddleX = cx + middeLineWidth + (mCurrentTouchFixPos + mLastTouchFixPos);
-                lineMiddleY = cy;
-                lineEndX = lineMiddleX + textLength + mConfig.getTextMarginLine();
-                textStartX = lineMiddleX;
-                break;
-            case BOTTOM_RIGHT:
-                lineMiddleX = cx + middeLineWidth * absMathCos(45) + (mCurrentTouchFixPos + mLastTouchFixPos);
-                lineMiddleY = cy + middeLineWidth * absMathSin(45) + (mCurrentTouchFixPos + mLastTouchFixPos);
-                lineEndX = lineMiddleX + textLength;
-                textStartX = lineMiddleX;
-                textStartY = lineMiddleY + (mConfig.isDirectText() ? -mConfig.getTextMarginLine() : mConfig.getTextMarginLine() + mConfig.getTextGuideLineStrokeWidth());
-                break;
-        }
-        lineEndY = lineMiddleY;
-
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(mConfig.getTextGuideLineStrokeWidth());
-        paint.setStrokeJoin(Paint.Join.ROUND);
-
-        Path path = info.getLinePath();
-        Path measurePathDst = info.getMeasurePathDst();
-        path.moveTo(cx, cy);
-        path.lineTo(lineMiddleX, lineMiddleY);
-        path.lineTo(lineEndX, lineEndY);
-        mPathMeasure.nextContour();
-        mPathMeasure.setPath(path, false);
-        float progress = angleToProgress(angle, info);
-        mPathMeasure.getSegment(0, progress * mPathMeasure.getLength(), measurePathDst, true);
-        canvas.drawPath(measurePathDst, paint);
-
-        paint.setStyle(Paint.Style.FILL);
-        paint.setTextSize(mConfig.getTextSize());
-        paint.setAlpha((int) (255 * progress));
-        //画文字
-        canvas.drawText(info.getDesc(), textStartX, textStartY, paint);
-
-    }
-
-    private float getFixTextPos(InternalPieInfo info) {
-        if (info == null) return 0;
-        float result = 0;
-        final float scaleSizeInTouch = !mConfig.isStrokeOnly() ? mConfig.getTouchScaleSize() : 10;
-        switch (info.getActionScaleState()) {
-            case UP:
-                result = scaleSizeInTouch * mScaleUpTime;
-                break;
-            case DOWN:
-                result = scaleSizeInTouch * mScaleDownTime;
-                break;
-        }
-        return result;
-    }
-
-    private float absMathSin(double angdeg) {
-        return (float) Math.abs(Math.sin(Math.toRadians(angdeg)));
-    }
-
-    private float absMathCos(double angdeg) {
-        return (float) Math.abs(Math.cos(Math.toRadians(angdeg)));
-    }
-
-    private float angleToProgress(float angle, InternalPieInfo info) {
-        if (info == null) return 1f;
-        if (angle < info.getMiddleAngle()) return 0f;
-        if (angle >= info.getEndAngle()) return 1f;
-        return (angle - info.getMiddleAngle()) / (info.getEndAngle() - info.getMiddleAngle());
-    }
-
-    /**
-     * 绘制touch时的圆环
-     *
-     * @param canvas
-     * @param info
-     * @param timeFactor
-     */
-    private void drawTouchAnimaArc(Canvas canvas, InternalPieInfo info, float timeFactor) {
-        if (info == null) return;
-        mTouchEventPaint.set(info.getPaint());
-        mTouchEventPaint.setShadowLayer(mConfig.getTouchShadowRadius() * timeFactor, 0, 0, info.getPaint().getColor());
-        mTouchEventPaint.setStrokeWidth(info.getPaint().getStrokeWidth() + (10 * timeFactor));
-        applyAlphaToPaint(info, mTouchEventPaint);
-        canvas.drawArc(mTouchRectf,
-                info.getStartAngle() - (mConfig.getTouchExpandAngle() * timeFactor),
-                info.getSweepAngle() + (mConfig.getTouchExpandAngle() * 2 * timeFactor) - mConfig.getSplitAngle(),
-                !mConfig.isStrokeOnly(),
-                mTouchEventPaint);
+        mPieChartRender.draw(canvas);
     }
 
     @Override
-    public void onAnimationProcessing(float angle, @NonNull InternalPieInfo infoImpl) {
-        if (mCurrentInfo != null) {
-            //角度切换时就把画过的添加到缓存，因为角度切换只有很少的几次，所以这里允许循环，并不会造成大量的循环
-            if (angle >= mCurrentInfo.getEndAngle()) {
-                boolean hasAdded = false;
-                for (InternalPieInfo pieInfo : mDrawedCachePieInfo) {
-                    if (pieInfo.equalsWith(mCurrentInfo)) {
-                        hasAdded = true;
-                        break;
-                    }
-                }
-                if (!hasAdded) {
-                    DebugLogUtil.logAngles("添加到缓存", mCurrentInfo);
-                    mDrawedCachePieInfo.add(mCurrentInfo);
-                }
-            }
-        }
-        this.angle = angle;
-        this.mCurrentInfo = infoImpl;
-        invalidate();
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mPieManager.setChartContentRect(getWidth(), getHeight(), getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingBottom());
     }
 
-    public AnimatedPieViewConfig2 getConfig() {
-        return mConfig;
+    public AnimatedPieView applyConfig(AnimatedPieViewConfig config) {
+        this.mConfig = config;
+        return this;
     }
-
-    public boolean isInAnimating() {
-        return isInAnimating;
-    }
-
-    public void applyConfig(AnimatedPieViewConfig2 config) {
-        applyConfigInternal(config);
-    }
-
 
     public void start() {
-        if (isInAnimating) {
-            return;
+        start(mConfig);
+    }
+
+    public void start(AnimatedPieViewConfig config) {
+        applyConfig(config);
+        if (mConfig == null) {
+            throw new NullPointerException("config must not be null");
         }
-        if (mConfig.isReApply()) {
-            applyConfigInternal(mConfig);
-        }
-        isInAnimating = true;
-        mDrawRectf.setEmpty();
-        mTouchRectf.setEmpty();
-        setMode(Mode.DRAW);
-        mDrawedCachePieInfo.clear();
-        clearAnimation();
-        startAnimation(mPieViewAnimation);
-        DebugLogUtil.logAngles("start  >>  ", mConfig.getImplDatas());
+        mPieChartRender.prepare();
     }
 
     //-----------------------------------------touch-----------------------------------------
-
-    float touchX = 0;
-    float touchY = 0;
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!mConfig.isCanTouch()) return super.onTouchEvent(event);
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                touchX = event.getX();
-                touchY = event.getY();
-                return true;
-            case MotionEvent.ACTION_UP:
-                InternalPieInfo clickedInfo = mTouchHelper.pointToInfo(touchX, touchY);
-                if (clickedInfo != null) {
-                    if (!isInAnimating) {
-                        mLastTouchInfo = mCurrentTouchInfo;
-                        mCurrentTouchInfo = clickedInfo;
-                        setMode(Mode.TOUCH);
-                        if (mCurrentTouchInfo.equalsWith(mLastTouchInfo)) {
-                            mLastTouchInfo = null;
-                            mCurrentTouchInfo.toggleActionScaleType();
-                        } else {
-                            mCurrentTouchInfo.setActionScaleState(InternalPieInfo.ActionState.UP);
-                            if (mLastTouchInfo != null) {
-                                if (mLastTouchInfo.getActionScaleState() == InternalPieInfo.ActionState.UP) {
-                                    mLastTouchInfo.setActionScaleState(InternalPieInfo.ActionState.DOWN);
-                                } else {
-                                    //因为指定为当前点击的放大，其他的都保持原样，所以指定为normal
-                                    mLastTouchInfo.setActionScaleState(InternalPieInfo.ActionState.NORMAL);
-                                }
-                            }
-                        }
-                        if (mConfig.isTouchWithAnimation()) {
-                            mTouchScaleDownAnimator.start();
-                            mTouchScaleUpAnimator.start();
-                        } else {
-                            mScaleUpTime = 1;
-                            invalidate();
-                        }
-                        if (mConfig.getOnPieSelectListener() != null) {
-                            mConfig.getOnPieSelectListener().onSelectPie(mCurrentTouchInfo.getPieInfo(), mCurrentTouchInfo.getActionScaleState() == InternalPieInfo.ActionState.UP);
-                        }
-
-                    }
-                    return true;
-                }
-                break;
-
-        }
-        return super.onTouchEvent(event);
+        return mPieChartRender.onTouchEvent(event) || super.onTouchEvent(event);
     }
 
-
-    //-----------------------------------------Tools-----------------------------------------
-
-    private void setMode(Mode mode) {
-        if (mode == Mode.DRAW) {
-            mCurrentTouchInfo = null;
-            mLastTouchInfo = null;
-        }
-        this.mode = mode;
+    @Override
+    public PieManager getManager() {
+        return mPieManager;
     }
 
-    private LineGravity calculateLineGravity(float startX, float startY) {
-
-        if (startX > 0) {
-            //在右边
-            return startY > 0 ? LineGravity.BOTTOM_RIGHT : LineGravity.TOP_RIGHT;
-        } else if (startX < 0) {
-            //在左边
-            return startY > 0 ? LineGravity.BOTTOM_LEFT : LineGravity.TOP_LEFT;
-        } else if (startY == 0) {
-            //刚好中间
-            return startX > 0 ? LineGravity.CENTER_RIGHT : LineGravity.CENTER_LEFT;
-        }
-        return LineGravity.TOP_RIGHT;
+    @Override
+    public Context getViewContext() {
+        return getContext();
     }
 
-    private void applyAlphaToPaint(InternalPieInfo info, Paint paint) {
-        if (info == null || paint == null) return;
-        if (mode != Mode.TOUCH) {
-            paint.setAlpha(255);
-            return;
-        }
-        boolean focused = info.equalsWith(mCurrentTouchInfo);
-        switch (mConfig.getFocusAlphaType()) {
-            case AnimatedPieViewConfig2.FOCUS_WITHOUT_ALPHA:
-                paint.setAlpha(255);
-                break;
-            case AnimatedPieViewConfig2.FOCUS_WITH_ALPHA_REV:
-                boolean alphaDown = !focused
-                        && mCurrentTouchInfo != null
-                        && mCurrentTouchInfo.getActionScaleState() == InternalPieInfo.ActionState.UP;
-                if (focused) {
-                    paint.setAlpha(255);
-                } else {
-                    paint.setAlpha((int) (255 - (mConfig.getFocusAlphaCut() * (alphaDown ? mScaleUpTime : mScaleDownTime))));
-                }
-                break;
-            case AnimatedPieViewConfig2.FOCUS_WITH_ALPHA:
-                boolean alphaDown2 = focused
-                        && mCurrentTouchInfo != null
-                        && mCurrentTouchInfo.getActionScaleState() == InternalPieInfo.ActionState.UP;
+    @Override
+    public AnimatedPieViewConfig getConfig() {
+        return mConfig;
+    }
 
-                if (focused) {
-                    paint.setAlpha((int) (255 - (mConfig.getFocusAlphaCut() * (alphaDown2 ? mScaleUpTime : mScaleDownTime))));
-                } else {
-                    paint.setAlpha(255);
-                }
-                break;
-            default:
-                paint.setAlpha(255);
-                break;
+    @Override
+    public View getPieView() {
+        return this;
+    }
+
+    @Override
+    public void onCallInvalidate() {
+        if (isMainThread()) {
+            invalidate();
+        } else {
+            postInvalidate();
         }
+    }
+
+    boolean isMainThread() {
+        return Looper.getMainLooper().getThread() == Thread.currentThread();
     }
 }

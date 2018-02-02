@@ -21,13 +21,14 @@ final class PieInfoWrapper implements Serializable {
 
     //============= 绘制设置 =============
     private Paint mDrawPaint;
+    private Paint mTexPaint;
     private Paint mTouchPaint;
     private Path mDrawPath;
 
     //============= 参数 =============
-    private float fromDegree;
-    private float sweepDegree;
-    private float toDegree;
+    private float fromAngle;
+    private float sweepAngle;
+    private float toAngle;
     private boolean autoDesc;
     private String desc;
 
@@ -47,6 +48,7 @@ final class PieInfoWrapper implements Serializable {
 
     PieInfoWrapper prepare(AnimatedPieViewConfig config) {
         if (mDrawPaint == null) mDrawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+        if (mTexPaint==null)mTexPaint=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DITHER_FLAG);
         if (mTouchPaint == null) mTouchPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         if (mDrawPath == null) mDrawPath = new Path();
 
@@ -54,6 +56,10 @@ final class PieInfoWrapper implements Serializable {
         mDrawPaint.setStrokeWidth(config.getStrokeWidth());
         mDrawPaint.setColor(mPieInfo.getColor());
         mTouchPaint.set(mDrawPaint);
+
+        mTexPaint.setStyle(Paint.Style.FILL);
+        mTexPaint.setTextSize(config.getTextSize());
+
         mDrawPath.reset();
         return this;
     }
@@ -75,20 +81,20 @@ final class PieInfoWrapper implements Serializable {
         return mDrawPath;
     }
 
-    public float getFromDegree() {
-        return fromDegree;
+    public float getFromAngle() {
+        return fromAngle;
     }
 
     public float getMiddleAngle() {
-        return fromDegree + sweepDegree / 2;
+        return fromAngle + sweepAngle / 2;
     }
 
-    public float getToDegree() {
-        return toDegree;
+    public float getToAngle() {
+        return toAngle;
     }
 
     public float getSweepAngle() {
-        return sweepDegree;
+        return sweepAngle;
     }
 
     public boolean isAutoDesc() {
@@ -104,17 +110,17 @@ final class PieInfoWrapper implements Serializable {
     }
 
     public float calculateDegree(float lastPieDegree, double sum, AnimatedPieViewConfig config) {
-        fromDegree = lastPieDegree;
-        sweepDegree = (float) (360f * (Math.abs(mPieInfo.getValue()) / sum));
-        toDegree = fromDegree + sweepDegree;
+        fromAngle = lastPieDegree;
+        sweepAngle = (float) (360f * (Math.abs(mPieInfo.getValue()) / sum));
+        toAngle = fromAngle + sweepAngle;
         if (autoDesc) {
             //自动填充描述auto
             desc = String.format(config.getAutoDescStringFormat(), AnimatedPieViewConfig.sFormateRate.format((mPieInfo.getValue() / sum) * 100));
         } else {
             desc = mPieInfo.getDesc();
         }
-        PLog.d("【calculate】 " + "{ \n" + "id = " + id + "\nfromDegree = " + fromDegree + "\nsweepDegree = " + sweepDegree + "\ntoDegree = " + toDegree + "\n desc = " + desc + "\n  }");
-        return toDegree;
+        PLog.d("【calculate】 " + "{ \n" + "id = " + id + "\nfromAngle = " + fromAngle + "\nsweepAngle = " + sweepAngle + "\ntoAngle = " + toAngle + "\n desc = " + desc + "\n  }");
+        return toAngle;
     }
 
     @Override
@@ -144,14 +150,14 @@ final class PieInfoWrapper implements Serializable {
 
     //=============================================================tools
     boolean contains(float angle) {
-        return angle >= fromDegree && angle <= toDegree;
+        return angle >= fromAngle && angle <= toAngle;
     }
 
     boolean containsTouch(float angle) {
         //所有点击的角度都需要收归到0~360的范围，兼容任意角度
         final float tAngle = DegreeUtil.limitDegreeInTo360(angle);
-        float tStart = DegreeUtil.limitDegreeInTo360(fromDegree);
-        float tEnd = DegreeUtil.limitDegreeInTo360(toDegree);
+        float tStart = DegreeUtil.limitDegreeInTo360(fromAngle);
+        float tEnd = DegreeUtil.limitDegreeInTo360(toAngle);
         PLog.d("containsTouch  >>  tStart： " + tStart + "   tEnd： " + tEnd + "   tAngle： " + tAngle);
         boolean result;
         if (tEnd < tStart) {
@@ -174,7 +180,7 @@ final class PieInfoWrapper implements Serializable {
     public String toString() {
         return "{ \nid = " + id + '\n'
                 + "value =  " + getPieInfo().getValue() + '\n'
-                + "fromDegree = " + fromDegree + '\n'
-                + "toDegree = " + toDegree + "\n  }";
+                + "fromAngle = " + fromAngle + '\n'
+                + "toAngle = " + toAngle + "\n  }";
     }
 }

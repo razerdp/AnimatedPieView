@@ -1,6 +1,7 @@
 package com.razerdp.widget.animatedpieview.render;
 
 import android.graphics.Canvas;
+import android.support.annotation.Nullable;
 
 import com.razerdp.widget.animatedpieview.IPieView;
 import com.razerdp.widget.animatedpieview.manager.PieManager;
@@ -31,9 +32,21 @@ public abstract class BaseRender {
     }
 
     public final void prepare() {
+        prepare(null);
+    }
+
+    public final void prepare(@Nullable final OnPrepareFinishListener l) {
         isPrepared = false;
         reset();
-        isPrepared = onPrepare();
+        mIPieView.getPieView().post(new Runnable() {
+            @Override
+            public void run() {
+                isPrepared = onPrepare();
+                if (isPrepared) {
+                    handlePrepareFinish(l);
+                }
+            }
+        });
     }
 
     public void destroy() {
@@ -53,6 +66,18 @@ public abstract class BaseRender {
 
     public void callInvalidate() {
         mIPieView.onCallInvalidate();
+    }
+
+    protected void handlePrepareFinish(OnPrepareFinishListener l) {
+        if (l != null) {
+            boolean handled = l.onPrepareFin();
+            if (handled) return;
+        }
+        callInvalidate();
+    }
+
+    public interface OnPrepareFinishListener {
+        boolean onPrepareFin();
     }
 
 }
