@@ -126,12 +126,12 @@ public class AnimatedPieViewConfig {
 
     public AnimatedPieViewConfig pieRadius(float pieRadius) {
         this.pieRadius = pieRadius;
-        return this;
+        return autoSize(false);
     }
 
     public AnimatedPieViewConfig pieRadiusRatio(@FloatRange(from = 0f, to = 1f) float pieRadiusRatio) {
         this.pieRadiusRatio = pieRadiusRatio;
-        return this;
+        return autoSize(false);
     }
 
 

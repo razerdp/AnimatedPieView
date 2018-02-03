@@ -64,6 +64,8 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         mTouchHelper.reset();
         pieBounds.setEmpty();
         animaHasStart = false;
+        isInAnimating = false;
+        pieRadius = 0;
 
         mDataWrappers = mDataWrappers == null ? new ArrayList<PieInfoWrapper>() : mDataWrappers;
         mDataWrappers.clear();
@@ -176,7 +178,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     private void renderAnimaDraw(Canvas canvas) {
         if (mDrawingPie != null) {
             drawCachedPie(canvas, mDrawingPie);
-            canvas.drawArc(mPieManager.getDrawBounds(),
+            canvas.drawArc(pieBounds,
                     mDrawingPie.getFromAngle(),
                     animAngle - mDrawingPie.getFromAngle() - mConfig.getSplitAngle(),
                     !mConfig.isStrokeMode(),
@@ -198,7 +200,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                 if (cachedDrawWrapper.equals(excluded)) {
                     continue;
                 }
-                canvas.drawArc(mPieManager.getDrawBounds(),
+                canvas.drawArc(pieBounds,
                         cachedDrawWrapper.getFromAngle(),
                         cachedDrawWrapper.getSweepAngle() - mConfig.getSplitAngle(),
                         !mConfig.isStrokeMode(),
@@ -258,7 +260,10 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     }
 
     private void measurePieRadius(float width, float height) {
-        if (pieRadius > 0) return;
+        if (pieRadius > 0) {
+            pieBounds.set(-pieRadius, -pieRadius, pieRadius, pieRadius);
+            return;
+        }
         final float minSize = Math.min(width, height);
         //最低接收0.5的最小高宽值
         float minPieRadius = minSize / 4;
@@ -282,6 +287,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                 pieRadius = minPieRadius;
             }
         }
+        pieBounds.set(-pieRadius, -pieRadius, pieRadius, pieRadius);
     }
 
     private float absMathSin(double angdeg) {

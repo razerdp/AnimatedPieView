@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 .drawText(true)
                 .duration(1200)
                 .textSize(12)
-                .pieRadiusRatio(0.8f);
+                .pieRadiusRatio(0.75f);
         mAnimatedPieView.applyConfig(config);
 
         mPopupSetting.setOnOkButtonClickListener(new View.OnClickListener() {
