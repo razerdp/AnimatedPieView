@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         mAnimatedPieView = findViewById(R.id.animatedPieView);
         AnimatedPieViewConfig config = new AnimatedPieViewConfig();
         config.startAngle(-90)
+                .strokeMode(false)
                 .addData(new SimplePieInfo(30, getColor("FF446767")), true)
                 .addData(new SimplePieInfo(18.0f, getColor("FFFFD28C")), true)
                 .addData(new SimplePieInfo(123.0f, getColor("FFbb76b4")), true)

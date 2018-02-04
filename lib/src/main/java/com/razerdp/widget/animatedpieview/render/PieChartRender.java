@@ -1,5 +1,6 @@
 package com.razerdp.widget.animatedpieview.render;
 
+import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PathMeasure;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Transformation;
 
 import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
@@ -43,7 +45,14 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     //-----------------------------------------anim area-----------------------------------------
     private PieInfoWrapper mDrawingPie;
     private float animAngle;
-
+    //-----------------------------------------touch area-----------------------------------------
+    private RectF touchBounds;
+    private PieInfoWrapper floatingWrapper;
+    private ValueAnimator floatUpAnim;
+    private float floatUpTime;
+    private PieInfoWrapper lastFloatWrapper;
+    private ValueAnimator floatDownAnim;
+    private float floatDownTime;
     //-----------------------------------------other-----------------------------------------
     private TouchHelper mTouchHelper;
     private RenderAnimation mRenderAnimation;
@@ -55,6 +64,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         mCachedDrawWrappers = new ArrayList<>();
         mPathMeasure = new PathMeasure();
         pieBounds = new RectF();
+        touchBounds = new RectF();
         mTouchHelper = new TouchHelper();
         pieRadius = 0;
     }
@@ -63,6 +73,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     public void reset() {
         mTouchHelper.reset();
         pieBounds.setEmpty();
+        touchBounds.setEmpty();
         animaHasStart = false;
         isInAnimating = false;
         pieRadius = 0;
@@ -73,8 +84,18 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         mCachedDrawWrappers = mCachedDrawWrappers == null ? new ArrayList<PieInfoWrapper>() : mCachedDrawWrappers;
         mCachedDrawWrappers.clear();
 
+        floatUpAnim = floatUpAnim == null ? ValueAnimator.ofFloat(0, 1) : floatUpAnim;
+        floatUpAnim.removeAllUpdateListeners();
+        floatUpTime = 0;
+
+        floatDownAnim = floatDownAnim == null ? ValueAnimator.ofFloat(0, 1) : floatDownAnim;
+        floatDownAnim.removeAllUpdateListeners();
+        floatUpTime = 0;
+        
         mDrawingPie = null;
         mRenderAnimation = null;
+        floatingWrapper = null;
+        lastFloatWrapper = null;
         mIPieView.getPieView().clearAnimation();
     }
 
@@ -126,6 +147,28 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                 }
             });
         }
+
+        floatUpAnim = ValueAnimator.ofFloat(0, 1);
+        floatUpAnim.setDuration(mConfig.getFloatUpDuration());
+        floatUpAnim.setInterpolator(new DecelerateInterpolator());
+        floatUpAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                floatUpTime = (float) animation.getAnimatedValue();
+                callInvalidate();
+            }
+        });
+
+        floatDownAnim = ValueAnimator.ofFloat(0, 1);
+        floatDownAnim.setDuration(mConfig.getFloatDownDuration());
+        floatDownAnim.setInterpolator(new DecelerateInterpolator());
+        floatDownAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                floatDownTime = (float) animation.getAnimatedValue();
+                callInvalidate();
+            }
+        });
     }
 
     @Override
@@ -210,6 +253,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     }
 
     private void drawText(Canvas canvas, PieInfoWrapper wrapper) {
+        if (wrapper == null) return;
 
     }
 
@@ -256,7 +300,9 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     }
 
     private void setDrawMode(DrawMode drawMode) {
+        if (drawMode == DrawMode.TOUCH && isInAnimating) return;
         mDrawMode = drawMode;
+
     }
 
     private void measurePieRadius(float width, float height) {
