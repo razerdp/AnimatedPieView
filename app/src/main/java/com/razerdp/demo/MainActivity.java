@@ -12,6 +12,7 @@ import com.razerdp.popup.PopupSetting;
 import com.razerdp.widget.animatedpieview.AnimatedPieView;
 import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
 import com.razerdp.widget.animatedpieview.data.SimplePieInfo;
+import com.razerdp.widget.animatedpieview.utils.PLog;
 
 import java.util.Random;
 
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        PLog.setDebuggable(true);
         mPopupSetting = new PopupSetting(this);
         start = findViewById(R.id.start);
         setting = findViewById(R.id.setting);

@@ -45,14 +45,6 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     //-----------------------------------------anim area-----------------------------------------
     private PieInfoWrapper mDrawingPie;
     private float animAngle;
-    //-----------------------------------------touch area-----------------------------------------
-    private RectF touchBounds;
-    private PieInfoWrapper floatingWrapper;
-    private ValueAnimator floatUpAnim;
-    private float floatUpTime;
-    private PieInfoWrapper lastFloatWrapper;
-    private ValueAnimator floatDownAnim;
-    private float floatDownTime;
     //-----------------------------------------other-----------------------------------------
     private TouchHelper mTouchHelper;
     private RenderAnimation mRenderAnimation;
@@ -64,7 +56,6 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         mCachedDrawWrappers = new ArrayList<>();
         mPathMeasure = new PathMeasure();
         pieBounds = new RectF();
-        touchBounds = new RectF();
         mTouchHelper = new TouchHelper();
         pieRadius = 0;
     }
@@ -73,7 +64,6 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     public void reset() {
         mTouchHelper.reset();
         pieBounds.setEmpty();
-        touchBounds.setEmpty();
         animaHasStart = false;
         isInAnimating = false;
         pieRadius = 0;
@@ -84,18 +74,8 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         mCachedDrawWrappers = mCachedDrawWrappers == null ? new ArrayList<PieInfoWrapper>() : mCachedDrawWrappers;
         mCachedDrawWrappers.clear();
 
-        floatUpAnim = floatUpAnim == null ? ValueAnimator.ofFloat(0, 1) : floatUpAnim;
-        floatUpAnim.removeAllUpdateListeners();
-        floatUpTime = 0;
-
-        floatDownAnim = floatDownAnim == null ? ValueAnimator.ofFloat(0, 1) : floatDownAnim;
-        floatDownAnim.removeAllUpdateListeners();
-        floatUpTime = 0;
-        
         mDrawingPie = null;
         mRenderAnimation = null;
-        floatingWrapper = null;
-        lastFloatWrapper = null;
         mIPieView.getPieView().clearAnimation();
     }
 
@@ -148,27 +128,6 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             });
         }
 
-        floatUpAnim = ValueAnimator.ofFloat(0, 1);
-        floatUpAnim.setDuration(mConfig.getFloatUpDuration());
-        floatUpAnim.setInterpolator(new DecelerateInterpolator());
-        floatUpAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                floatUpTime = (float) animation.getAnimatedValue();
-                callInvalidate();
-            }
-        });
-
-        floatDownAnim = ValueAnimator.ofFloat(0, 1);
-        floatDownAnim.setDuration(mConfig.getFloatDownDuration());
-        floatDownAnim.setInterpolator(new DecelerateInterpolator());
-        floatDownAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                floatDownTime = (float) animation.getAnimatedValue();
-                callInvalidate();
-            }
-        });
     }
 
     @Override
@@ -194,6 +153,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                 renderDraw(canvas);
                 break;
             case TOUCH:
+                renderTouch(canvas);
                 break;
         }
     }
@@ -208,6 +168,15 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         } else {
             renderNormalDraw(canvas);
         }
+    }
+
+    private void renderTouch(Canvas canvas) {
+        drawCachedPie(canvas, mTouchHelper.floatingWrapper);
+        renderTouchDraw(canvas, mTouchHelper.lastFloatWrapper, mTouchHelper.floatDownTime);
+        PLog.i("lastFloatWrapper id = " + (mTouchHelper.lastFloatWrapper == null ? "null" : mTouchHelper.lastFloatWrapper.getId()) + "  downTime = " + mTouchHelper.floatDownTime);
+        renderTouchDraw(canvas, mTouchHelper.floatingWrapper, mTouchHelper.floatUpTime);
+        PLog.d("floatingWrapper id = " + (mTouchHelper.floatingWrapper == null ? "null" : mTouchHelper.floatingWrapper.getId()) + "  upTime = " + mTouchHelper.floatUpTime);
+
     }
 
     private void renderNormalDraw(Canvas canvas) {
@@ -232,13 +201,28 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         }
     }
 
+    private void renderTouchDraw(Canvas canvas, PieInfoWrapper wrapper, float timeSet) {
+        if (wrapper == null) return;
+        mTouchHelper.setTouchBounds(timeSet);
+        Paint touchPaint = mTouchHelper.prepareTouchPaint(wrapper);
+        touchPaint.setShadowLayer(mConfig.getFloatShadowRadius() * timeSet, 0, 0, touchPaint.getColor());
+        touchPaint.setStrokeWidth(mConfig.getStrokeWidth() + (10 * timeSet));
+        applyAlphaToPaint(wrapper, touchPaint);
+        canvas.drawArc(mTouchHelper.touchBounds,
+                wrapper.getFromAngle() - (mConfig.getFloatExpandSize() * timeSet),
+                wrapper.getSweepAngle() + (mConfig.getFloatExpandAngle() * 2 * timeSet) - mConfig.getSplitAngle(),
+                !mConfig.isStrokeMode(),
+                touchPaint);
+    }
+
+
     private void drawCachedPie(Canvas canvas, PieInfoWrapper excluded) {
         if (!ToolUtil.isListEmpty(mCachedDrawWrappers)) {
             for (PieInfoWrapper cachedDrawWrapper : mCachedDrawWrappers) {
                 if (mConfig.isDrawText()) {
                     drawText(canvas, cachedDrawWrapper);
                 }
-                Paint paint = cachedDrawWrapper.getTouchPaint();
+                Paint paint = cachedDrawWrapper.getAlphaDrawPaint();
                 applyAlphaToPaint(cachedDrawWrapper, paint);
                 if (cachedDrawWrapper.equals(excluded)) {
                     continue;
@@ -273,7 +257,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return false;
+        return mTouchHelper.handleTouch(event);
     }
 
     @Override
@@ -390,6 +374,20 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         private float centerX;
         private float centerY;
 
+        private RectF touchBounds;
+        private PieInfoWrapper floatingWrapper;
+        private ValueAnimator floatUpAnim;
+        private float floatUpTime;
+        private PieInfoWrapper lastFloatWrapper;
+        private ValueAnimator floatDownAnim;
+        private float floatDownTime;
+
+        private float touchX = -1;
+        private float touchY = -1;
+
+        private Paint mTouchPaint;
+
+
         private PieInfoWrapper lastTouchWrapper;
 
         TouchHelper() {
@@ -398,16 +396,66 @@ public class PieChartRender extends BaseRender implements ITouchRender {
 
         TouchHelper(int expandClickRange) {
             this.expandClickRange = expandClickRange;
+            touchBounds = new RectF();
         }
 
         void reset() {
             centerX = 0;
             centerY = 0;
+            touchBounds.setEmpty();
+            floatUpAnim = floatUpAnim == null ? ValueAnimator.ofFloat(0, 1) : floatUpAnim;
+            floatUpAnim.removeAllUpdateListeners();
+            floatUpTime = 0;
+
+            floatDownAnim = floatDownAnim == null ? ValueAnimator.ofFloat(0, 1) : floatDownAnim;
+            floatDownAnim.removeAllUpdateListeners();
+            floatUpTime = 0;
+
+            floatingWrapper = null;
+            lastFloatWrapper = null;
+            lastTouchWrapper = null;
+
+            touchX = -1;
+            touchY = -1;
         }
 
         void prepare() {
             centerX = mPieManager.getDrawWidth() / 2;
             centerY = mPieManager.getDrawHeight() / 2;
+
+            mTouchPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+            floatUpAnim = ValueAnimator.ofFloat(0, 1);
+            floatUpAnim.setDuration(mConfig.getFloatUpDuration());
+            floatUpAnim.setInterpolator(new DecelerateInterpolator());
+            floatUpAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    floatUpTime = (float) animation.getAnimatedValue();
+                    callInvalidate();
+                }
+            });
+
+            floatDownAnim = ValueAnimator.ofFloat(1, 0);
+            floatDownAnim.setDuration(mConfig.getFloatDownDuration());
+            floatDownAnim.setInterpolator(new DecelerateInterpolator());
+            floatDownAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    floatDownTime = (float) animation.getAnimatedValue();
+                    callInvalidate();
+                }
+            });
+        }
+
+        Paint prepareTouchPaint(PieInfoWrapper wrapper) {
+            if (mTouchPaint == null) {
+                mTouchPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            }
+            if (wrapper != null) {
+                mTouchPaint.set(wrapper.getDrawPaint());
+            }
+            return mTouchPaint;
         }
 
         PieInfoWrapper pointToPieInfoWrapper(float x, float y) {
@@ -426,7 +474,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             return findWrapper(x, y);
         }
 
-        private PieInfoWrapper findWrapper(float x, float y) {
+        PieInfoWrapper findWrapper(float x, float y) {
             //得到角度
             double touchAngle = Math.toDegrees(Math.atan2(y - centerY, x - centerX));
             if (touchAngle < 0) {
@@ -443,6 +491,53 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                 }
             }
             return null;
+        }
+
+        void setTouchBounds(float timeSet) {
+            final float scaleSizeInTouch = !mConfig.isStrokeMode() ? mConfig.getFloatExpandSize() : 0;
+            touchBounds.set(pieBounds.left - scaleSizeInTouch * timeSet,
+                    pieBounds.top - scaleSizeInTouch * timeSet,
+                    pieBounds.right + scaleSizeInTouch * timeSet,
+                    pieBounds.bottom + scaleSizeInTouch * timeSet);
+        }
+
+        boolean handleTouch(MotionEvent event) {
+            if (!mConfig.isCanTouch() || isInAnimating) return false;
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    touchX = event.getX();
+                    touchY = event.getY();
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    PieInfoWrapper touchWrapper = pointToPieInfoWrapper(touchX, touchY);
+                    if (touchWrapper == null) return false;
+                    setDrawMode(DrawMode.TOUCH);
+                    if (touchWrapper.equals(floatingWrapper)) {
+                        //如果点的是当前正在浮起的wrapper，则移到上一个，当前的置空
+                        lastFloatWrapper = touchWrapper;
+                        floatingWrapper = null;
+                    } else {
+                        lastFloatWrapper = floatingWrapper;
+                        floatingWrapper = touchWrapper;
+                    }
+
+                    if (mConfig.isAnimTouch()) {
+                        floatUpAnim.start();
+                        floatDownAnim.start();
+                    } else {
+                        floatUpTime = 1;
+                        floatDownTime = 1;
+                        callInvalidate();
+                    }
+
+                    if (mConfig.getSelectListener() != null) {
+                        mConfig.getSelectListener().onSelectPie(touchWrapper.getPieInfo(), touchWrapper.equals(floatingWrapper));
+                    }
+
+                    return true;
+            }
+
+            return false;
         }
     }
 }

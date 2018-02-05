@@ -21,8 +21,8 @@ final class PieInfoWrapper implements Serializable {
 
     //============= 绘制设置 =============
     private Paint mDrawPaint;
+    private Paint mAlphaDrawPaint;
     private Paint mTexPaint;
-    private Paint mTouchPaint;
     private Path mDrawPath;
 
     //============= 参数 =============
@@ -31,6 +31,15 @@ final class PieInfoWrapper implements Serializable {
     private float toAngle;
     private boolean autoDesc;
     private String desc;
+
+
+    public enum FloatAction {
+        FLOAT_UP,
+        FLOAT_DOWN,
+        NO_ACTION;
+    }
+
+    public FloatAction actionWhat = FloatAction.NO_ACTION;
 
 
     PieInfoWrapper(IPieInfo pieInfo) {
@@ -48,14 +57,15 @@ final class PieInfoWrapper implements Serializable {
 
     PieInfoWrapper prepare(AnimatedPieViewConfig config) {
         if (mDrawPaint == null) mDrawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-        if (mTexPaint==null)mTexPaint=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DITHER_FLAG);
-        if (mTouchPaint == null) mTouchPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+        if (mAlphaDrawPaint == null)
+            mAlphaDrawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+        if (mTexPaint == null) mTexPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         if (mDrawPath == null) mDrawPath = new Path();
 
         mDrawPaint.setStyle(config.isStrokeMode() ? Paint.Style.STROKE : Paint.Style.FILL);
         mDrawPaint.setStrokeWidth(config.getStrokeWidth());
         mDrawPaint.setColor(mPieInfo.getColor());
-        mTouchPaint.set(mDrawPaint);
+        mAlphaDrawPaint.set(mDrawPaint);
 
         mTexPaint.setStyle(Paint.Style.FILL);
         mTexPaint.setTextSize(config.getTextSize());
@@ -72,8 +82,8 @@ final class PieInfoWrapper implements Serializable {
         return mDrawPaint;
     }
 
-    public Paint getTouchPaint() {
-        return mTouchPaint;
+    public Paint getAlphaDrawPaint() {
+        return mAlphaDrawPaint;
     }
 
     public Path getDrawPath() {
@@ -175,6 +185,7 @@ final class PieInfoWrapper implements Serializable {
         }
         return result;
     }
+
 
     @Override
     public String toString() {

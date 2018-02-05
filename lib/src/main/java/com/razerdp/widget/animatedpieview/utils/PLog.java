@@ -1,5 +1,6 @@
 package com.razerdp.widget.animatedpieview.utils;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -7,7 +8,7 @@ import android.util.Log;
  */
 public class PLog {
 
-    public static boolean DEBUG;
+    public static boolean DEBUG = false;
 
     static String className;//类名
     static String methodName;//方法名
@@ -34,9 +35,17 @@ public class PLog {
     }
 
     private static void getMethodNames(StackTraceElement[] sElements) {
-        className = sElements[1].getFileName();
-        methodName = sElements[1].getMethodName();
-        lineNumber = sElements[1].getLineNumber();
+        int logClassIndex = 0;
+        for (StackTraceElement sElement : sElements) {
+            String tClass = sElement.getClassName();
+            if (TextUtils.equals(tClass, PLog.class.getName())) {
+                break;
+            }
+            logClassIndex++;
+        }
+        className = sElements[logClassIndex + 1].getFileName();
+        methodName = sElements[logClassIndex + 1].getMethodName();
+        lineNumber = sElements[logClassIndex + 1].getLineNumber();
     }
 
 

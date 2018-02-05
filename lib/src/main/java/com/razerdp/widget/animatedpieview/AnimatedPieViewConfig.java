@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.Pair;
 
+import com.razerdp.widget.animatedpieview.callback.OnPieSelectListener;
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
 import com.razerdp.widget.animatedpieview.utils.ToolUtil;
 
@@ -49,6 +50,7 @@ public class AnimatedPieViewConfig {
     private static final float DEFAULT_FLOAT_EXPAND_ANGLE = 8;
     private static final float DEFAULT_DESC_TEXT_SIZE = 12;
     private static final float DEFAULT_SPLIT_ANGLE = 0;
+    private static final float DEFAULT_FLOAT_EXPAND_SIZE = 15;
 
 
     //=============================================================option
@@ -59,7 +61,8 @@ public class AnimatedPieViewConfig {
     private long floatUpDuration = DEFAULT_TOUCH_FLOATUP_DURATION;
     private long floatDownDuration = DEFAULT_TOUCH_FLOATDOWN_DURATION;
     private float floatShadowRadius = DEFAULT_SHADOW_BLUR_RADIUS;
-    private float floatExpandDegree = DEFAULT_FLOAT_EXPAND_ANGLE;
+    private float floatExpandAngle = DEFAULT_FLOAT_EXPAND_ANGLE;
+    private float floatExpandSize = DEFAULT_FLOAT_EXPAND_SIZE;
     private String autoDescStringFormat = DEFAULT_AUTO_DESC_FORMAT;
     private boolean autoSize = true;
     private float pieRadius = 0;
@@ -68,6 +71,9 @@ public class AnimatedPieViewConfig {
     private boolean drawText = false;
     private float splitAngle = DEFAULT_SPLIT_ANGLE;
     private boolean animPie = true;
+    private boolean canTouch = true;
+    private boolean animTouch = true;
+    private OnPieSelectListener mSelectListener;
 
 
     private boolean strokeMode = true;
@@ -110,7 +116,7 @@ public class AnimatedPieViewConfig {
     }
 
     public AnimatedPieViewConfig floatExpandDegree(float floatExpandDegree) {
-        this.floatExpandDegree = floatExpandDegree;
+        this.floatExpandAngle = floatExpandDegree;
         return this;
     }
 
@@ -157,6 +163,26 @@ public class AnimatedPieViewConfig {
 
     public AnimatedPieViewConfig strokeMode(boolean strokeMode) {
         this.strokeMode = strokeMode;
+        return this;
+    }
+
+    public AnimatedPieViewConfig canTouch(boolean canTouch) {
+        this.canTouch = canTouch;
+        return this;
+    }
+
+    public AnimatedPieViewConfig setAnimTouch(boolean animTouch) {
+        this.animTouch = animTouch;
+        return this;
+    }
+
+    public AnimatedPieViewConfig selectListener(OnPieSelectListener selectListener) {
+        mSelectListener = selectListener;
+        return this;
+    }
+
+    public AnimatedPieViewConfig floatExpandSize(float floatExpandSize) {
+        this.floatExpandSize = floatExpandSize;
         return this;
     }
 
@@ -214,8 +240,8 @@ public class AnimatedPieViewConfig {
         return floatShadowRadius;
     }
 
-    public float getFloatExpandDegree() {
-        return floatExpandDegree;
+    public float getFloatExpandAngle() {
+        return floatExpandAngle;
     }
 
     public String getAutoDescStringFormat() {
@@ -252,6 +278,22 @@ public class AnimatedPieViewConfig {
 
     public boolean isStrokeMode() {
         return strokeMode;
+    }
+
+    public boolean isCanTouch() {
+        return canTouch;
+    }
+
+    public boolean isAnimTouch() {
+        return animTouch;
+    }
+
+    public OnPieSelectListener getSelectListener() {
+        return mSelectListener;
+    }
+
+    public float getFloatExpandSize() {
+        return floatExpandSize;
     }
 
     //=============================================================Deprecated methods
@@ -333,11 +375,11 @@ public class AnimatedPieViewConfig {
 
 
     /**
-     * @deprecated Use {@link #getFloatExpandDegree()} instead..
+     * @deprecated Use {@link #getFloatExpandAngle()} instead..
      */
     @Deprecated
     public float getTouchExpandAngle() {
-        return getFloatExpandDegree();
+        return getFloatExpandAngle();
     }
 
     /**
