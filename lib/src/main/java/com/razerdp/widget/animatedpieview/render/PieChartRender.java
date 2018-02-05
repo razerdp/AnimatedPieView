@@ -86,6 +86,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             Log.e(TAG, "onPrepare: config is null,abort draw because of preparing failed");
             return false;
         }
+        setDrawMode(DrawMode.DRAW);
         mTouchHelper.prepare();
         prepareAnim();
         //wrap datas and calculate sum value
@@ -132,7 +133,9 @@ public class PieChartRender extends BaseRender implements ITouchRender {
 
     @Override
     public void onSizeChanged(int width, int height, int paddingLeft, int paddingTop, int paddingRight, int paddingBottom) {
-
+        if (mTouchHelper != null) {
+            mTouchHelper.setCenter();
+        }
     }
 
     //-----------------------------------------render draw-----------------------------------------
@@ -171,7 +174,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     }
 
     private void renderTouch(Canvas canvas) {
-        drawCachedPie(canvas, mTouchHelper.floatingWrapper);
+        drawCachedPie(canvas, mTouchHelper.sameClick ? mTouchHelper.lastFloatWrapper : mTouchHelper.floatingWrapper);
         renderTouchDraw(canvas, mTouchHelper.lastFloatWrapper, mTouchHelper.floatDownTime);
         PLog.i("lastFloatWrapper id = " + (mTouchHelper.lastFloatWrapper == null ? "null" : mTouchHelper.lastFloatWrapper.getId()) + "  downTime = " + mTouchHelper.floatDownTime);
         renderTouchDraw(canvas, mTouchHelper.floatingWrapper, mTouchHelper.floatUpTime);
@@ -209,7 +212,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         touchPaint.setStrokeWidth(mConfig.getStrokeWidth() + (10 * timeSet));
         applyAlphaToPaint(wrapper, touchPaint);
         canvas.drawArc(mTouchHelper.touchBounds,
-                wrapper.getFromAngle() - (mConfig.getFloatExpandSize() * timeSet),
+                wrapper.getFromAngle() - (mConfig.getFloatExpandAngle() * timeSet),
                 wrapper.getSweepAngle() + (mConfig.getFloatExpandAngle() * 2 * timeSet) - mConfig.getSplitAngle(),
                 !mConfig.isStrokeMode(),
                 touchPaint);
@@ -243,7 +246,37 @@ public class PieChartRender extends BaseRender implements ITouchRender {
 
     //-----------------------------------------render draw fin-----------------------------------------
 
-    private void applyAlphaToPaint(PieInfoWrapper cachedDrawWrapper, Paint paint) {
+    private void applyAlphaToPaint(PieInfoWrapper target, Paint paint) {
+        if (target == null || paint == null) return;
+        if (mDrawMode == DrawMode.DRAW) {
+            paint.setAlpha(255);
+            return;
+        }
+
+        boolean focused = target.equals(mTouchHelper.floatingWrapper);
+        final float alphaCut = 255 - mConfig.getFocusAlpha();
+        switch (mConfig.getFocusAlphaType()) {
+            case AnimatedPieViewConfig.FOCUS_WITH_ALPHA:
+                boolean alphaDown = focused && mTouchHelper.floatingWrapper != null;
+                if (focused) {
+                    paint.setAlpha((int) (255 - (alphaCut * (alphaDown ? mTouchHelper.floatUpTime : mTouchHelper.floatDownTime))));
+                } else {
+                    paint.setAlpha(255);
+                }
+                break;
+            case AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV:
+                boolean alphaDown2 = !focused && mTouchHelper.floatingWrapper != null;
+                if (focused) {
+                    paint.setAlpha(255);
+                } else {
+                    paint.setAlpha((int) (255 - (alphaCut * (alphaDown2 ? mTouchHelper.floatUpTime : mTouchHelper.floatDownTime))));
+                }
+                break;
+            case AnimatedPieViewConfig.FOCUS_WITHOUT_ALPHA:
+            default:
+                paint.setAlpha(255);
+                break;
+        }
 
     }
 
@@ -386,6 +419,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         private float touchY = -1;
 
         private Paint mTouchPaint;
+        private boolean sameClick;
 
 
         private PieInfoWrapper lastTouchWrapper;
@@ -417,11 +451,11 @@ public class PieChartRender extends BaseRender implements ITouchRender {
 
             touchX = -1;
             touchY = -1;
+            sameClick = false;
         }
 
         void prepare() {
-            centerX = mPieManager.getDrawWidth() / 2;
-            centerY = mPieManager.getDrawHeight() / 2;
+            setCenter();
 
             mTouchPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -446,6 +480,11 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                     callInvalidate();
                 }
             });
+        }
+
+        private void setCenter() {
+            centerX = mPieManager.getDrawWidth() / 2;
+            centerY = mPieManager.getDrawHeight() / 2;
         }
 
         Paint prepareTouchPaint(PieInfoWrapper wrapper) {
@@ -516,9 +555,11 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                         //如果点的是当前正在浮起的wrapper，则移到上一个，当前的置空
                         lastFloatWrapper = touchWrapper;
                         floatingWrapper = null;
+                        sameClick = true;
                     } else {
                         lastFloatWrapper = floatingWrapper;
                         floatingWrapper = touchWrapper;
+                        sameClick = false;
                     }
 
                     if (mConfig.isAnimTouch()) {

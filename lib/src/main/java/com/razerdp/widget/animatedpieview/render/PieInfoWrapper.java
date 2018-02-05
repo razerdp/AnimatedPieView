@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
+import com.razerdp.widget.animatedpieview.data.SimplePieInfo;
 import com.razerdp.widget.animatedpieview.utils.DegreeUtil;
 import com.razerdp.widget.animatedpieview.utils.PLog;
 
@@ -126,12 +127,16 @@ final class PieInfoWrapper implements Serializable {
         if (autoDesc) {
             //自动填充描述auto
             desc = String.format(config.getAutoDescStringFormat(), AnimatedPieViewConfig.sFormateRate.format((mPieInfo.getValue() / sum) * 100));
+            if (mPieInfo instanceof SimplePieInfo) {
+                ((SimplePieInfo) mPieInfo).setDesc(desc);
+            }
         } else {
             desc = mPieInfo.getDesc();
         }
         PLog.d("【calculate】 " + "{ \n" + "id = " + id + "\nfromAngle = " + fromAngle + "\nsweepAngle = " + sweepAngle + "\ntoAngle = " + toAngle + "\n desc = " + desc + "\n  }");
         return toAngle;
     }
+
 
     @Override
     public boolean equals(Object obj) {

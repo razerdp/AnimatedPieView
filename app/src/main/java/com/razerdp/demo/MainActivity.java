@@ -2,15 +2,19 @@ package com.razerdp.demo;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.razerdp.animatedpieview.R;
 import com.razerdp.popup.PopupSetting;
 import com.razerdp.widget.animatedpieview.AnimatedPieView;
 import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
+import com.razerdp.widget.animatedpieview.callback.OnPieSelectListener;
+import com.razerdp.widget.animatedpieview.data.IPieInfo;
 import com.razerdp.widget.animatedpieview.data.SimplePieInfo;
 import com.razerdp.widget.animatedpieview.utils.PLog;
 
@@ -23,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private Button start;
     private Button setting;
     private PopupSetting mPopupSetting;
+    private TextView desc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +41,10 @@ public class MainActivity extends AppCompatActivity {
         mPopupSetting = new PopupSetting(this);
         start = findViewById(R.id.start);
         setting = findViewById(R.id.setting);
+        desc = findViewById(R.id.tv_desc);
         mAnimatedPieView = findViewById(R.id.animatedPieView);
         AnimatedPieViewConfig config = new AnimatedPieViewConfig();
         config.startAngle(-90)
-                .strokeMode(false)
                 .addData(new SimplePieInfo(30, getColor("FF446767")), true)
                 .addData(new SimplePieInfo(18.0f, getColor("FFFFD28C")), true)
                 .addData(new SimplePieInfo(123.0f, getColor("FFbb76b4")), true)
@@ -48,6 +53,12 @@ public class MainActivity extends AppCompatActivity {
                 .addData(new SimplePieInfo(55.0f, getColor("ff8be8ff")), true)
                 .addData(new SimplePieInfo(30.0f, getColor("fffa734d")), true)
                 .addData(new SimplePieInfo(30.0f, getColor("ff957de0")), true)
+                .selectListener(new OnPieSelectListener() {
+                    @Override
+                    public void onSelectPie(@NonNull IPieInfo pieInfo, boolean isScaleUp) {
+                        desc.setText("touch pie >>> {\n  value = " + pieInfo.getValue() + ";\n  color = " + pieInfo.getColor() + ";\n  desc = " + pieInfo.getDesc() + ";\n  isFloatUp = " + isScaleUp + ";\n }");
+                    }
+                })
                 .drawText(true)
                 .duration(1200)
                 .textSize(12)

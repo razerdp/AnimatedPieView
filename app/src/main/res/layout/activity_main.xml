@@ -9,6 +9,14 @@
     android:orientation="vertical"
     >
 
+    <TextView
+        android:id="@+id/tv_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="14sp"/>
+
     <com.razerdp.widget.animatedpieview.AnimatedPieView
         android:id="@+id/animatedPieView"
         android:layout_width="match_parent"

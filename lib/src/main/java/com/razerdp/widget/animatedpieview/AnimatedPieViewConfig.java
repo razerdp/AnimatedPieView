@@ -47,10 +47,12 @@ public class AnimatedPieViewConfig {
     private static final long DEFAULT_TOUCH_FLOATUP_DURATION = 500;
     private static final long DEFAULT_TOUCH_FLOATDOWN_DURATION = 800;
     private static final float DEFAULT_SHADOW_BLUR_RADIUS = 18;
-    private static final float DEFAULT_FLOAT_EXPAND_ANGLE = 8;
+    private static final float DEFAULT_FLOAT_EXPAND_ANGLE = 5;
     private static final float DEFAULT_DESC_TEXT_SIZE = 12;
     private static final float DEFAULT_SPLIT_ANGLE = 0;
     private static final float DEFAULT_FLOAT_EXPAND_SIZE = 15;
+    private static final int DEFAULT_FOCUS_ALPHA_TYPE = FOCUS_WITH_ALPHA_REV;
+    private static int DEFAULT_FOCUS_ALPHA = 150;
 
 
     //=============================================================option
@@ -74,6 +76,8 @@ public class AnimatedPieViewConfig {
     private boolean canTouch = true;
     private boolean animTouch = true;
     private OnPieSelectListener mSelectListener;
+    private int focusAlphaType = DEFAULT_FOCUS_ALPHA_TYPE;
+    private int focusAlpha = DEFAULT_FOCUS_ALPHA;
 
 
     private boolean strokeMode = true;
@@ -186,6 +190,16 @@ public class AnimatedPieViewConfig {
         return this;
     }
 
+    public AnimatedPieViewConfig focusAlphaType(int focusAlphaType) {
+        this.focusAlphaType = focusAlphaType;
+        return this;
+    }
+
+    public AnimatedPieViewConfig setFocusAlpha(int focusAlpha) {
+        this.focusAlpha = focusAlpha;
+        return this;
+    }
+
     //=============================================================data
     public AnimatedPieViewConfig addData(@NonNull IPieInfo info) {
         return addData(info, false);
@@ -294,6 +308,15 @@ public class AnimatedPieViewConfig {
 
     public float getFloatExpandSize() {
         return floatExpandSize;
+    }
+
+    @FocusAlpha
+    public int getFocusAlphaType() {
+        return focusAlphaType;
+    }
+
+    public int getFocusAlpha() {
+        return focusAlpha;
     }
 
     //=============================================================Deprecated methods
