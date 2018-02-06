@@ -247,13 +247,14 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     //-----------------------------------------render draw fin-----------------------------------------
 
     private void applyAlphaToPaint(PieInfoWrapper target, Paint paint) {
-        if (target == null || paint == null) return;
+        if (paint == null) return;
         if (mDrawMode == DrawMode.DRAW) {
             paint.setAlpha(255);
             return;
         }
 
-        boolean focused = target.equals(mTouchHelper.floatingWrapper);
+        boolean focused = (target != null && target.equals(mTouchHelper.floatingWrapper))
+                || target == null && (mTouchHelper.lastFloatWrapper != null && mTouchHelper.lastFloatWrapper.equals(mTouchHelper.lastTouchWrapper));
         final float alphaCut = 255 - mConfig.getFocusAlpha();
         switch (mConfig.getFocusAlphaType()) {
             case AnimatedPieViewConfig.FOCUS_WITH_ALPHA:
