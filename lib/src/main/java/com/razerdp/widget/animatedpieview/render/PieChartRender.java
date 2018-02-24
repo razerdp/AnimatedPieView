@@ -253,21 +253,22 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             return;
         }
 
-        boolean focused = (target != null && target.equals(mTouchHelper.floatingWrapper))
-                || target == null && (mTouchHelper.lastFloatWrapper != null && mTouchHelper.lastFloatWrapper.equals(mTouchHelper.lastTouchWrapper));
+        //如果点的是同一个，则需要特殊处理
+        boolean selected = mTouchHelper.sameClick ? target == null : (target != null && target.equals(mTouchHelper.floatingWrapper));
         final float alphaCut = 255 - mConfig.getFocusAlpha();
         switch (mConfig.getFocusAlphaType()) {
             case AnimatedPieViewConfig.FOCUS_WITH_ALPHA:
-                boolean alphaDown = focused && mTouchHelper.floatingWrapper != null;
-                if (focused) {
+                //选中的对象有alpha变化
+                boolean alphaDown = selected && mTouchHelper.floatingWrapper == null;
+                if (selected) {
                     paint.setAlpha((int) (255 - (alphaCut * (alphaDown ? mTouchHelper.floatUpTime : mTouchHelper.floatDownTime))));
                 } else {
                     paint.setAlpha(255);
                 }
                 break;
             case AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV:
-                boolean alphaDown2 = !focused && mTouchHelper.floatingWrapper != null;
-                if (focused) {
+                boolean alphaDown2 = !selected && mTouchHelper.floatingWrapper != null;
+                if (selected) {
                     paint.setAlpha(255);
                 } else {
                     paint.setAlpha((int) (255 - (alphaCut * (alphaDown2 ? mTouchHelper.floatUpTime : mTouchHelper.floatDownTime))));
@@ -542,7 +543,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         }
 
         boolean handleTouch(MotionEvent event) {
-            if (!mConfig.isCanTouch() || isInAnimating) return false;
+            if (mConfig == null || !mConfig.isCanTouch() || isInAnimating) return false;
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     touchX = event.getX();

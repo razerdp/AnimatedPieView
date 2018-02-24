@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 .drawText(true)
                 .duration(1200)
                 .textSize(12)
+                .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA)
                 .pieRadiusRatio(0.75f);
         mAnimatedPieView.applyConfig(config);
 
