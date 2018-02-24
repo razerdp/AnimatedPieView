@@ -259,7 +259,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         switch (mConfig.getFocusAlphaType()) {
             case AnimatedPieViewConfig.FOCUS_WITH_ALPHA:
                 //选中的对象有alpha变化
-                boolean alphaDown = selected && mTouchHelper.floatingWrapper == null;
+                boolean alphaDown = selected && mTouchHelper.floatingWrapper != null;
                 if (selected) {
                     paint.setAlpha((int) (255 - (alphaCut * (alphaDown ? mTouchHelper.floatUpTime : mTouchHelper.floatDownTime))));
                 } else {
