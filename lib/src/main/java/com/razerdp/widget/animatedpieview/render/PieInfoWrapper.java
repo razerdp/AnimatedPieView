@@ -27,23 +27,14 @@ final class PieInfoWrapper implements Serializable {
     private Paint mDrawPaint;
     private Paint mAlphaDrawPaint;
     private Paint mTexPaint;
-    private Path mDrawPath;
-
+    private Path mLinePath;
+    private Path mLinePathMeasure;
     //============= 参数 =============
     private float fromAngle;
     private float sweepAngle;
     private float toAngle;
     private boolean autoDesc;
     private String desc;
-
-
-    public enum FloatAction {
-        FLOAT_UP,
-        FLOAT_DOWN,
-        NO_ACTION;
-    }
-
-    public FloatAction actionWhat = FloatAction.NO_ACTION;
 
 
     PieInfoWrapper(IPieInfo pieInfo) {
@@ -64,7 +55,8 @@ final class PieInfoWrapper implements Serializable {
         if (mAlphaDrawPaint == null)
             mAlphaDrawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         if (mTexPaint == null) mTexPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-        if (mDrawPath == null) mDrawPath = new Path();
+        if (mLinePath == null) mLinePath = new Path();
+        if (mLinePathMeasure == null) mLinePathMeasure = new Path();
 
         mDrawPaint.setStyle(config.isStrokeMode() ? Paint.Style.STROKE : Paint.Style.FILL);
         mDrawPaint.setStrokeWidth(config.getStrokeWidth());
@@ -74,7 +66,7 @@ final class PieInfoWrapper implements Serializable {
         mTexPaint.setStyle(Paint.Style.FILL);
         mTexPaint.setTextSize(config.getTextSize());
 
-        mDrawPath.reset();
+        mLinePath.reset();
         return this;
     }
 
@@ -87,12 +79,18 @@ final class PieInfoWrapper implements Serializable {
     }
 
     public Paint getAlphaDrawPaint() {
+        mAlphaDrawPaint.set(mDrawPaint);
         return mAlphaDrawPaint;
     }
 
-    public Path getDrawPath() {
-        mDrawPath.rewind();
-        return mDrawPath;
+    public Path getLinePath() {
+        mLinePath.rewind();
+        return mLinePath;
+    }
+
+    public Path getLinePathMeasure() {
+        mLinePathMeasure.rewind();
+        return mLinePathMeasure;
     }
 
     public float getFromAngle() {

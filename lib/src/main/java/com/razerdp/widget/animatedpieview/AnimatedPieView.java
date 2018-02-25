@@ -216,6 +216,7 @@ import android.view.View;
 
 import com.razerdp.widget.animatedpieview.manager.PieManager;
 import com.razerdp.widget.animatedpieview.render.PieChartRender;
+import com.razerdp.widget.animatedpieview.utils.UIHelper;
 
 /**
  * Created by 大灯泡 on 2017/11/7.
@@ -255,6 +256,33 @@ public class AnimatedPieView extends View implements IPieView {
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mPieManager = new PieManager(this);
         mPieChartRender = new PieChartRender(this);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        setMeasuredDimension(getSize(UIHelper.dip2px(getContext(), 300f), widthMeasureSpec),
+                getSize(UIHelper.dip2px(getContext(), 300f), heightMeasureSpec));
+    }
+
+    private int getSize(int defaultSize, int measureSpec) {
+        int result = defaultSize;
+
+        int mode = MeasureSpec.getMode(measureSpec);
+        int size = MeasureSpec.getSize(measureSpec);
+
+        switch (mode) {
+            case MeasureSpec.UNSPECIFIED:
+            case MeasureSpec.AT_MOST:
+                result = defaultSize;
+                break;
+            case MeasureSpec.EXACTLY:
+                result = size;
+                break;
+            default:
+                break;
+        }
+        return result;
     }
 
     @Override

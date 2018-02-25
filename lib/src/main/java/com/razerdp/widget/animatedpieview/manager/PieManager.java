@@ -23,8 +23,8 @@ import java.util.List;
  */
 public class PieManager {
 
-    IPieView pieView;
-    List<BaseRender> mRenders;
+    private IPieView pieView;
+    private List<BaseRender> mRenders;
 
     private RectF drawBounds;
     private Paint textMeasurePaint;

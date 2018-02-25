@@ -54,18 +54,21 @@ public class AnimatedPieViewConfig {
     private static final String DEFAULT_AUTO_DESC_FORMAT = "%1$s%%";
     private static final int DEFAULT_STROKE_WIDTH = 80;
     private static final float DEFAULT_START_DEGREE = -90.0f;
-    private static final long DEFAULT_ANIMATION_DURATION = 2500;
+    private static final long DEFAULT_ANIMATION_DURATION = 3000;
     private static final long DEFAULT_TOUCH_FLOATUP_DURATION = 500;
     private static final long DEFAULT_TOUCH_FLOATDOWN_DURATION = 800;
     private static final float DEFAULT_SHADOW_BLUR_RADIUS = 18;
     private static final float DEFAULT_FLOAT_EXPAND_ANGLE = 5;
-    private static final float DEFAULT_DESC_TEXT_SIZE = 12;
+    private static final float DEFAULT_DESC_TEXT_SIZE = 14;
     private static final float DEFAULT_SPLIT_ANGLE = 0;
     private static final float DEFAULT_FLOAT_EXPAND_SIZE = 15;
     private static final int DEFAULT_FOCUS_ALPHA_TYPE = FOCUS_WITH_ALPHA_REV;
     private static int DEFAULT_FOCUS_ALPHA = 150;
     private static final int DEFAULT_TEXT_GRAVITY = DYSTOPY;
-
+    private static final int DEFAULT_GUIDE_POINT_RADIUS = 4;
+    private static final int DEFAULT_GUIDE_MARGIN_START = 10;
+    private static final int DEFAULT_GUIDE_LINE_WIDTH = 4;
+    private static final int DEFAULT_TEXT_MARGIN = 6;
 
     //=============================================================option
 
@@ -93,6 +96,11 @@ public class AnimatedPieViewConfig {
     private int focusAlpha = DEFAULT_FOCUS_ALPHA;
     @TextGravity
     private int textGravity = DEFAULT_TEXT_GRAVITY;
+    private int guidePointRadius = DEFAULT_GUIDE_POINT_RADIUS;
+    private int guideLineMarginStart = DEFAULT_GUIDE_MARGIN_START;
+    private int guideLineWidth = DEFAULT_GUIDE_LINE_WIDTH;
+    private boolean cubicGuide = false;
+    private int textMargin = DEFAULT_TEXT_MARGIN;
 
 
     private boolean strokeMode = true;
@@ -220,6 +228,34 @@ public class AnimatedPieViewConfig {
         return this;
     }
 
+    public AnimatedPieViewConfig guidePointRadius(int guidePointRadius) {
+        this.guidePointRadius = guidePointRadius;
+        return this;
+    }
+
+    public AnimatedPieViewConfig guideLineMarginStart(int guideLineMarginStart) {
+        this.guideLineMarginStart = guideLineMarginStart;
+        return this;
+    }
+
+    public AnimatedPieViewConfig cubicGuide(boolean cubicGuide) {
+        this.cubicGuide = cubicGuide;
+        if (cubicGuide) {
+            return textGravity(ALIGN);
+        }
+        return this;
+    }
+
+    public AnimatedPieViewConfig guideLineWidth(int guideLineWidth) {
+        this.guideLineWidth = guideLineWidth;
+        return this;
+    }
+
+    public AnimatedPieViewConfig textMargin(int textMargin) {
+        this.textMargin = textMargin;
+        return this;
+    }
+
     //=============================================================data
     public AnimatedPieViewConfig addData(@NonNull IPieInfo info) {
         return addData(info, false);
@@ -342,6 +378,26 @@ public class AnimatedPieViewConfig {
     @TextGravity
     public int getTextGravity() {
         return textGravity;
+    }
+
+    public int getGuidePointRadius() {
+        return guidePointRadius;
+    }
+
+    public int getGuideLineMarginStart() {
+        return guideLineMarginStart;
+    }
+
+    public boolean isCubicGuide() {
+        return cubicGuide;
+    }
+
+    public int getGuideLineWidth() {
+        return guideLineWidth;
+    }
+
+    public int getTextMargin() {
+        return textMargin;
     }
 
     //=============================================================Deprecated methods

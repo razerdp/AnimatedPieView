@@ -3,7 +3,9 @@ package com.razerdp.widget.animatedpieview.render;
 import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PathMeasure;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 import android.util.Pair;
@@ -32,6 +34,15 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         TOUCH
     }
 
+    enum LineDirection {
+        TOP_RIGHT,
+        BOTTOM_RIGHT,
+        TOP_LEFT,
+        BOTTOM_LEFT,
+        CENTER_RIGHT,
+        CENTER_LEFT;
+    }
+
     private List<PieInfoWrapper> mDataWrappers;
     private List<PieInfoWrapper> mCachedDrawWrappers;
     private PathMeasure mPathMeasure;
@@ -48,7 +59,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     //-----------------------------------------other-----------------------------------------
     private TouchHelper mTouchHelper;
     private RenderAnimation mRenderAnimation;
-    private volatile boolean animaHasStart;
+    private volatile boolean animHasStart;
 
     public PieChartRender(IPieView iPieView) {
         super(iPieView);
@@ -64,7 +75,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     public void reset() {
         mTouchHelper.reset();
         pieBounds.setEmpty();
-        animaHasStart = false;
+        animHasStart = false;
         isInAnimating = false;
         pieRadius = 0;
 
@@ -163,8 +174,8 @@ public class PieChartRender extends BaseRender implements ITouchRender {
 
     private void renderDraw(Canvas canvas) {
         if (mConfig.isAnimPie()) {
-            if (mRenderAnimation != null && !isInAnimating && !animaHasStart) {
-                animaHasStart = true;
+            if (mRenderAnimation != null && !isInAnimating && !animHasStart) {
+                animHasStart = true;
                 mIPieView.getPieView().startAnimation(mRenderAnimation);
             }
             renderAnimaDraw(canvas);
@@ -242,6 +253,169 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     private void drawText(Canvas canvas, PieInfoWrapper wrapper) {
         if (wrapper == null) return;
 
+        //根据touch扩大量修正指示线和描述文字的位置
+        float fixPos = (wrapper.equals(mTouchHelper.floatingWrapper) ? getFixTextPos(wrapper) : 0) + (wrapper.equals(mTouchHelper.lastFloatWrapper) ? getFixTextPos(wrapper) : 0);
+
+        final float pointMargins = fixPos
+                + pieRadius
+                + mConfig.getGuideLineMarginStart()
+                + (mConfig.isStrokeMode() ? mConfig.getStrokeWidth() / 2 : 0);
+        float cx = (float) (pointMargins * Math.cos(Math.toRadians(wrapper.getMiddleAngle())));
+        float cy = (float) (pointMargins * Math.sin(Math.toRadians(wrapper.getMiddleAngle())));
+
+        //画点
+        Paint paint = wrapper.getAlphaDrawPaint();
+        if (angleToProgress(animAngle, wrapper) > 0.5) {
+            applyAlphaToPaint(wrapper, paint);
+            paint.setStyle(Paint.Style.FILL);
+            canvas.drawCircle(cx, cy, mConfig.getGuidePointRadius(), paint);
+        }
+
+        //画线
+        float guideLineEndX1 = -1;
+        float guideLineEndY1 = -1;
+
+        float guideLineEndX2 = -1;
+        float guideLineEndY2 = -1;
+
+
+        float textLength = paint.measureText(wrapper.getDesc());
+
+        //计算拐角方向
+        LineDirection direction = calculateLineGravity(cx, cy);
+        float guideMiddleLength = Math.abs(cy / 6);
+
+        switch (direction) {
+            case TOP_LEFT:
+                guideLineEndX1 = cx - guideMiddleLength * absMathCos(-45) - fixPos;
+                guideLineEndY1 = cy - guideMiddleLength * absMathCos(-45) - fixPos;
+
+                guideLineEndX2 = guideLineEndX1 - maxDescTextSize;
+                break;
+            case TOP_RIGHT:
+                guideLineEndX1 = cx + guideMiddleLength * absMathCos(45) + fixPos;
+                guideLineEndY1 = cy - guideMiddleLength * absMathCos(45) - fixPos;
+
+                guideLineEndX2 = guideLineEndX1 + maxDescTextSize;
+                break;
+            case CENTER_LEFT:
+                guideLineEndX1 = cx - guideMiddleLength - fixPos;
+                guideLineEndY1 = cy;
+
+                guideLineEndX2 = guideLineEndX1 - maxDescTextSize;
+                break;
+            case CENTER_RIGHT:
+                guideLineEndX1 = cx + guideMiddleLength + fixPos;
+                guideLineEndY1 = cy;
+
+                guideLineEndX2 = guideLineEndX1 - maxDescTextSize;
+                break;
+            case BOTTOM_LEFT:
+                guideLineEndX1 = cx - guideMiddleLength * absMathCos(-45) - fixPos;
+                guideLineEndY1 = cy + guideMiddleLength * absMathCos(-45) + fixPos;
+
+                guideLineEndX2 = guideLineEndX1 - maxDescTextSize;
+                break;
+            case BOTTOM_RIGHT:
+                guideLineEndX1 = cx + guideMiddleLength * absMathCos(45) + fixPos;
+                guideLineEndY1 = cy + guideMiddleLength * absMathCos(45) + fixPos;
+
+                guideLineEndX2 = guideLineEndX1 + maxDescTextSize;
+                break;
+
+        }
+        guideLineEndY2 = guideLineEndY1;
+
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(mConfig.getGuideLineWidth());
+        paint.setStrokeJoin(Paint.Join.ROUND);
+
+        Path path = wrapper.getLinePath();
+        Path measurePathDst = wrapper.getLinePathMeasure();
+        path.moveTo(cx, cy);
+        path.lineTo(guideLineEndX1, guideLineEndY1);
+        path.lineTo(guideLineEndX2, guideLineEndY2);
+        mPathMeasure.nextContour();
+        mPathMeasure.setPath(path, false);
+        float progress = angleToProgress(animAngle, wrapper);
+        mPathMeasure.getSegment(0, progress * mPathMeasure.getLength(), measurePathDst, true);
+        canvas.drawPath(measurePathDst, paint);
+
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTextSize(mConfig.getTextSize());
+        paint.setAlpha((int) (255 * progress));
+        float textStartX = calculateTextStartX(guideLineEndX1, guideLineEndX2, direction, mPieManager.measureTextBounds(wrapper.getDesc(), paint));
+        float textStartY = calculateTextStartY(guideLineEndY1, guideLineEndY2, direction, mPieManager.measureTextBounds(wrapper.getDesc(), paint));
+        //画文字
+        canvas.drawText(wrapper.getDesc(), textStartX, textStartY, paint);
+
+    }
+
+    private float calculateTextStartX(float guideLineEndX1, float guideLineEndX2, LineDirection direction, Rect textBounds) {
+        final int textGravity = mConfig.getTextGravity();
+        final int textMargin = mConfig.getTextMargin();
+        switch (direction) {
+            case TOP_LEFT:
+            case CENTER_LEFT:
+            case BOTTOM_LEFT:
+                return textGravity == AnimatedPieViewConfig.ALIGN ? guideLineEndX2 - textBounds.width() - textMargin : guideLineEndX1 - textBounds.width();
+            case TOP_RIGHT:
+            case CENTER_RIGHT:
+            case BOTTOM_RIGHT:
+                return textGravity == AnimatedPieViewConfig.ALIGN ? guideLineEndX2 + textMargin : guideLineEndX1 + textMargin;
+            default:
+                return guideLineEndX1;
+        }
+    }
+
+    private float calculateTextStartY(float guideLineEndY1, float guideLineEndY2, LineDirection direction, Rect textBounds) {
+        final int textGravity = mConfig.getTextGravity();
+        final int textMargin = mConfig.getTextMargin();
+        switch (direction) {
+            case TOP_LEFT:
+            case CENTER_LEFT:
+            case TOP_RIGHT:
+                if (textGravity == AnimatedPieViewConfig.ABOVE || textGravity == AnimatedPieViewConfig.DYSTOPY) {
+                    return guideLineEndY1 - mConfig.getTextMargin() - textBounds.height() / 2;
+                } else if (textGravity == AnimatedPieViewConfig.BELOW) {
+                    return guideLineEndY1 + mConfig.getTextMargin() + textBounds.height();
+                } else {
+                    return guideLineEndY1 + textBounds.height() / 2;
+                }
+            case BOTTOM_LEFT:
+            case CENTER_RIGHT:
+            case BOTTOM_RIGHT:
+                if (textGravity == AnimatedPieViewConfig.ABOVE) {
+                    return guideLineEndY1 - mConfig.getTextMargin() - textBounds.height() / 2;
+                } else if (textGravity == AnimatedPieViewConfig.BELOW || textGravity == AnimatedPieViewConfig.DYSTOPY) {
+                    return guideLineEndY1 + mConfig.getTextMargin() + textBounds.height();
+                } else {
+                    return guideLineEndY1 + textBounds.height() / 2;
+                }
+            default:
+                return guideLineEndY1 - mConfig.getTextMargin() - textBounds.height() / 2;
+        }
+    }
+
+    private LineDirection calculateLineGravity(float startX, float startY) {
+        if (startX > 0) {
+            //在右边
+            return startY > 0 ? LineDirection.BOTTOM_RIGHT : LineDirection.TOP_RIGHT;
+        } else if (startX < 0) {
+            //在左边
+            return startY > 0 ? LineDirection.BOTTOM_LEFT : LineDirection.TOP_LEFT;
+        } else if (startY == 0) {
+            //刚好中间
+            return startX > 0 ? LineDirection.CENTER_RIGHT : LineDirection.CENTER_LEFT;
+        }
+        return LineDirection.TOP_RIGHT;
+    }
+
+    private float getFixTextPos(PieInfoWrapper wrapper) {
+        if (wrapper == null) return 0;
+        final float scaleSizeInTouch = !mConfig.isStrokeMode() ? mConfig.getFloatExpandSize() : 10;
+        boolean up = wrapper.equals(mTouchHelper.floatingWrapper);
+        return up ? scaleSizeInTouch * mTouchHelper.floatUpTime : scaleSizeInTouch * mTouchHelper.floatDownTime;
     }
 
     //-----------------------------------------render draw fin-----------------------------------------
@@ -329,7 +503,6 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     private void setDrawMode(DrawMode drawMode) {
         if (drawMode == DrawMode.TOUCH && isInAnimating) return;
         mDrawMode = drawMode;
-
     }
 
     private void measurePieRadius(float width, float height) {
@@ -338,17 +511,21 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             return;
         }
         final float minSize = Math.min(width, height);
-        //最低接收0.5的最小高宽值
+        //最低0.5的最小高宽值
         float minPieRadius = minSize / 4;
         if (mConfig.isAutoSize()) {
             if (mConfig.isStrokeMode()) {
                 //stroke模式跟pie模式测量不同
                 //按照最大的文字测量
-                pieRadius = minSize / 2 - maxDescTextSize - (mConfig.getStrokeWidth() >> 1);
+                pieRadius = minSize / 2
+                        - maxDescTextSize
+                        - (mConfig.isStrokeMode() ? (mConfig.getStrokeWidth() >> 1) : 0)
+                        - mConfig.getGuideLineMarginStart();
+
                 pieRadius = Math.max(minPieRadius, pieRadius);
             } else {
                 //饼图只需要看外径
-                pieRadius = minSize / 2 - maxDescTextSize;
+                pieRadius = minSize / 2 - maxDescTextSize - mConfig.getGuideLineMarginStart();
             }
         } else {
             //优先判定size

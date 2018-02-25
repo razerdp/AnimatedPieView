@@ -64,9 +64,9 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .drawText(true)
                 .duration(1200)
-                .textSize(12)
-                .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV)
-                .pieRadiusRatio(0.75f);
+                .textSize(18)
+                .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA)
+                .textGravity(AnimatedPieViewConfig.DYSTOPY);
         mAnimatedPieView.applyConfig(config);
 
         mPopupSetting.setOnOkButtonClickListener(new View.OnClickListener() {
