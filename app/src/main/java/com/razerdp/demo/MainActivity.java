@@ -18,6 +18,7 @@ import com.razerdp.widget.animatedpieview.data.IPieInfo;
 import com.razerdp.widget.animatedpieview.data.SimplePieInfo;
 import com.razerdp.widget.animatedpieview.utils.PLog;
 
+import java.util.Locale;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -55,14 +56,16 @@ public class MainActivity extends AppCompatActivity {
                 .addData(new SimplePieInfo(30.0f, getColor("ff957de0")), true)
                 .selectListener(new OnPieSelectListener() {
                     @Override
-                    public void onSelectPie(@NonNull IPieInfo pieInfo, boolean isScaleUp) {
-                        desc.setText("touch pie >>> {\n  value = " + pieInfo.getValue() + ";\n  color = " + pieInfo.getColor() + ";\n  desc = " + pieInfo.getDesc() + ";\n  isFloatUp = " + isScaleUp + ";\n }");
+                    public void onSelectPie(@NonNull IPieInfo pieInfo, boolean isFloatUp) {
+                        desc.setText(String.format(Locale.getDefault(),
+                                "touch pie >>> {\n  value = %s;\n  color = %d;\n  desc = %s;\n  isFloatUp = %s;\n }",
+                                pieInfo.getValue(), pieInfo.getColor(), pieInfo.getDesc(), isFloatUp));
                     }
                 })
                 .drawText(true)
                 .duration(1200)
                 .textSize(12)
-                .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA)
+                .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV)
                 .pieRadiusRatio(0.75f);
         mAnimatedPieView.applyConfig(config);
 

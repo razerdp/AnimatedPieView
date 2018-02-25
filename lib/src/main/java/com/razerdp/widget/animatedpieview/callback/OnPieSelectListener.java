@@ -13,7 +13,7 @@ public interface OnPieSelectListener<T extends IPieInfo> {
      * 选中的回调
      *
      * @param pieInfo   数据实体
-     * @param isScaleUp 是否浮起
+     * @param isFloatUp 是否浮起
      */
-    void onSelectPie(@NonNull T pieInfo, boolean isScaleUp);
+    void onSelectPie(@NonNull T pieInfo, boolean isFloatUp);
 }

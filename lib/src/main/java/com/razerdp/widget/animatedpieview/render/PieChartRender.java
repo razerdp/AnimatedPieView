@@ -254,7 +254,15 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         }
 
         //如果点的是同一个，则需要特殊处理
-        boolean selected = mTouchHelper.sameClick ? target == null : (target != null && target.equals(mTouchHelper.floatingWrapper));
+        boolean selected = false;
+        if (mTouchHelper.floatingWrapper != null) {
+            //针对浮起来的
+            selected = mTouchHelper.floatingWrapper.equals(target);
+        } else {
+            if (mTouchHelper.lastFloatWrapper != null) {
+                selected = mTouchHelper.lastFloatWrapper.equals(target);
+            }
+        }
         final float alphaCut = 255 - mConfig.getFocusAlpha();
         switch (mConfig.getFocusAlphaType()) {
             case AnimatedPieViewConfig.FOCUS_WITH_ALPHA:

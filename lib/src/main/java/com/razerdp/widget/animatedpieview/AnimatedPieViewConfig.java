@@ -21,7 +21,7 @@ import java.util.List;
  * <p>
  * <h3>CN:</h3>pieview配置类，pieview会根据你配置的参数进行绘制
  * <p>
- * <h3>EN:</h3>Config for pieview.Pieview will draw as what you set.
+ * <h3>EN:</h3>Config for pieview.PieView will draw as what you set.
  */
 public class AnimatedPieViewConfig {
     private static final long serialVersionUID = -2285434281608092357L;
@@ -35,6 +35,17 @@ public class AnimatedPieViewConfig {
     public static final int FOCUS_WITH_ALPHA = 0x10;
     public static final int FOCUS_WITH_ALPHA_REV = 0x11;
     public static final int FOCUS_WITHOUT_ALPHA = 0x12;
+
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({ABOVE, BELOW, ALIGN, DYSTOPY})
+    public @interface TextGravity {
+    }
+
+    public static final int ABOVE = 0x20;
+    public static final int BELOW = 0x21;
+    public static final int ALIGN = 0x22;
+    public static final int DYSTOPY = 0x23;
 
 
     //=============================================================default
@@ -53,6 +64,7 @@ public class AnimatedPieViewConfig {
     private static final float DEFAULT_FLOAT_EXPAND_SIZE = 15;
     private static final int DEFAULT_FOCUS_ALPHA_TYPE = FOCUS_WITH_ALPHA_REV;
     private static int DEFAULT_FOCUS_ALPHA = 150;
+    private static final int DEFAULT_TEXT_GRAVITY = DYSTOPY;
 
 
     //=============================================================option
@@ -76,8 +88,11 @@ public class AnimatedPieViewConfig {
     private boolean canTouch = true;
     private boolean animTouch = true;
     private OnPieSelectListener mSelectListener;
+    @FocusAlpha
     private int focusAlphaType = DEFAULT_FOCUS_ALPHA_TYPE;
     private int focusAlpha = DEFAULT_FOCUS_ALPHA;
+    @TextGravity
+    private int textGravity = DEFAULT_TEXT_GRAVITY;
 
 
     private boolean strokeMode = true;
@@ -195,8 +210,13 @@ public class AnimatedPieViewConfig {
         return this;
     }
 
-    public AnimatedPieViewConfig setFocusAlpha(int focusAlpha) {
+    public AnimatedPieViewConfig focusAlpha(int focusAlpha) {
         this.focusAlpha = focusAlpha;
+        return this;
+    }
+
+    public AnimatedPieViewConfig textGravity(@TextGravity int textGravity) {
+        this.textGravity = textGravity;
         return this;
     }
 
@@ -317,6 +337,11 @@ public class AnimatedPieViewConfig {
 
     public int getFocusAlpha() {
         return focusAlpha;
+    }
+
+    @TextGravity
+    public int getTextGravity() {
+        return textGravity;
     }
 
     //=============================================================Deprecated methods

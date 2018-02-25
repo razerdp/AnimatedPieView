@@ -17,6 +17,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by 大灯泡 on 2018/2/1.
  */
 final class PieInfoWrapper implements Serializable {
+
+    private static final long serialVersionUID = -8551831728967624659L;
+
     private final String id;
     private final IPieInfo mPieInfo;
 
