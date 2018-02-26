@@ -8,7 +8,7 @@ import android.support.annotation.ColorInt;
 
 public interface IPieInfo {
 
-    float getValue();
+    double getValue();
 
     @ColorInt
     int getColor();

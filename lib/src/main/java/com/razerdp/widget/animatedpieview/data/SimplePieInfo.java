@@ -5,18 +5,18 @@ package com.razerdp.widget.animatedpieview.data;
  */
 
 public class SimplePieInfo implements IPieInfo {
-    private float value;
+    private double value;
     private int color;
     private String desc;
 
     public SimplePieInfo() {
     }
 
-    public SimplePieInfo(float value, int color) {
+    public SimplePieInfo(double value, int color) {
         this(value, color, "");
     }
 
-    public SimplePieInfo(float value, int color, String desc) {
+    public SimplePieInfo(double value, int color, String desc) {
         this.value = value;
         this.color = color;
         this.desc = desc;
@@ -35,7 +35,7 @@ public class SimplePieInfo implements IPieInfo {
     }
 
     @Override
-    public float getValue() {
+    public double getValue() {
         return value;
     }
 
