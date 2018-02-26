@@ -23,7 +23,7 @@ Suggestion:
 
 **Thanks**
 
-#### Appendix:
+### Appendix:
 
 **Deprecated methods/New methods comparison table : [**Revision Log**](https://github.com/razerdp/AnimatedPieView/blob/master/REVISION_LOG.md)**
 
@@ -133,41 +133,41 @@ mConfig.animOnTouch(true)// Animation when selected pie（default:true）
        .drawText(true)// Whether to draw a text description
        .textSize(12)// Text description size
        .textMargin(8)// Margin between text and guide line
-       .pieRadiusRatio(0.8f)// 甜甜圈半径占比
-       .guidePointRadius(2)// 设置描述文字的开始小点的大小
-       .guideLineWidth(4)// 设置描述文字的指示线宽度
-       .guideLineMarginStart(8)// 设置描述文字的指示线开始距离外圆半径的大小
-       .textGravity(AnimatedPieViewConfig.ABOVE)// 设置描述文字方向 【
-            -AnimatedPieViewConfig.ABOVE：文字将会在导航线上方绘制
-            -AnimatedPieViewConfig.BELOW：文字在导航线下方绘制
-            -AnimatedPieViewConfig.ALIGN：文字与导航线对齐
-            -AnimatedPieViewConfig.DYSTOPY：文字在1、2象限部分绘制在线的上方，在3、4象限绘制在线的下方
+       .pieRadiusRatio(0.8f)// Chart's radius ratio for parent ViewGroup
+       .guidePointRadius(2)// Chart's radius
+       .guideLineWidth(4)// Text guide line stroke width
+       .guideLineMarginStart(8)// Guide point margin from chart
+       .textGravity(AnimatedPieViewConfig.ABOVE)// Text Gravity 【
+            -AnimatedPieViewConfig.ABOVE：Text will be drawn above the guide line
+            -AnimatedPieViewConfig.BELOW：Text will be drawn below the guide line
+            -AnimatedPieViewConfig.ALIGN：Text will be drawn align to the guide line
+            -AnimatedPieViewConfig.DYSTOPY：Text will be drawn above the line in the 1, 2 quadrants and below the line in the 3, 4 quadrants
        】
-       .canTouch(true)// 是否允许甜甜圈点击放大
-       .splitAngle(1)// 甜甜圈间隙角度
-       .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV,150)// 焦点甜甜圈的alpha表现形态及alpha削减值
-       .focusAlpha(150);// 选中的/或者非选中的甜甜圈的alpha值（跟focusAlphaType挂钩）
+       .canTouch(true)// Whether to allow the pie click to enlarge
+       .splitAngle(1)// Clearance angle
+       .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV)// Alpha change mode for selected pie
+       .focusAlpha(150);// Alpha for selected pie (depend on focusAlphaType)
 ```
 
 ---
 
-交流群：590777418
----
+QQ Group：590777418
+------------------
 
-因为目前还有朋友圈项目，建立了一个交流群，出于懒得管理那么多，所以如果有想法或者优化建议或者其他问题，欢迎加入“朋友圈交流群”
+Welcome to join our QQ group for communication.
 
 ![](https://github.com/razerdp/FriendCircle/blob/master/qqgroup.png)
 
-打赏（看在我那么努力维护的份上。。。给个零食呗~）
----
+Buy me a coffee
+--------------------------------------
 
-| 微信 |支付宝 | 
+| Wechat | AliPay |
 | ---- | ---- | 
 | ![](https://github.com/razerdp/FriendCircle/blob/master/wechat.png)      | ![](https://github.com/razerdp/FriendCircle/blob/master/alipay.png) |
 
 
-控件思路【按思路顺序更新】
----
+Develop Passage:
+----------------
 
  * [自定义控件——弄个甜甜圈吧（1）： 起源](http://www.jianshu.com/p/b2a2d82e107e)
  * [自定义控件——弄个甜甜圈吧（2）： 搭建](http://www.jianshu.com/p/562c525ff927)
