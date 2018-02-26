@@ -28,8 +28,8 @@ Suggestion:
 **Deprecated methods/New methods comparison table : [**Revision Log**](https://github.com/razerdp/AnimatedPieView/blob/master/REVISION_LOG.md)**
 
 
-Develop Plan （更新日志->[日志](https://github.com/razerdp/AnimatedPieView/blob/master/UPDATE_LOG.md)）
----
+Develop Plan （Update Log->[Update Log](https://github.com/razerdp/AnimatedPieView/blob/master/UPDATE_LOG.md)）
+-------------------------------------------------------------------------------------------------------------
 
   > No plan now....I'm eagerly waiting for your great suggestions.
   
