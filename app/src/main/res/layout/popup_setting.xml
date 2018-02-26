@@ -60,14 +60,6 @@
                     android:textColor="#666666"/>
 
                 <android.support.v7.widget.SwitchCompat
-                    android:id="@+id/switch_direct_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="文字同一方向（direct text）"
-                    android:textColor="#666666"/>
-
-                <android.support.v7.widget.SwitchCompat
                     android:id="@+id/switch_can_touch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -79,7 +71,7 @@
                     android:id="@+id/input_duration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="动画时间（setDuration）"
+                    android:hint="动画时间（duration）"
                     android:padding="8dp"
                     android:textColorHint="#888888"
                     >
@@ -99,7 +91,7 @@
                     android:id="@+id/input_start_angle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="起始角度（setStartAngle）"
+                    android:hint="起始角度（startAngle）"
                     android:padding="8dp"
                     android:textColorHint="#888888"
                     >
@@ -119,7 +111,7 @@
                     android:id="@+id/input_touch_scale_size"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="点击后放大数值，只对饼图有效（setTouchScaleSize）"
+                    android:hint="点击后放大数值，只对饼图有效（floatExpandSize）"
                     android:padding="8dp"
                     android:textColorHint="#888888"
                     >
@@ -139,7 +131,7 @@
                     android:id="@+id/input_touch_scale_up_duration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="点击浮现动画时间（setTouchScaleUpDuration）"
+                    android:hint="点击浮现动画时间（floatUpDuration）"
                     android:padding="8dp"
                     android:textColorHint="#888888"
                     >
@@ -159,7 +151,7 @@
                     android:id="@+id/input_touch_scale_down_duration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="上一个浮现的圆弧回退的动画时间（setTouchScaleDownDuration）"
+                    android:hint="上一个浮现的圆弧回退的动画时间（floatDownDuration）"
                     android:padding="8dp"
                     android:textColorHint="#888888"
                     >
@@ -179,7 +171,7 @@
                     android:id="@+id/input_touch_shadow_radius"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="点击后的阴影扩散范围（setTouchShadowRadius）"
+                    android:hint="点击后的阴影扩散范围（floatShadowRadius）"
                     android:padding="8dp"
                     android:textColorHint="#888888"
                     >
@@ -199,7 +191,7 @@
                     android:id="@+id/input_touch_expand_angle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="点击后圆弧/扇形扩展的角度（setTouchExpandAngle）"
+                    android:hint="点击后圆弧/扇形扩展的角度（floatExpandAngle）"
                     android:padding="8dp"
                     android:textColorHint="#888888"
                     >
@@ -219,7 +211,7 @@
                     android:id="@+id/input_pie_radius_scale"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="甜甜圈半径占比（setPieRadiusScale）"
+                    android:hint="甜甜圈半径占比（pieRadiusRatio）"
                     android:padding="8dp"
                     android:textColorHint="#888888"
                     >
@@ -239,7 +231,7 @@
                     android:id="@+id/input_text_margin_line"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="绘制文字与描述线的距离（setTextMarginLine）"
+                    android:hint="绘制文字与描述线的距离（textMargin）"
                     android:padding="8dp"
                     android:textColorHint="#888888"
                     >
@@ -259,7 +251,7 @@
                     android:id="@+id/input_text_size"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="绘制的文字大小（setTextSize）"
+                    android:hint="绘制的文字大小（textSize）"
                     android:padding="8dp"
                     android:textColorHint="#888888"
                     >
@@ -279,7 +271,7 @@
                     android:id="@+id/input_text_point_radius"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="设置描述文字的开始小点的大小（setTextPointRadius）"
+                    android:hint="设置描述文字的开始小点的大小（guidePointRadius）"
                     android:padding="8dp"
                     android:textColorHint="#888888"
                     >
@@ -299,27 +291,7 @@
                     android:id="@+id/input_text_line_stroke_width"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="设置描述文字的指示线宽度（setTextLineStrokeWidth）"
-                    android:padding="8dp"
-                    android:textColorHint="#888888"
-                    >
-
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:paddingLeft="8dp"
-                        android:textColor="#333333"
-                        android:textSize="12sp"
-                        />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/input_text_line_transition_length"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="设置描述文字的指示线折角处长度（setTextLineTransitionLength）"
+                    android:hint="设置描述文字的指示线宽度（guideLineWidth）"
                     android:padding="8dp"
                     android:textColorHint="#888888"
                     >
@@ -339,7 +311,7 @@
                     android:id="@+id/input_text_line_start_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="设置描述文字的指示线开始距离外圆半径的大小（setTextLineStartMargin）"
+                    android:hint="设置描述文字的指示线开始距离外圆半径的大小（guideLineMarginStart）"
                     android:padding="8dp"
                     android:textColorHint="#888888"
                     >
@@ -385,13 +357,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:padding="8dp"
-                    android:text="焦点甜甜圈的alpha表现形态及alpha削减值（setFocusAlphaType）"/>
+                    android:text="焦点甜甜圈的alpha表现形态及alpha（focusAlphaType）"/>
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/input_focus_alpha_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="alpha cut（setFocusAlphaType）"
+                    android:hint="touch alpha（focusAlpha）"
                     android:padding="8dp"
                     android:textColorHint="#888888"
                     >
@@ -444,7 +416,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:padding="8dp"
-                    android:text="笔刷style（setStrokePaintCap）"/>
+                    android:text="文字方向（textGravity）"/>
 
                 <RadioGroup
                     android:layout_width="match_parent"
@@ -454,27 +426,35 @@
                     >
 
                     <android.support.v7.widget.AppCompatRadioButton
-                        android:id="@+id/radio_paint_cap_butt"
+                        android:id="@+id/text_gravity_above"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cap.BUTT"
+                        android:text="在导航线上面(ABOVE)"
                         android:textColor="#666666"
                         android:textSize="12sp"/>
 
                     <android.support.v7.widget.AppCompatRadioButton
-                        android:id="@+id/radio_paint_cap_round"
+                        android:id="@+id/text_gravity_below"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cap.ROUND"
+                        android:text="在导航线下面(BELOW)"
                         android:textColor="#666666"
                         android:textSize="12sp"/>
 
 
                     <android.support.v7.widget.AppCompatRadioButton
-                        android:id="@+id/radio_paint_cap_square"
+                        android:id="@+id/text_gravity_align"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cap.SQUARE"
+                        android:text="对齐导航线(ALIGN)"
+                        android:textColor="#666666"
+                        android:textSize="12sp"/>
+
+                    <android.support.v7.widget.AppCompatRadioButton
+                        android:id="@+id/text_gravity_dystopy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="异位(DYSTOPY)"
                         android:textColor="#666666"
                         android:textSize="12sp"/>
                 </RadioGroup>
