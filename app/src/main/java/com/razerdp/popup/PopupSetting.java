@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 
 import com.razerdp.animatedpieview.R;
 import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
@@ -19,35 +20,35 @@ import razerdp.blur.PopupBlurOption;
  * Created by 大灯泡 on 2017/11/29.
  */
 public class PopupSetting extends BasePopupWindow {
-    private SwitchCompat switchDonuts;
-    private SwitchCompat switchText;
-    private SwitchCompat switchTouchAnimation;
-    private SwitchCompat switchDirectText;
-    private SwitchCompat switchCanTouch;
-    private TextInputLayout inputDuration;
-    private TextInputLayout inputStartAngle;
-    private TextInputLayout inputTouchScaleSize;
-    private TextInputLayout inputTouchScaleUpDuration;
-    private TextInputLayout inputTouchScaleDownDuration;
-    private TextInputLayout inputTouchShadowRadius;
-    private TextInputLayout inputTouchExpandAngle;
-    private TextInputLayout inputPieRadiusScale;
-    private TextInputLayout inputTextMarginLine;
-    private TextInputLayout inputTextSize;
-    private TextInputLayout inputTextPointRadius;
-    private TextInputLayout inputTextLineStrokeWidth;
-    private TextInputLayout inputTextLineTransitionLength;
-    private TextInputLayout inputTextLineStartMargin;
-    private TextInputLayout inputSplitAngle;
-    private TextInputLayout inputFocusAlphaType;
-    private AppCompatRadioButton radioFocusWithAlpha;
-    private AppCompatRadioButton radioFocusWithAlphaRev;
-    private AppCompatRadioButton radioFocusWithoutAlpha;
-    private AppCompatRadioButton radioCapButt;
-    private AppCompatRadioButton radioCapRound;
-    private AppCompatRadioButton radioCapSquare;
 
+    public SwitchCompat switchDonuts;
+    public SwitchCompat switchText;
+    public SwitchCompat switchTouchAnimation;
+    public SwitchCompat switchCanTouch;
+    public TextInputLayout inputDuration;
+    public TextInputLayout inputStartAngle;
+    public TextInputLayout inputTouchScaleSize;
+    public TextInputLayout inputTouchScaleUpDuration;
+    public TextInputLayout inputTouchScaleDownDuration;
+    public TextInputLayout inputTouchShadowRadius;
+    public TextInputLayout inputTouchExpandAngle;
+    public TextInputLayout inputPieRadiusScale;
+    public TextInputLayout inputTextMarginLine;
+    public TextInputLayout inputTextSize;
+    public TextInputLayout inputTextPointRadius;
+    public TextInputLayout inputTextLineStrokeWidth;
+    public TextInputLayout inputTextLineStartMargin;
+    public TextInputLayout inputSplitAngle;
+    public TextInputLayout inputFocusAlphaType;
+    public AppCompatRadioButton radioFocusWithAlpha;
+    public AppCompatRadioButton radioFocusWithAlphaRev;
+    public AppCompatRadioButton radioFocusWithoutAlpha;
+    public AppCompatRadioButton textGravityAbove;
+    public AppCompatRadioButton textGravityBelow;
+    public AppCompatRadioButton textGravityAlign;
+    public AppCompatRadioButton textGravityDystopy;
     public Button btnOk;
+    public RelativeLayout popupAnima;
 
     AnimatedPieViewConfig viewConfig;
 
@@ -95,35 +96,35 @@ public class PopupSetting extends BasePopupWindow {
     }
 
     private void findView() {
-        switchDonuts = (SwitchCompat) findViewById(R.id.switch_donuts);
-        switchText = (SwitchCompat) findViewById(R.id.switch_text);
-        switchTouchAnimation = (SwitchCompat) findViewById(R.id.switch_touch_animation);
-        switchDirectText = (SwitchCompat) findViewById(R.id.switch_direct_text);
-        switchCanTouch = (SwitchCompat) findViewById(R.id.switch_can_touch);
-        inputDuration = (TextInputLayout) findViewById(R.id.input_duration);
-        inputStartAngle = (TextInputLayout) findViewById(R.id.input_start_angle);
-        inputTouchScaleSize = (TextInputLayout) findViewById(R.id.input_touch_scale_size);
-        inputTouchScaleUpDuration = (TextInputLayout) findViewById(R.id.input_touch_scale_up_duration);
-        inputTouchScaleDownDuration = (TextInputLayout) findViewById(R.id.input_touch_scale_down_duration);
-        inputTouchShadowRadius = (TextInputLayout) findViewById(R.id.input_touch_shadow_radius);
-        inputTouchExpandAngle = (TextInputLayout) findViewById(R.id.input_touch_expand_angle);
-        inputPieRadiusScale = (TextInputLayout) findViewById(R.id.input_pie_radius_scale);
-        inputTextMarginLine = (TextInputLayout) findViewById(R.id.input_text_margin_line);
-        inputTextSize = (TextInputLayout) findViewById(R.id.input_text_size);
-        inputTextPointRadius = (TextInputLayout) findViewById(R.id.input_text_point_radius);
-        inputTextLineStrokeWidth = (TextInputLayout) findViewById(R.id.input_text_line_stroke_width);
-        inputTextLineTransitionLength = (TextInputLayout) findViewById(R.id.input_text_line_transition_length);
-        inputTextLineStartMargin = (TextInputLayout) findViewById(R.id.input_text_line_start_margin);
-        inputSplitAngle = (TextInputLayout) findViewById(R.id.input_split_angle);
-        inputFocusAlphaType = (TextInputLayout) findViewById(R.id.input_focus_alpha_type);
-        radioFocusWithAlpha = (AppCompatRadioButton) findViewById(R.id.radio_focus_with_alpha);
-        radioFocusWithAlphaRev = (AppCompatRadioButton) findViewById(R.id.radio_focus_with_alpha_rev);
-        radioFocusWithoutAlpha = (AppCompatRadioButton) findViewById(R.id.radio_focus_without_alpha);
-        radioCapButt = (AppCompatRadioButton) findViewById(R.id.radio_paint_cap_butt);
-        radioCapRound = (AppCompatRadioButton) findViewById(R.id.radio_paint_cap_round);
-        radioCapSquare = (AppCompatRadioButton) findViewById(R.id.radio_paint_cap_square);
+        this.switchDonuts = (SwitchCompat) findViewById(R.id.switch_donuts);
+        this.switchText = (SwitchCompat) findViewById(R.id.switch_text);
+        this.switchTouchAnimation = (SwitchCompat) findViewById(R.id.switch_touch_animation);
+        this.switchCanTouch = (SwitchCompat) findViewById(R.id.switch_can_touch);
+        this.inputDuration = (TextInputLayout) findViewById(R.id.input_duration);
+        this.inputStartAngle = (TextInputLayout) findViewById(R.id.input_start_angle);
+        this.inputTouchScaleSize = (TextInputLayout) findViewById(R.id.input_touch_scale_size);
+        this.inputTouchScaleUpDuration = (TextInputLayout) findViewById(R.id.input_touch_scale_up_duration);
+        this.inputTouchScaleDownDuration = (TextInputLayout) findViewById(R.id.input_touch_scale_down_duration);
+        this.inputTouchShadowRadius = (TextInputLayout) findViewById(R.id.input_touch_shadow_radius);
+        this.inputTouchExpandAngle = (TextInputLayout) findViewById(R.id.input_touch_expand_angle);
+        this.inputPieRadiusScale = (TextInputLayout) findViewById(R.id.input_pie_radius_scale);
+        this.inputTextMarginLine = (TextInputLayout) findViewById(R.id.input_text_margin_line);
+        this.inputTextSize = (TextInputLayout) findViewById(R.id.input_text_size);
+        this.inputTextPointRadius = (TextInputLayout) findViewById(R.id.input_text_point_radius);
+        this.inputTextLineStrokeWidth = (TextInputLayout) findViewById(R.id.input_text_line_stroke_width);
+        this.inputTextLineStartMargin = (TextInputLayout) findViewById(R.id.input_text_line_start_margin);
+        this.inputSplitAngle = (TextInputLayout) findViewById(R.id.input_split_angle);
+        this.inputFocusAlphaType = (TextInputLayout) findViewById(R.id.input_focus_alpha_type);
+        this.radioFocusWithAlpha = (AppCompatRadioButton) findViewById(R.id.radio_focus_with_alpha);
+        this.radioFocusWithAlphaRev = (AppCompatRadioButton) findViewById(R.id.radio_focus_with_alpha_rev);
+        this.radioFocusWithoutAlpha = (AppCompatRadioButton) findViewById(R.id.radio_focus_without_alpha);
+        this.textGravityAbove = (AppCompatRadioButton) findViewById(R.id.text_gravity_above);
+        this.textGravityBelow = (AppCompatRadioButton) findViewById(R.id.text_gravity_below);
+        this.textGravityAlign = (AppCompatRadioButton) findViewById(R.id.text_gravity_align);
+        this.textGravityDystopy = (AppCompatRadioButton) findViewById(R.id.text_gravity_dystopy);
+        this.popupAnima = (RelativeLayout) findViewById(R.id.popup_anima);
 
-        btnOk = (Button) findViewById(R.id.btn_ok);
+        this.btnOk = (Button) findViewById(R.id.btn_ok);
 
         switchDonuts.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -146,110 +147,109 @@ public class PopupSetting extends BasePopupWindow {
     }
 
     public void dismiss(AnimatedPieViewConfig viewConfig) {
-//        setConfig(viewConfig);
+        setConfig(viewConfig);
         super.dismiss();
     }
 
-   /* public void showPopupWindow(AnimatedPieViewConfig2 viewConfig) {
+    public void showPopupWindow(AnimatedPieViewConfig viewConfig) {
         if (viewConfig == null) return;
         applyConfigToView(viewConfig);
         super.showPopupWindow();
     }
 
 
-    private void setConfig(AnimatedPieViewConfig2 viewConfig) {
+    private void setConfig(AnimatedPieViewConfig viewConfig) {
         if (viewConfig == null) return;
-        viewConfig.strokeOnly(!switchDonuts.isChecked())
-                .drawDescText(switchText.isChecked())
-                .touchWithAnimation(switchTouchAnimation.isChecked())
-                .directText(switchDirectText.isChecked())
+        viewConfig.strokeMode(!switchDonuts.isChecked())
+                .drawText(switchText.isChecked())
+                .animOnTouch(switchTouchAnimation.isChecked())
                 .canTouch(switchCanTouch.isChecked())
-                .animationDrawDuration(getTextLong(inputDuration, viewConfig.getAnimationDrawDuration()))
+                .duration(getTextLong(inputDuration, viewConfig.getDuration()))
                 .startAngle(getTextFloat(inputStartAngle, viewConfig.getStartAngle()))
-                .touchScaleSize(getTextFloat(inputTouchScaleSize, viewConfig.getTouchScaleSize()))
-                .touchScaleUpDuration(getTextLong(inputTouchScaleUpDuration, viewConfig.getTouchScaleUpDuration()))
-                .touchScaleDownDuration(getTextLong(inputTouchScaleDownDuration, viewConfig.getTouchScaleDownDuration()))
-                .touchShadowRadius(getTextFloat(inputTouchShadowRadius, viewConfig.getTouchShadowRadius()))
-                .touchExpandAngle(getTextFloat(inputTouchExpandAngle, viewConfig.getTouchExpandAngle()))
-                .pieRadiusScale(getTextFloat(inputPieRadiusScale, viewConfig.getPieRadiusScale()))
-                .textMarginLine(getTextFloat(inputTextMarginLine, viewConfig.getTextMarginLine()))
-                .textSize(getTextInt(inputTextSize, viewConfig.getTextSize()))
-                .descGuidePointRadius(getTextInt(inputTextPointRadius, viewConfig.getDescGuidePointRadius()))
-                .textGuideLineStrokeWidth(getTextInt(inputTextLineStrokeWidth, viewConfig.getTextGuideLineStrokeWidth()))
-                .setTextLineTransitionLength(getTextInt(inputTextLineTransitionLength, viewConfig.getTextLineTransitionLength()))
-                .splitAngle(getTextFloat(inputSplitAngle, viewConfig.getSplitAngle()));
-
-        float alphaCut = getTextFloat(inputFocusAlphaType, viewConfig.getFocusAlphaCut());
+                .floatExpandSize(getTextFloat(inputTouchScaleSize, viewConfig.getFloatExpandSize()))
+                .floatUpDuration(getTextLong(inputTouchScaleUpDuration, viewConfig.getFloatUpDuration()))
+                .floatDownDuration(getTextLong(inputTouchScaleDownDuration, viewConfig.getFloatDownDuration()))
+                .floatShadowRadius(getTextFloat(inputTouchShadowRadius, viewConfig.getFloatShadowRadius()))
+                .floatExpandAngle(getTextFloat(inputTouchExpandAngle, viewConfig.getFloatExpandAngle()))
+                .pieRadiusRatio(getTextFloat(inputPieRadiusScale, viewConfig.getPieRadiusRatio()))
+                .textMargin(getTextInt(inputTextMarginLine, viewConfig.getTextMargin()))
+                .textSize(getTextFloat(inputTextSize, viewConfig.getTextSize()))
+                .guidePointRadius(getTextInt(inputTextPointRadius, viewConfig.getGuidePointRadius()))
+                .guideLineWidth(getTextInt(inputTextLineStrokeWidth, viewConfig.getGuideLineWidth()))
+                .splitAngle(getTextFloat(inputSplitAngle, viewConfig.getSplitAngle()))
+                .focusAlpha(getTextInt(inputFocusAlphaType, viewConfig.getFocusAlpha()));
         if (radioFocusWithoutAlpha.isChecked()) {
-            viewConfig.focusAlphaType(AnimatedPieViewConfig2.FOCUS_WITHOUT_ALPHA, alphaCut);
+            viewConfig.focusAlphaType(AnimatedPieViewConfig.FOCUS_WITHOUT_ALPHA);
         } else if (radioFocusWithAlpha.isChecked()) {
-            viewConfig.focusAlphaType(AnimatedPieViewConfig2.FOCUS_WITH_ALPHA, alphaCut);
+            viewConfig.focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA);
         } else if (radioFocusWithAlphaRev.isChecked()) {
-            viewConfig.focusAlphaType(AnimatedPieViewConfig2.FOCUS_WITH_ALPHA_REV, alphaCut);
+            viewConfig.focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV);
         }
 
-        if (radioCapButt.isChecked()) {
-            viewConfig.strokePaintCap(Paint.Cap.BUTT);
-        } else if (radioCapRound.isChecked()) {
-            viewConfig.strokePaintCap(Paint.Cap.ROUND);
-        } else if (radioCapSquare.isChecked()) {
-            viewConfig.strokePaintCap(Paint.Cap.SQUARE);
+        if (textGravityAbove.isChecked()) {
+            viewConfig.textGravity(AnimatedPieViewConfig.ABOVE);
+        } else if (textGravityBelow.isChecked()) {
+            viewConfig.textGravity(AnimatedPieViewConfig.BELOW);
+        } else if (textGravityAlign.isChecked()) {
+            viewConfig.textGravity(AnimatedPieViewConfig.ALIGN);
+        } else if (textGravityDystopy.isChecked()) {
+            viewConfig.textGravity(AnimatedPieViewConfig.DYSTOPY);
         }
 
     }
 
-    private void applyConfigToView(AnimatedPieViewConfig2 viewConfig) {
+    private void applyConfigToView(AnimatedPieViewConfig viewConfig) {
         this.viewConfig = viewConfig;
-        switchDonuts.setChecked(!viewConfig.isStrokeOnly());
-        switchText.setChecked(viewConfig.isDrawDescText());
-        switchTouchAnimation.setChecked(viewConfig.isTouchWithAnimation());
-        switchDirectText.setChecked(viewConfig.isDirectText());
+        switchDonuts.setChecked(!viewConfig.isStrokeMode());
+        switchText.setChecked(viewConfig.isDrawText());
+        switchTouchAnimation.setChecked(viewConfig.isAnimTouch());
         switchCanTouch.setChecked(viewConfig.isCanTouch());
 
-        setText(inputDuration, viewConfig.getAnimationDrawDuration());
+        setText(inputDuration, viewConfig.getDuration());
         setText(inputStartAngle, viewConfig.getStartAngle());
-        setText(inputTouchScaleSize, viewConfig.getTouchScaleSize());
-        setText(inputTouchScaleUpDuration, viewConfig.getTouchScaleUpDuration());
-        setText(inputTouchScaleDownDuration, viewConfig.getTouchScaleDownDuration());
-        setText(inputTouchShadowRadius, viewConfig.getTouchShadowRadius());
-        setText(inputTouchExpandAngle, viewConfig.getTouchExpandAngle());
-        setText(inputPieRadiusScale, viewConfig.getPieRadiusScale());
-        setText(inputTextMarginLine, viewConfig.getTextMarginLine());
+        setText(inputTouchScaleSize, viewConfig.getFloatExpandSize());
+        setText(inputTouchScaleUpDuration, viewConfig.getFloatUpDuration());
+        setText(inputTouchScaleDownDuration, viewConfig.getFloatDownDuration());
+        setText(inputTouchShadowRadius, viewConfig.getFloatShadowRadius());
+        setText(inputTouchExpandAngle, viewConfig.getFloatExpandAngle());
+        setText(inputPieRadiusScale, viewConfig.getPieRadiusRatio());
+        setText(inputTextMarginLine, viewConfig.getTextMargin());
         setText(inputTextSize, viewConfig.getTextSize());
-        setText(inputTextPointRadius, viewConfig.getDescGuidePointRadius());
-        setText(inputTextLineStrokeWidth, viewConfig.getTextGuideLineStrokeWidth());
-        setText(inputTextLineTransitionLength, viewConfig.getTextLineTransitionLength());
-        setText(inputTextLineStartMargin, viewConfig.getTextLineStartMargin());
+        setText(inputTextPointRadius, viewConfig.getGuidePointRadius());
+        setText(inputTextLineStrokeWidth, viewConfig.getGuideLineWidth());
+        setText(inputTextLineStartMargin, viewConfig.getGuideLineMarginStart());
         setText(inputSplitAngle, viewConfig.getSplitAngle());
-        setText(inputFocusAlphaType, viewConfig.getFocusAlphaCut());
+        setText(inputFocusAlphaType, viewConfig.getFocusAlpha());
 
         switch (viewConfig.getFocusAlphaType()) {
-            case AnimatedPieViewConfig2.FOCUS_WITH_ALPHA:
+            case AnimatedPieViewConfig.FOCUS_WITH_ALPHA:
                 radioFocusWithAlpha.setChecked(true);
                 break;
-            case AnimatedPieViewConfig2.FOCUS_WITH_ALPHA_REV:
+            case AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV:
                 radioFocusWithAlphaRev.setChecked(true);
                 break;
-            case AnimatedPieViewConfig2.FOCUS_WITHOUT_ALPHA:
+            case AnimatedPieViewConfig.FOCUS_WITHOUT_ALPHA:
                 radioFocusWithoutAlpha.setChecked(true);
                 break;
         }
 
-        switch (viewConfig.getStrokePaintCap()) {
-            case BUTT:
-                radioCapButt.setChecked(true);
+        switch (viewConfig.getTextGravity()) {
+            case AnimatedPieViewConfig.ABOVE:
+                textGravityAbove.setChecked(true);
                 break;
-            case ROUND:
-                radioCapRound.setChecked(true);
+            case AnimatedPieViewConfig.BELOW:
+                textGravityBelow.setChecked(true);
                 break;
-            case SQUARE:
-                radioCapSquare.setChecked(true);
+            case AnimatedPieViewConfig.ALIGN:
+                textGravityAlign.setChecked(true);
+                break;
+            case AnimatedPieViewConfig.DYSTOPY:
+                textGravityDystopy.setChecked(true);
                 break;
             default:
                 break;
         }
     }
-*/
 
     private void setText(TextInputLayout v, Object str) {
         if (v == null) return;

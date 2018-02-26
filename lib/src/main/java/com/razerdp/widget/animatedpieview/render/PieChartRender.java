@@ -116,7 +116,8 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         for (PieInfoWrapper dataWrapper : mDataWrappers) {
             dataWrapper.prepare(mConfig);
             lastAngle = dataWrapper.calculateDegree(lastAngle, sum, mConfig);
-            maxDescTextSize = Math.max(maxDescTextSize, mPieManager.measureTextBounds(dataWrapper.getDesc(), dataWrapper.getDrawPaint()).width());
+            maxDescTextSize = Math.max(maxDescTextSize, mPieManager.measureTextBounds(dataWrapper.getDesc(), (int) mConfig.getTextSize()).width());
+            PLog.i("desc >> " + dataWrapper.getDesc() + "  maxDesTextSize >> " + maxDescTextSize);
         }
 
         return true;
@@ -279,7 +280,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         float guideLineEndY2 = -1;
 
 
-        float textLength = paint.measureText(wrapper.getDesc());
+        float textLength = mPieManager.measureTextBounds(wrapper.getDesc(), (int) mConfig.getTextSize()).width() + mConfig.getTextMargin();
 
         //计算拐角方向
         LineDirection direction = calculateLineGravity(cx, cy);
@@ -290,37 +291,37 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                 guideLineEndX1 = cx - guideMiddleLength * absMathCos(-45) - fixPos;
                 guideLineEndY1 = cy - guideMiddleLength * absMathCos(-45) - fixPos;
 
-                guideLineEndX2 = guideLineEndX1 - maxDescTextSize;
+                guideLineEndX2 = guideLineEndX1 - textLength;
                 break;
             case TOP_RIGHT:
                 guideLineEndX1 = cx + guideMiddleLength * absMathCos(45) + fixPos;
                 guideLineEndY1 = cy - guideMiddleLength * absMathCos(45) - fixPos;
 
-                guideLineEndX2 = guideLineEndX1 + maxDescTextSize;
+                guideLineEndX2 = guideLineEndX1 + textLength;
                 break;
             case CENTER_LEFT:
                 guideLineEndX1 = cx - guideMiddleLength - fixPos;
                 guideLineEndY1 = cy;
 
-                guideLineEndX2 = guideLineEndX1 - maxDescTextSize;
+                guideLineEndX2 = guideLineEndX1 - textLength;
                 break;
             case CENTER_RIGHT:
                 guideLineEndX1 = cx + guideMiddleLength + fixPos;
                 guideLineEndY1 = cy;
 
-                guideLineEndX2 = guideLineEndX1 - maxDescTextSize;
+                guideLineEndX2 = guideLineEndX1 - textLength;
                 break;
             case BOTTOM_LEFT:
                 guideLineEndX1 = cx - guideMiddleLength * absMathCos(-45) - fixPos;
                 guideLineEndY1 = cy + guideMiddleLength * absMathCos(-45) + fixPos;
 
-                guideLineEndX2 = guideLineEndX1 - maxDescTextSize;
+                guideLineEndX2 = guideLineEndX1 - textLength;
                 break;
             case BOTTOM_RIGHT:
                 guideLineEndX1 = cx + guideMiddleLength * absMathCos(45) + fixPos;
                 guideLineEndY1 = cy + guideMiddleLength * absMathCos(45) + fixPos;
 
-                guideLineEndX2 = guideLineEndX1 + maxDescTextSize;
+                guideLineEndX2 = guideLineEndX1 + textLength;
                 break;
 
         }
@@ -490,7 +491,6 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             if (degree >= mDrawingPie.getToAngle()) {
                 boolean hasAdded = mCachedDrawWrappers.contains(mDrawingPie);
                 if (!hasAdded) {
-                    PLog.v("添加到缓存： " + mDrawingPie.toString());
                     mCachedDrawWrappers.add(mDrawingPie);
                 }
             }

@@ -1,5 +1,6 @@
 package com.razerdp.widget.animatedpieview;
 
+import android.graphics.Paint;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
@@ -83,7 +84,7 @@ public class AnimatedPieViewConfig {
     private String autoDescStringFormat = DEFAULT_AUTO_DESC_FORMAT;
     private boolean autoSize = true;
     private float pieRadius = 0;
-    private float pieRadiusRatio = 0.85f;
+    private float pieRadiusRatio = 0;
     private float textSize = DEFAULT_DESC_TEXT_SIZE;
     private boolean drawText = false;
     private float splitAngle = DEFAULT_SPLIT_ANGLE;
@@ -109,7 +110,14 @@ public class AnimatedPieViewConfig {
     private List<Pair<IPieInfo, Boolean>> mDatas;
 
     public AnimatedPieViewConfig() {
+        this(null);
+    }
+
+    public AnimatedPieViewConfig(AnimatedPieViewConfig config) {
         mDatas = new ArrayList<>();
+        if (config != null) {
+            copyFrom(config);
+        }
     }
 
     public AnimatedPieViewConfig strokeWidth(int strokeWidth) {
@@ -142,8 +150,8 @@ public class AnimatedPieViewConfig {
         return this;
     }
 
-    public AnimatedPieViewConfig floatExpandDegree(float floatExpandDegree) {
-        this.floatExpandAngle = floatExpandDegree;
+    public AnimatedPieViewConfig floatExpandAngle(float floatExpandAngle) {
+        this.floatExpandAngle = floatExpandAngle;
         return this;
     }
 
@@ -159,12 +167,12 @@ public class AnimatedPieViewConfig {
 
     public AnimatedPieViewConfig pieRadius(float pieRadius) {
         this.pieRadius = pieRadius;
-        return autoSize(false);
+        return autoSize(pieRadius <= 0);
     }
 
     public AnimatedPieViewConfig pieRadiusRatio(@FloatRange(from = 0f, to = 1f) float pieRadiusRatio) {
         this.pieRadiusRatio = pieRadiusRatio;
-        return autoSize(false);
+        return autoSize(pieRadiusRatio <= 0);
     }
 
 
@@ -198,12 +206,12 @@ public class AnimatedPieViewConfig {
         return this;
     }
 
-    public AnimatedPieViewConfig setAnimTouch(boolean animTouch) {
+    public AnimatedPieViewConfig animOnTouch(boolean animTouch) {
         this.animTouch = animTouch;
         return this;
     }
 
-    public AnimatedPieViewConfig selectListener(OnPieSelectListener selectListener) {
+    public <T extends IPieInfo> AnimatedPieViewConfig selectListener(OnPieSelectListener<T> selectListener) {
         mSelectListener = selectListener;
         return this;
     }
@@ -213,7 +221,7 @@ public class AnimatedPieViewConfig {
         return this;
     }
 
-    public AnimatedPieViewConfig focusAlphaType(int focusAlphaType) {
+    public AnimatedPieViewConfig focusAlphaType(@FocusAlpha int focusAlphaType) {
         this.focusAlphaType = focusAlphaType;
         return this;
     }
@@ -254,6 +262,42 @@ public class AnimatedPieViewConfig {
     public AnimatedPieViewConfig textMargin(int textMargin) {
         this.textMargin = textMargin;
         return this;
+    }
+
+    public AnimatedPieViewConfig copyFrom(AnimatedPieViewConfig config) {
+        if (config == null) return this;
+        this.mDatas.clear();
+        this.mDatas.addAll(config.mDatas);
+        return strokeWidth(config.strokeWidth)
+                .startAngle(config.startAngle)
+                .duration(config.duration)
+                .floatUpDuration(config.floatUpDuration)
+                .floatDownDuration(config.floatDownDuration)
+                .floatShadowRadius(config.floatShadowRadius)
+                .floatExpandAngle(config.floatExpandAngle)
+                .autoDescStringFormat(config.autoDescStringFormat)
+                .autoSize(config.autoSize)
+                .pieRadius(config.pieRadius)
+                .pieRadiusRatio(config.pieRadiusRatio)
+                .textSize(config.textSize)
+                .drawText(config.drawText)
+                .splitAngle(config.splitAngle)
+                .animaPie(config.animPie)
+                .strokeMode(config.strokeMode)
+                .canTouch(config.canTouch)
+                .animOnTouch(config.animTouch)
+                .selectListener(config.mSelectListener)
+                .floatExpandSize(config.floatExpandSize)
+                .focusAlphaType(config.focusAlphaType)
+                .focusAlpha(config.focusAlpha)
+                .textGravity(config.textGravity)
+                .guidePointRadius(config.guidePointRadius)
+                .guideLineMarginStart(config.guideLineMarginStart)
+                .cubicGuide(config.cubicGuide)
+                .guideLineWidth(config.guideLineWidth)
+                .textMargin(config.textMargin);
+
+
     }
 
     //=============================================================data
@@ -487,15 +531,15 @@ public class AnimatedPieViewConfig {
     }
 
     /**
-     * @deprecated Use {@link #floatExpandDegree(float)} instead..
+     * @deprecated Use {@link #floatExpandAngle(float)} instead..
      */
     @Deprecated
     public AnimatedPieViewConfig setTouchExpandAngle(float touchExpandAngle) {
-        return floatExpandDegree(touchExpandAngle);
+        return floatExpandAngle(touchExpandAngle);
     }
 
     /**
-     * @deprecated Use {@link #isStrokeMode()} instead..
+     * @deprecated Use {@link #isStrokeMode()} instead.
      */
     @Deprecated
     public boolean isDrawStrokeOnly() {
@@ -503,10 +547,109 @@ public class AnimatedPieViewConfig {
     }
 
     /**
-     * @deprecated Use {@link #strokeMode(boolean)} instead..
+     * @deprecated Use {@link #strokeMode(boolean)} instead.
      */
     @Deprecated
     public AnimatedPieViewConfig setDrawStrokeOnly(boolean stroke) {
         return strokeMode(stroke);
+    }
+
+
+    /**
+     * @deprecated Use {@link #selectListener(OnPieSelectListener)} instead.
+     */
+    public <T extends IPieInfo> AnimatedPieViewConfig setOnPieSelectListener(OnPieSelectListener<T> listener) {
+        return selectListener(listener);
+    }
+
+    /**
+     * @deprecated Use {@link #drawText(boolean)} instead.
+     */
+    public AnimatedPieViewConfig setDrawText(boolean drawText) {
+        return drawText(drawText);
+    }
+
+    /**
+     * @deprecated Use {@link #textSize(float)} instead.
+     */
+    public AnimatedPieViewConfig setTextSize(float textSize) {
+        return textSize(textSize);
+    }
+
+    /**
+     * @deprecated Use {@link #textMargin(int)} instead.
+     */
+    public AnimatedPieViewConfig setTextMarginLine(int textMargin) {
+        return textMargin(textMargin);
+    }
+
+    /**
+     * @deprecated Use {@link #pieRadiusRatio(float)} instead.
+     */
+    public AnimatedPieViewConfig setPieRadiusScale(@FloatRange(from = 0f, to = 1f) float pieRadiusRatio) {
+        return pieRadiusRatio(pieRadiusRatio);
+    }
+
+    /**
+     * @deprecated Use {@link #guidePointRadius(int)} instead.
+     */
+    public AnimatedPieViewConfig setTextPointRadius(int textPointRadius) {
+        return guidePointRadius(textPointRadius);
+    }
+
+    /**
+     * @deprecated Use {@link #guideLineWidth(int)} instead.
+     */
+    public AnimatedPieViewConfig setTextLineStrokeWidth(int strokeWidth) {
+        return guideLineWidth(strokeWidth);
+    }
+
+    /**
+     * @deprecated we dont't need this length because it will calculate automaticed
+     */
+    public AnimatedPieViewConfig setTextLineTransitionLength(int length) {
+        return this;
+    }
+
+    /**
+     * @deprecated Use {@link #guideLineMarginStart(int)} instead.
+     */
+    public AnimatedPieViewConfig setTextLineStartMargin(int margin) {
+        return guideLineMarginStart(margin);
+    }
+
+    /**
+     * @deprecated Use {@link #textGravity(int)} instead.
+     */
+    public AnimatedPieViewConfig setDirectText(boolean directed) {
+        return textGravity(directed ? ABOVE : DYSTOPY);
+    }
+
+    /**
+     * @deprecated Use {@link #canTouch(boolean)} instead.
+     */
+    public AnimatedPieViewConfig setCanTouch(boolean canTouch) {
+        return canTouch(canTouch);
+    }
+
+    /**
+     * @deprecated Use {@link #splitAngle(float)} instead.
+     */
+    public AnimatedPieViewConfig setSplitAngle(float splitAngle) {
+        return splitAngle(splitAngle);
+    }
+
+    /**
+     * @deprecated Use {@link #focusAlpha(int)} instead.
+     */
+    public AnimatedPieViewConfig setFocusAlphaType(@FocusAlpha int focusAlphaType) {
+        return focusAlphaType(focusAlphaType);
+    }
+
+    /**
+     * @deprecated we dont't need to set paintCap.
+     */
+    public AnimatedPieViewConfig setStrokePaintCap(Paint.Cap paintCap) {
+        return this;
     }
 }

@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 .addData(new SimplePieInfo(55.0f, getColor("ff8be8ff")), true)
                 .addData(new SimplePieInfo(30.0f, getColor("fffa734d")), true)
                 .addData(new SimplePieInfo(30.0f, getColor("ff957de0")), true)
+                .splitAngle(1.5f)
                 .selectListener(new OnPieSelectListener() {
                     @Override
                     public void onSelectPie(@NonNull IPieInfo pieInfo, boolean isFloatUp) {
@@ -64,9 +65,9 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .drawText(true)
                 .duration(1200)
-                .textSize(18)
+                .textSize(26)
                 .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA)
-                .textGravity(AnimatedPieViewConfig.DYSTOPY);
+                .textGravity(AnimatedPieViewConfig.ABOVE);
         mAnimatedPieView.applyConfig(config);
 
         mPopupSetting.setOnOkButtonClickListener(new View.OnClickListener() {
@@ -87,8 +88,7 @@ public class MainActivity extends AppCompatActivity {
         setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (mAnimatedPieView.isInAnimating()) return;
-//                mPopupSetting.showPopupWindow(mAnimatedPieView.getConfig());
+                mPopupSetting.showPopupWindow(mAnimatedPieView.getConfig());
             }
         });
 
