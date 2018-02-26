@@ -68,7 +68,7 @@ public class AnimatedPieViewConfig {
     private static final int DEFAULT_TEXT_GRAVITY = DYSTOPY;
     private static final int DEFAULT_GUIDE_POINT_RADIUS = 4;
     private static final int DEFAULT_GUIDE_MARGIN_START = 10;
-    private static final int DEFAULT_GUIDE_LINE_WIDTH = 4;
+    private static final int DEFAULT_GUIDE_LINE_WIDTH = 2;
     private static final int DEFAULT_TEXT_MARGIN = 6;
 
     //=============================================================option
@@ -651,5 +651,19 @@ public class AnimatedPieViewConfig {
      */
     public AnimatedPieViewConfig setStrokePaintCap(Paint.Cap paintCap) {
         return this;
+    }
+
+    /**
+     * @deprecated Use {@link #animOnTouch(boolean)} instead.
+     */
+    public AnimatedPieViewConfig setTouchAnimation(boolean animTouch) {
+        return animOnTouch(animTouch);
+    }
+
+    /**
+     * @deprecated Use {@link #floatExpandSize(float)} instead.
+     */
+    public AnimatedPieViewConfig setTouchScaleSize(float touchScaleSize){
+        return floatExpandSize(touchScaleSize);
     }
 }
