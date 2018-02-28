@@ -179,7 +179,7 @@ final class PieInfoWrapper implements Serializable {
         if (tEnd < tStart) {
             if (tAngle > 180) {
                 //已经过界
-                result = tAngle >= tStart && (360 - tAngle) <= tEnd;
+                result = tAngle >= tStart && (360 - tAngle) <= sweepAngle;
             } else {
                 result = tAngle + 360 >= tStart && tAngle <= tEnd;
             }
