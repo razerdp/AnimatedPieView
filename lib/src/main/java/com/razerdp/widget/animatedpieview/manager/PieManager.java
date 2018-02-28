@@ -13,6 +13,7 @@ import com.razerdp.widget.animatedpieview.utils.ToolUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by 大灯泡 on 2018/2/1.
@@ -42,7 +43,9 @@ public class PieManager {
 
 
     public void setChartContentRect(int width, int height, int paddingLeft, int paddingTop, int paddingRight, int paddingBottom) {
-        PLog.i("sizechange");
+        PLog.i(String.format(Locale.getDefault(),
+                "size change : { \n width = %s;\n height = %s;\n paddingLeft = %s;\n padding top = %s;\n paddingRight = %s;\n paddingBottom = %s;\n}",
+                width, height, paddingLeft, paddingTop, paddingRight, paddingBottom));
         drawBounds.set(paddingLeft, paddingTop, width - paddingRight, height - paddingBottom);
         for (BaseRender baseRender : mRenders) {
             baseRender.onSizeChanged(width, height, paddingLeft, paddingTop, paddingRight, paddingBottom);

@@ -12,6 +12,7 @@ import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.Transformation;
 
 import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
@@ -560,16 +561,21 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     private class RenderAnimation extends Animation {
         private PieInfoWrapper lastFoundWrapper;
 
+        public RenderAnimation() {
+            setInterpolator(new LinearInterpolator());
+        }
+
         @Override
         protected void applyTransformation(float interpolatedTime, Transformation t) {
             super.applyTransformation(interpolatedTime, t);
             if (mConfig == null) {
                 throw new NullPointerException("viewConfig为空");
             }
+            PLog.i("interpolatedTime = " + interpolatedTime);
             if (interpolatedTime >= 0.0f && interpolatedTime <= 1.0f) {
                 float angle = 360 * interpolatedTime + mConfig.getStartAngle();
                 PieInfoWrapper info = findPieinfoWithAngle(angle);
-                setCurPie(info, angle);
+                setCurPie(info == null ? lastFoundWrapper : info, angle);
             }
         }
 

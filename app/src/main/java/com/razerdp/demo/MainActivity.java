@@ -1,5 +1,6 @@
 package com.razerdp.demo;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private AnimatedPieView mAnimatedPieView;
     private Button start;
     private Button setting;
+    private Button toRecycler;
     private PopupSetting mPopupSetting;
     private TextView desc;
 
@@ -43,18 +45,20 @@ public class MainActivity extends AppCompatActivity {
         start = findViewById(R.id.start);
         setting = findViewById(R.id.setting);
         desc = findViewById(R.id.tv_desc);
+        toRecycler = findViewById(R.id.btn_goto_recycler);
         mAnimatedPieView = findViewById(R.id.animatedPieView);
         AnimatedPieViewConfig config = new AnimatedPieViewConfig();
-        config.startAngle(-90)
-                .addData(new SimplePieInfo(30, getColor("FF446767")), true)
-                .addData(new SimplePieInfo(18.0f, getColor("FFFFD28C")), true)
-                .addData(new SimplePieInfo(123.0f, getColor("FFbb76b4")), true)
-                .addData(new SimplePieInfo(87.0f, getColor("FFFFD28C"), "长文字test"), false)
-                .addData(new SimplePieInfo(15.0f, getColor("ff2bbc80")), true)
-                .addData(new SimplePieInfo(55.0f, getColor("ff8be8ff")), true)
-                .addData(new SimplePieInfo(30.0f, getColor("fffa734d")), true)
-                .addData(new SimplePieInfo(30.0f, getColor("ff957de0")), true)
-                .splitAngle(1.5f)
+        config.startAngle(0.9224089f)
+                .addData(new SimplePieInfo(0.11943538617599236, getColor("FF446767")), true)
+                .addData(new SimplePieInfo(0.41780274681129415, getColor("FFFFD28C")), true)
+                .addData(new SimplePieInfo(0.722165651192247, getColor("FFbb76b4")), true)
+                .addData(new SimplePieInfo(0.9184314356136125, getColor("FFFFD28C"), "长文字test"), false)
+                .addData(new SimplePieInfo(0.6028910840057398, getColor("ff2bbc80")), true)
+                .addData(new SimplePieInfo(0.6449620647212785, getColor("ff8be8ff")), true)
+                .addData(new SimplePieInfo(0.058853315195452116, getColor("fffa734d")), true)
+                .addData(new SimplePieInfo(0.6632297717331086, getColor("ff957de0")), true)
+                .addData(new SimplePieInfo(0.8226830459369171, getColor("FF446767")), true)
+                .splitAngle(0.9649368f)
                 .selectListener(new OnPieSelectListener() {
                     @Override
                     public void onSelectPie(@NonNull IPieInfo pieInfo, boolean isFloatUp) {
@@ -89,6 +93,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mPopupSetting.showPopupWindow(mAnimatedPieView.getConfig());
+            }
+        });
+
+        toRecycler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, RecyclerActivity.class));
             }
         });
 

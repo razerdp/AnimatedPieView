@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,8 +9,8 @@
     android:orientation="vertical"
     >
 
+
     <LinearLayout
-        android:id="@+id/ll_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -32,10 +32,16 @@
             android:text="setting"/>
     </LinearLayout>
 
-    <ScrollView
+    <Button
+        android:id="@+id/btn_goto_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/ll_btn">
+        android:text="use in recyclerview"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -58,5 +64,4 @@
         </LinearLayout>
     </ScrollView>
 
-
-</RelativeLayout>
+</LinearLayout>

@@ -21,7 +21,6 @@ import java.util.List;
  * Created by 大灯泡 on 2018/2/1.
  * <p>
  * <h3>CN:</h3>pieview配置类，pieview会根据你配置的参数进行绘制
- * <p>
  * <h3>EN:</h3>Config for pieview.PieView will draw as what you set.
  */
 public class AnimatedPieViewConfig {
@@ -130,8 +129,14 @@ public class AnimatedPieViewConfig {
         return this;
     }
 
+    /**
+     * <h3>CN:</h3>甜甜圈的动画时间，过短的话可能会造成部分甜甜圈无法绘制,建议高于500ms
+     * <h3>EN:</h3>How long this piechart should draw. The duration cannot be negative.Recommended above 500ms
+     *
+     * @param duration Duration in milliseconds(Recommended above 500ms)
+     */
     public AnimatedPieViewConfig duration(long duration) {
-        this.duration = duration;
+        this.duration = Math.max(500, duration);
         return this;
     }
 
@@ -663,7 +668,7 @@ public class AnimatedPieViewConfig {
     /**
      * @deprecated Use {@link #floatExpandSize(float)} instead.
      */
-    public AnimatedPieViewConfig setTouchScaleSize(float touchScaleSize){
+    public AnimatedPieViewConfig setTouchScaleSize(float touchScaleSize) {
         return floatExpandSize(touchScaleSize);
     }
 }
