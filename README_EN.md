@@ -146,6 +146,7 @@ mConfig.animOnTouch(true)// Animation when selected pie（default:true）
        .canTouch(true)// Whether to allow the pie click to enlarge
        .splitAngle(1)// Clearance angle
        .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV)// Alpha change mode for selected pie
+       .interpolator(new DecelerateInterpolator())// Set animation interpolator
        .focusAlpha(150);// Alpha for selected pie (depend on focusAlphaType)
 ```
 

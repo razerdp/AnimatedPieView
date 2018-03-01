@@ -138,6 +138,7 @@ mConfig.animOnTouch(true)// 点击事件是否播放浮现动画/回退动画（
        .canTouch(true)// 是否允许甜甜圈点击放大
        .splitAngle(1)// 甜甜圈间隙角度
        .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV,150)// 焦点甜甜圈的alpha表现形态及alpha削减值
+       .interpolator(new DecelerateInterpolator())// 动画插值器
        .focusAlpha(150);// 选中的/或者非选中的甜甜圈的alpha值（跟focusAlphaType挂钩）
 ```
 
