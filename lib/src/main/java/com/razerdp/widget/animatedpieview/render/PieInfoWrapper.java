@@ -21,6 +21,7 @@ final class PieInfoWrapper implements Serializable {
     private static final long serialVersionUID = -8551831728967624659L;
 
     private final String id;
+    private volatile boolean hasCached;
     private final IPieInfo mPieInfo;
 
     //============= 绘制设置 =============
@@ -36,6 +37,9 @@ final class PieInfoWrapper implements Serializable {
     private boolean autoDesc;
     private String desc;
 
+    //============= 节点 =============
+    private PieInfoWrapper preWrapper;
+    private PieInfoWrapper nextWrapper;
 
     PieInfoWrapper(IPieInfo pieInfo) {
         if (pieInfo == null) {
@@ -51,6 +55,7 @@ final class PieInfoWrapper implements Serializable {
 
 
     PieInfoWrapper prepare(AnimatedPieViewConfig config) {
+        hasCached = false;
         if (mDrawPaint == null) mDrawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         if (mAlphaDrawPaint == null)
             mAlphaDrawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
@@ -138,6 +143,29 @@ final class PieInfoWrapper implements Serializable {
         return toAngle;
     }
 
+    public boolean isCached() {
+        return hasCached;
+    }
+
+    public void setCached(boolean hasCached) {
+        this.hasCached = hasCached;
+    }
+
+    public PieInfoWrapper getPreWrapper() {
+        return preWrapper;
+    }
+
+    public void setPreWrapper(PieInfoWrapper preWrapper) {
+        this.preWrapper = preWrapper;
+    }
+
+    public PieInfoWrapper getNextWrapper() {
+        return nextWrapper;
+    }
+
+    public void setNextWrapper(PieInfoWrapper nextWrapper) {
+        this.nextWrapper = nextWrapper;
+    }
 
     @Override
     public boolean equals(Object obj) {

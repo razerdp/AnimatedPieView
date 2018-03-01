@@ -6,6 +6,8 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.Pair;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 
 import com.razerdp.widget.animatedpieview.callback.OnPieSelectListener;
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
@@ -69,6 +71,7 @@ public class AnimatedPieViewConfig {
     private static final int DEFAULT_GUIDE_MARGIN_START = 10;
     private static final int DEFAULT_GUIDE_LINE_WIDTH = 2;
     private static final int DEFAULT_TEXT_MARGIN = 6;
+    private static final Interpolator DEFAULT_ANIMATION_INTERPOLATOR = new LinearInterpolator();
 
     //=============================================================option
 
@@ -101,6 +104,7 @@ public class AnimatedPieViewConfig {
     private int guideLineWidth = DEFAULT_GUIDE_LINE_WIDTH;
     private boolean cubicGuide = false;
     private int textMargin = DEFAULT_TEXT_MARGIN;
+    private Interpolator animationInterpolator = DEFAULT_ANIMATION_INTERPOLATOR;
 
 
     private boolean strokeMode = true;
@@ -269,6 +273,11 @@ public class AnimatedPieViewConfig {
         return this;
     }
 
+    public AnimatedPieViewConfig interpolator(Interpolator interpolator) {
+        this.animationInterpolator = interpolator;
+        return this;
+    }
+
     public AnimatedPieViewConfig copyFrom(AnimatedPieViewConfig config) {
         if (config == null) return this;
         this.mDatas.clear();
@@ -300,9 +309,8 @@ public class AnimatedPieViewConfig {
                 .guideLineMarginStart(config.guideLineMarginStart)
                 .cubicGuide(config.cubicGuide)
                 .guideLineWidth(config.guideLineWidth)
-                .textMargin(config.textMargin);
-
-
+                .textMargin(config.textMargin)
+                .interpolator(config.animationInterpolator);
     }
 
     //=============================================================data
@@ -447,6 +455,10 @@ public class AnimatedPieViewConfig {
 
     public int getTextMargin() {
         return textMargin;
+    }
+
+    public Interpolator getAnimationInterpolator() {
+        return animationInterpolator;
     }
 
     //=============================================================Deprecated methods

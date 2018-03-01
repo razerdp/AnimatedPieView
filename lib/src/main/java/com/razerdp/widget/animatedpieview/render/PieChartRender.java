@@ -7,12 +7,12 @@ import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 import android.view.animation.Transformation;
 
 import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
@@ -52,7 +52,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     //-----------------------------------------draw area-----------------------------------------
     private RectF pieBounds;
     private float pieRadius;
-    private int maxDescTextSize;
+    private int maxDescTextLength;
     private volatile boolean isInAnimating;
     //-----------------------------------------anim area-----------------------------------------
     private PieInfoWrapper mDrawingPie;
@@ -104,10 +104,17 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         //wrap datas and calculate sum value
         //包裹数据并且计算总和
         double sum = 0;
+        PieInfoWrapper preWrapper = null;
         for (Pair<IPieInfo, Boolean> info : mConfig.getDatas()) {
             sum += Math.abs(info.first.getValue());
             PieInfoWrapper wrapper = new PieInfoWrapper(info.first);
             wrapper.setAutoDesc(info.second);
+            //简单的形成一个链表
+            if (preWrapper != null) {
+                preWrapper.setNextWrapper(wrapper);
+                wrapper.setPreWrapper(preWrapper);
+            }
+            preWrapper = wrapper;
             mDataWrappers.add(wrapper);
         }
 
@@ -117,8 +124,8 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         for (PieInfoWrapper dataWrapper : mDataWrappers) {
             dataWrapper.prepare(mConfig);
             lastAngle = dataWrapper.calculateDegree(lastAngle, sum, mConfig);
-            maxDescTextSize = Math.max(maxDescTextSize, mPieManager.measureTextBounds(dataWrapper.getDesc(), (int) mConfig.getTextSize()).width());
-            PLog.i("desc >> " + dataWrapper.getDesc() + "  maxDesTextSize >> " + maxDescTextSize);
+            maxDescTextLength = Math.max(maxDescTextLength, mPieManager.measureTextBounds(dataWrapper.getDesc(), (int) mConfig.getTextSize()).width());
+            PLog.i("desc >> " + dataWrapper.getDesc() + "  maxDesTextSize >> " + maxDescTextLength);
         }
 
         return true;
@@ -127,6 +134,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     private void prepareAnim() {
         if (mConfig.isAnimPie()) {
             mRenderAnimation = new RenderAnimation();
+            mRenderAnimation.setInterpolator(mConfig.getAnimationInterpolator());
             mRenderAnimation.setDuration(mConfig.getDuration());
             mRenderAnimation.setAnimationListener(new AnimationCallbackUtils.SimpleAnimationListener() {
                 @Override
@@ -281,7 +289,8 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         float guideLineEndY2 = -1;
 
 
-        float textLength = mPieManager.measureTextBounds(wrapper.getDesc(), (int) mConfig.getTextSize()).width() + mConfig.getTextMargin();
+        String desc = TextUtils.isEmpty(wrapper.getDesc()) ? "null" : wrapper.getDesc();
+        float textLength = mPieManager.measureTextBounds(desc, (int) mConfig.getTextSize()).width() + mConfig.getTextMargin();
 
         //计算拐角方向
         LineDirection direction = calculateLineGravity(cx, cy);
@@ -488,11 +497,16 @@ public class PieChartRender extends BaseRender implements ITouchRender {
 
     private void setCurPie(PieInfoWrapper infoWrapper, float degree) {
         if (mDrawingPie != null) {
-            //角度切换时就把画过的添加到缓存，因为角度切换只有很少的几次，所以这里允许循环，并不会造成大量的循环
-            if (degree >= mDrawingPie.getToAngle()) {
-                boolean hasAdded = mCachedDrawWrappers.contains(mDrawingPie);
-                if (!hasAdded) {
+            if (degree >= mDrawingPie.getToAngle() / 2) {
+                if (!mDrawingPie.isCached()) {
+                    // fix anim duration too short
+                    PieInfoWrapper preWrapper = mDrawingPie.getPreWrapper();
+                    if (preWrapper != null && !preWrapper.isCached()) {
+                        preWrapper.setCached(true);
+                        mCachedDrawWrappers.add(preWrapper);
+                    }
                     mCachedDrawWrappers.add(mDrawingPie);
+                    mDrawingPie.setCached(true);
                 }
             }
         }
@@ -519,14 +533,14 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                 //stroke模式跟pie模式测量不同
                 //按照最大的文字测量
                 pieRadius = minSize / 2
-                        - maxDescTextSize
+                        - maxDescTextLength
                         - (mConfig.isStrokeMode() ? (mConfig.getStrokeWidth() >> 1) : 0)
                         - mConfig.getGuideLineMarginStart();
 
                 pieRadius = Math.max(minPieRadius, pieRadius);
             } else {
                 //饼图只需要看外径
-                pieRadius = minSize / 2 - maxDescTextSize - mConfig.getGuideLineMarginStart();
+                pieRadius = minSize / 2 - maxDescTextLength - mConfig.getGuideLineMarginStart();
             }
         } else {
             //优先判定size
@@ -562,7 +576,6 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         private PieInfoWrapper lastFoundWrapper;
 
         public RenderAnimation() {
-            setInterpolator(new LinearInterpolator());
         }
 
         @Override

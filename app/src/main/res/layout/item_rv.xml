@@ -21,23 +21,25 @@
         style="@style/basedivider"
         android:layout_marginLeft="16dp"/>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:padding="16dp">
 
         <com.razerdp.widget.animatedpieview.AnimatedPieView
             android:id="@+id/pie"
-            android:layout_width="150dp"
-            android:layout_height="150dp"/>
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".7"/>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@id/pie"
+            android:layout_weight=".3"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
@@ -69,7 +71,7 @@
                 android:textColor="#2b2b2b"/>
         </LinearLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <View
         style="@style/basedivider"

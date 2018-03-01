@@ -68,7 +68,8 @@ public class RecyclerActivity extends AppCompatActivity implements View.OnClickL
         List<AnimatedPieViewConfig> configList = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
             AnimatedPieViewConfig config = new AnimatedPieViewConfig();
-            config.startAngle(random.nextFloat());
+            config.startAngle(random.nextFloat())
+                    .strokeMode(random.nextBoolean());
             //random data count
             int dataCount = Math.abs(random.nextInt(10));
             if (dataCount <= 0) {
@@ -78,8 +79,8 @@ public class RecyclerActivity extends AppCompatActivity implements View.OnClickL
                 config.addData(new SimplePieInfo(random.nextDouble(), randomColor()), random.nextBoolean());
             }
             //split angle
-            config.splitAngle((float) (Math.random() * 2))
-                    //text
+            config.splitAngle(random.nextBoolean() ? (float) (Math.random() * 2) : 0)
+                    .textSize(16)
                     .drawText(random.nextBoolean())
                     .duration(Math.abs(random.nextInt(5000)))
                     .focusAlpha(random.nextBoolean() ? AnimatedPieViewConfig.FOCUS_WITH_ALPHA : AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV)
