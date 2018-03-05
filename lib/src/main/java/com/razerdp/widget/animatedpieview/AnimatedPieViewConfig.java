@@ -11,7 +11,7 @@ import android.view.animation.LinearInterpolator;
 
 import com.razerdp.widget.animatedpieview.callback.OnPieSelectListener;
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
-import com.razerdp.widget.animatedpieview.utils.ToolUtil;
+import com.razerdp.widget.animatedpieview.utils.Util;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -333,7 +333,7 @@ public class AnimatedPieViewConfig {
 
     public List<IPieInfo> getRawDatas() {
         List<IPieInfo> result = new ArrayList<>();
-        if (!ToolUtil.isListEmpty(mDatas)) {
+        if (!Util.isListEmpty(mDatas)) {
             for (Pair<IPieInfo, Boolean> data : mDatas) {
                 result.add(data.first);
             }

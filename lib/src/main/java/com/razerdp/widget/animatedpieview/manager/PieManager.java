@@ -9,7 +9,7 @@ import android.text.TextUtils;
 import com.razerdp.widget.animatedpieview.IPieView;
 import com.razerdp.widget.animatedpieview.render.BaseRender;
 import com.razerdp.widget.animatedpieview.utils.PLog;
-import com.razerdp.widget.animatedpieview.utils.ToolUtil;
+import com.razerdp.widget.animatedpieview.utils.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +93,7 @@ public class PieManager {
     }
 
     public void unRegisterRender(BaseRender render) {
-        if (ToolUtil.isListEmpty(mRenders) || !mRenders.contains(render)) return;
+        if (Util.isListEmpty(mRenders) || !mRenders.contains(render)) return;
         mRenders.remove(render);
     }
 }

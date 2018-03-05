@@ -20,7 +20,7 @@ import com.razerdp.widget.animatedpieview.IPieView;
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
 import com.razerdp.widget.animatedpieview.utils.AnimationCallbackUtils;
 import com.razerdp.widget.animatedpieview.utils.PLog;
-import com.razerdp.widget.animatedpieview.utils.ToolUtil;
+import com.razerdp.widget.animatedpieview.utils.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -204,7 +204,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     }
 
     private void renderNormalDraw(Canvas canvas) {
-        if (ToolUtil.isListEmpty(mCachedDrawWrappers) || mCachedDrawWrappers.size() != mDataWrappers.size()) {
+        if (Util.isListEmpty(mCachedDrawWrappers) || mCachedDrawWrappers.size() != mDataWrappers.size()) {
             mCachedDrawWrappers.clear();
             mCachedDrawWrappers.addAll(mDataWrappers);
         }
@@ -241,7 +241,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
 
 
     private void drawCachedPie(Canvas canvas, PieInfoWrapper excluded) {
-        if (!ToolUtil.isListEmpty(mCachedDrawWrappers)) {
+        if (!Util.isListEmpty(mCachedDrawWrappers)) {
             for (PieInfoWrapper cachedDrawWrapper : mCachedDrawWrappers) {
                 if (mConfig.isDrawText()) {
                     drawText(canvas, cachedDrawWrapper);
@@ -593,7 +593,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         }
 
         public PieInfoWrapper findPieinfoWithAngle(float angle) {
-            if (ToolUtil.isListEmpty(mDataWrappers)) return null;
+            if (Util.isListEmpty(mDataWrappers)) return null;
             if (lastFoundWrapper != null && lastFoundWrapper.contains(angle)) {
                 return lastFoundWrapper;
             }
