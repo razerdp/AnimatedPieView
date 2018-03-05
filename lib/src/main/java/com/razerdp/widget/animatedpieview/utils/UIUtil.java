@@ -10,7 +10,7 @@ import android.util.TypedValue;
  * Created by 大灯泡 on 2017/11/07.
  */
 
-public class UIHelper {
+public class UIUtil {
 
     public static int getResourceColor(Context context, @ColorRes int colorResId) {
         try {

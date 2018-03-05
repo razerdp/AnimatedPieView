@@ -216,7 +216,7 @@ import android.view.View;
 
 import com.razerdp.widget.animatedpieview.manager.PieManager;
 import com.razerdp.widget.animatedpieview.render.PieChartRender;
-import com.razerdp.widget.animatedpieview.utils.UIHelper;
+import com.razerdp.widget.animatedpieview.utils.UIUtil;
 
 /**
  * Created by 大灯泡 on 2017/11/7.
@@ -261,8 +261,8 @@ public class AnimatedPieView extends View implements IPieView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(getSize(UIHelper.dip2px(getContext(), 300f), widthMeasureSpec),
-                getSize(UIHelper.dip2px(getContext(), 300f), heightMeasureSpec));
+        setMeasuredDimension(getSize(UIUtil.dip2px(getContext(), 300f), widthMeasureSpec),
+                getSize(UIUtil.dip2px(getContext(), 300f), heightMeasureSpec));
     }
 
     private int getSize(int defaultSize, int measureSpec) {
