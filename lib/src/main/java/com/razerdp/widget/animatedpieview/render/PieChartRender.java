@@ -564,7 +564,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     }
 
     private float angleToProgress(float angle, PieInfoWrapper wrapper) {
-        if (wrapper == null) return 1f;
+        if (wrapper == null||!mConfig.isAnimPie()) return 1f;
         if (angle < wrapper.getMiddleAngle()) return 0f;
         if (angle >= wrapper.getToAngle()) return 1f;
         return (angle - wrapper.getMiddleAngle()) / (wrapper.getToAngle() - wrapper.getMiddleAngle());
