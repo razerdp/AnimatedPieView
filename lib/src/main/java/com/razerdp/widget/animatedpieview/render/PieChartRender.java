@@ -1,6 +1,7 @@
 package com.razerdp.widget.animatedpieview.render;
 
 import android.animation.ValueAnimator;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -18,6 +19,7 @@ import android.view.animation.Transformation;
 import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
 import com.razerdp.widget.animatedpieview.IPieView;
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
+import com.razerdp.widget.animatedpieview.data.PieOption;
 import com.razerdp.widget.animatedpieview.utils.AnimationCallbackUtils;
 import com.razerdp.widget.animatedpieview.utils.PLog;
 import com.razerdp.widget.animatedpieview.utils.Util;
@@ -355,11 +357,55 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         paint.setStyle(Paint.Style.FILL);
         paint.setTextSize(mConfig.getTextSize());
         paint.setAlpha((int) (255 * progress));
-        float textStartX = calculateTextStartX(guideLineEndX1, guideLineEndX2, direction, mPieManager.measureTextBounds(wrapper.getDesc(), paint));
-        float textStartY = calculateTextStartY(guideLineEndY1, guideLineEndY2, direction, mPieManager.measureTextBounds(wrapper.getDesc(), paint));
+        Rect textBounds = mPieManager.measureTextBounds(wrapper.getDesc(), paint);
+        float textStartX = calculateTextStartX(guideLineEndX1, guideLineEndX2, direction, textBounds);
+        float textStartY = calculateTextStartY(guideLineEndY1, guideLineEndY2, direction, textBounds);
+
+        Bitmap icon = wrapper.getIcon(textBounds);
+        if (icon != null) {
+            int iconWidth = icon.getWidth();
+            int iconHeight = icon.getHeight();
+            float iconLeft;
+            float iconTop;
+            iconLeft = calculateLabelX(wrapper.getPieOption(), iconWidth, textStartX, direction, textBounds);
+            iconTop = textStartY;
+            if (iconLeft != -1 && iconTop != -1) {
+                canvas.drawBitmap(icon, iconLeft, iconTop, wrapper.getIconPaint());
+            }
+        }
+
         //画文字
         canvas.drawText(wrapper.getDesc(), textStartX, textStartY, paint);
 
+    }
+
+    private float calculateLabelX(PieOption pieOption, int iconWidth, float textStartX, LineDirection direction, Rect textBounds) {
+        if (pieOption == null) return -1;
+        float result;
+        int iconPosition = pieOption.getLabelPosition();
+        switch (direction) {
+            case TOP_LEFT:
+            case CENTER_LEFT:
+            case BOTTOM_LEFT:
+                if (iconPosition == PieOption.NEAR_PIE) {
+                    result = textStartX + textBounds.width();
+                } else {
+                    result = textStartX - iconWidth;
+                }
+                break;
+            case TOP_RIGHT:
+            case CENTER_RIGHT:
+            case BOTTOM_RIGHT:
+                if (iconPosition == PieOption.NEAR_PIE) {
+                    result = textStartX - iconWidth;
+                } else {
+                    result = textStartX + textBounds.width();
+                }
+                break;
+            default:
+                return -1;
+        }
+        return result;
     }
 
     private float calculateTextStartX(float guideLineEndX1, float guideLineEndX2, LineDirection direction, Rect textBounds) {
@@ -386,7 +432,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             case TOP_LEFT:
             case CENTER_LEFT:
             case TOP_RIGHT:
-                if (textGravity == AnimatedPieViewConfig.ABOVE || textGravity == AnimatedPieViewConfig.DYSTOPY) {
+                if (textGravity == AnimatedPieViewConfig.ABOVE || textGravity == AnimatedPieViewConfig.ECTOPIC) {
                     return guideLineEndY1 - mConfig.getTextMargin() - textBounds.height() / 2;
                 } else if (textGravity == AnimatedPieViewConfig.BELOW) {
                     return guideLineEndY1 + mConfig.getTextMargin() + textBounds.height();
@@ -398,7 +444,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             case BOTTOM_RIGHT:
                 if (textGravity == AnimatedPieViewConfig.ABOVE) {
                     return guideLineEndY1 - mConfig.getTextMargin() - textBounds.height() / 2;
-                } else if (textGravity == AnimatedPieViewConfig.BELOW || textGravity == AnimatedPieViewConfig.DYSTOPY) {
+                } else if (textGravity == AnimatedPieViewConfig.BELOW || textGravity == AnimatedPieViewConfig.ECTOPIC) {
                     return guideLineEndY1 + mConfig.getTextMargin() + textBounds.height();
                 } else {
                     return guideLineEndY1 + textBounds.height() / 2;
@@ -564,7 +610,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     }
 
     private float angleToProgress(float angle, PieInfoWrapper wrapper) {
-        if (wrapper == null||!mConfig.isAnimPie()) return 1f;
+        if (wrapper == null || !mConfig.isAnimPie()) return 1f;
         if (angle < wrapper.getMiddleAngle()) return 0f;
         if (angle >= wrapper.getToAngle()) return 1f;
         return (angle - wrapper.getMiddleAngle()) / (wrapper.getToAngle() - wrapper.getMiddleAngle());

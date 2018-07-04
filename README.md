@@ -133,7 +133,7 @@ mConfig.animOnTouch(true)// 点击事件是否播放浮现动画/回退动画（
             -AnimatedPieViewConfig.ABOVE：文字将会在导航线上方绘制
             -AnimatedPieViewConfig.BELOW：文字在导航线下方绘制
             -AnimatedPieViewConfig.ALIGN：文字与导航线对齐
-            -AnimatedPieViewConfig.DYSTOPY：文字在1、2象限部分绘制在线的上方，在3、4象限绘制在线的下方
+            -AnimatedPieViewConfig.ECTOPIC：文字在1、2象限部分绘制在线的上方，在3、4象限绘制在线的下方
        】
        .canTouch(true)// 是否允许甜甜圈点击放大
        .splitAngle(1)// 甜甜圈间隙角度

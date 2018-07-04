@@ -193,7 +193,7 @@ public class PopupSetting extends BasePopupWindow {
         } else if (textGravityAlign.isChecked()) {
             viewConfig.textGravity(AnimatedPieViewConfig.ALIGN);
         } else if (textGravityDystopy.isChecked()) {
-            viewConfig.textGravity(AnimatedPieViewConfig.DYSTOPY);
+            viewConfig.textGravity(AnimatedPieViewConfig.ECTOPIC);
         }
 
     }
@@ -243,7 +243,7 @@ public class PopupSetting extends BasePopupWindow {
             case AnimatedPieViewConfig.ALIGN:
                 textGravityAlign.setChecked(true);
                 break;
-            case AnimatedPieViewConfig.DYSTOPY:
+            case AnimatedPieViewConfig.ECTOPIC:
                 textGravityDystopy.setChecked(true);
                 break;
             default:

@@ -1,11 +1,16 @@
 package com.razerdp.widget.animatedpieview.render;
 
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Rect;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
+import com.razerdp.widget.animatedpieview.data.PieOption;
 import com.razerdp.widget.animatedpieview.data.SimplePieInfo;
 import com.razerdp.widget.animatedpieview.utils.DegreeUtil;
 import com.razerdp.widget.animatedpieview.utils.PLog;
@@ -28,8 +33,10 @@ final class PieInfoWrapper implements Serializable {
     private Paint mDrawPaint;
     private Paint mAlphaDrawPaint;
     private Paint mTexPaint;
+    private Paint mIconPaint;
     private Path mLinePath;
     private Path mLinePathMeasure;
+    private Bitmap icon;
     //============= 参数 =============
     private float fromAngle;
     private float sweepAngle;
@@ -60,6 +67,10 @@ final class PieInfoWrapper implements Serializable {
         if (mAlphaDrawPaint == null)
             mAlphaDrawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         if (mTexPaint == null) mTexPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+        if (mIconPaint == null) {
+            mIconPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+            mIconPaint.setFilterBitmap(true);
+        }
         if (mLinePath == null) mLinePath = new Path();
         if (mLinePathMeasure == null) mLinePathMeasure = new Path();
 
@@ -77,6 +88,10 @@ final class PieInfoWrapper implements Serializable {
 
     public IPieInfo getPieInfo() {
         return mPieInfo;
+    }
+
+    public Paint getIconPaint() {
+        return mIconPaint;
     }
 
     public Paint getDrawPaint() {
@@ -124,6 +139,38 @@ final class PieInfoWrapper implements Serializable {
 
     public String getDesc() {
         return desc;
+    }
+
+    public PieOption getPieOption() {
+        return mPieInfo.getPieOpeion();
+    }
+
+    public Bitmap getIcon(@Nullable Rect textRect) {
+        if (icon != null) return icon;
+        if (mPieInfo.getPieOpeion() == null || mPieInfo.getPieOpeion().getLabelIcon() == null)
+            return null;
+        Bitmap mIcon = mPieInfo.getPieOpeion().getLabelIcon();
+        if (textRect == null) {
+            icon = mIcon;
+            return icon;
+        }
+        int iconWidth = mIcon.getWidth();
+        int iconHeight = mIcon.getHeight();
+        if (iconWidth > textRect.width() || iconHeight > textRect.height()) {
+            Matrix matrix = new Matrix();
+            float sX = 1.0f;
+            float sY = 1.0f;
+            if (iconWidth > textRect.width()) {
+                sX = (float) textRect.width() / iconWidth;
+            }
+            if (iconHeight > textRect.height()) {
+                sY = (float) textRect.height() / iconHeight;
+            }
+            float scale = Math.min(sX, sY);
+            matrix.postScale(scale, scale);
+            icon = Bitmap.createBitmap(mIcon, 0, 0, iconWidth, iconHeight, matrix, true);
+        }
+        return icon;
     }
 
     public float calculateDegree(float lastPieDegree, double sum, AnimatedPieViewConfig config) {

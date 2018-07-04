@@ -1,7 +1,12 @@
 package com.razerdp.demo;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -50,16 +55,21 @@ public class MainActivity extends AppCompatActivity {
         mAnimatedPieView = findViewById(R.id.animatedPieView);
         AnimatedPieViewConfig config = new AnimatedPieViewConfig();
         config.startAngle(0.9224089f)
+                /**
+                 * not done below!
+                 */
+//                .addData(new SimplePieInfo(0.11943538617599236, getColor("FF446767")).setLabel(resourceToBitmap(R.mipmap.ic_test_1)), true)
+//                .addData(new SimplePieInfo(0.41780274681129415, getColor("FFFFD28C")).setLabel(resourceToBitmap(R.mipmap.ic_test_2)), true)
+//                .addData(new SimplePieInfo(0.722165651192247, getColor("FFbb76b4")).setLabel(resourceToBitmap(R.mipmap.ic_test_3)), true)
                 .addData(new SimplePieInfo(0.11943538617599236, getColor("FF446767")), true)
                 .addData(new SimplePieInfo(0.41780274681129415, getColor("FFFFD28C")), true)
                 .addData(new SimplePieInfo(0.722165651192247, getColor("FFbb76b4")), true)
-                .addData(new SimplePieInfo(0.9184314356136125, getColor("FFFFD28C"), "长文字test"), false)
+                .addData(new SimplePieInfo(0.9184314356136125, getColor("FFFFD28C"), "长文字test").setLabel(resourceToBitmap(R.mipmap.ic_test_4)), false)
                 .addData(new SimplePieInfo(0.6028910840057398, getColor("ff2bbc80")), true)
                 .addData(new SimplePieInfo(0.6449620647212785, getColor("ff8be8ff")), true)
                 .addData(new SimplePieInfo(0.058853315195452116, getColor("fffa734d")), true)
                 .addData(new SimplePieInfo(0.6632297717331086, getColor("ff957de0")), true)
                 .addData(new SimplePieInfo(0.8226830459369171, getColor("FF446767")), true)
-                .splitAngle(0.9649368f)
                 .selectListener(new OnPieSelectListener() {
                     @Override
                     public void onSelectPie(@NonNull IPieInfo pieInfo, boolean isFloatUp) {
@@ -105,6 +115,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private Bitmap resourceToBitmap(int resid) {
+        Drawable drawable = getResources().getDrawable(resid);
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        } else {
+            int w = drawable.getIntrinsicWidth();
+            int h = drawable.getIntrinsicHeight();
+            Bitmap.Config config =
+                    drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
+                            : Bitmap.Config.RGB_565;
+            Bitmap bitmap = Bitmap.createBitmap(w, h, config);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, w, h);
+            drawable.draw(canvas);
+
+            return bitmap;
+        }
     }
 
     private int randomColor() {

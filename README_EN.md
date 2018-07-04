@@ -141,7 +141,7 @@ mConfig.animOnTouch(true)// Animation when selected pie（default:true）
             -AnimatedPieViewConfig.ABOVE：Text will be drawn above the guide line
             -AnimatedPieViewConfig.BELOW：Text will be drawn below the guide line
             -AnimatedPieViewConfig.ALIGN：Text will be drawn align to the guide line
-            -AnimatedPieViewConfig.DYSTOPY：Text will be drawn above the line in the 1, 2 quadrants and below the line in the 3, 4 quadrants
+            -AnimatedPieViewConfig.ECTOPIC：Text will be drawn above the line in the 1, 2 quadrants and below the line in the 3, 4 quadrants
        】
        .canTouch(true)// Whether to allow the pie click to enlarge
        .splitAngle(1)// Clearance angle

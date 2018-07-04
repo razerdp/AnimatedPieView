@@ -1,5 +1,7 @@
 package com.razerdp.widget.animatedpieview.data;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by 大灯泡 on 2017/11/7.
  */
@@ -8,6 +10,7 @@ public class SimplePieInfo implements IPieInfo {
     private double value;
     private int color;
     private String desc;
+    private PieOption mPieOption;
 
     public SimplePieInfo() {
     }
@@ -34,6 +37,14 @@ public class SimplePieInfo implements IPieInfo {
         this.desc = desc;
     }
 
+    public SimplePieInfo setLabel(Bitmap bm) {
+        if (mPieOption == null) {
+            mPieOption = new PieOption();
+        }
+        mPieOption.setLabelIcon(bm);
+        return this;
+    }
+
     @Override
     public double getValue() {
         return value;
@@ -47,5 +58,10 @@ public class SimplePieInfo implements IPieInfo {
     @Override
     public String getDesc() {
         return desc;
+    }
+
+    @Override
+    public PieOption getPieOpeion() {
+        return mPieOption;
     }
 }

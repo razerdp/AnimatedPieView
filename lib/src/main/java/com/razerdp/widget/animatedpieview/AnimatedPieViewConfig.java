@@ -40,14 +40,14 @@ public class AnimatedPieViewConfig {
 
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({ABOVE, BELOW, ALIGN, DYSTOPY})
+    @IntDef({ABOVE, BELOW, ALIGN, ECTOPIC})
     public @interface TextGravity {
     }
 
     public static final int ABOVE = 0x20;
     public static final int BELOW = 0x21;
     public static final int ALIGN = 0x22;
-    public static final int DYSTOPY = 0x23;
+    public static final int ECTOPIC = 0x23;
 
 
     //=============================================================default
@@ -66,7 +66,7 @@ public class AnimatedPieViewConfig {
     private static final float DEFAULT_FLOAT_EXPAND_SIZE = 15;
     private static final int DEFAULT_FOCUS_ALPHA_TYPE = FOCUS_WITH_ALPHA_REV;
     private static int DEFAULT_FOCUS_ALPHA = 150;
-    private static final int DEFAULT_TEXT_GRAVITY = DYSTOPY;
+    private static final int DEFAULT_TEXT_GRAVITY = ECTOPIC;
     private static final int DEFAULT_GUIDE_POINT_RADIUS = 4;
     private static final int DEFAULT_GUIDE_MARGIN_START = 10;
     private static final int DEFAULT_GUIDE_LINE_WIDTH = 2;
@@ -639,7 +639,7 @@ public class AnimatedPieViewConfig {
      * @deprecated Use {@link #textGravity(int)} instead.
      */
     public AnimatedPieViewConfig setDirectText(boolean directed) {
-        return textGravity(directed ? ABOVE : DYSTOPY);
+        return textGravity(directed ? ABOVE : ECTOPIC);
     }
 
     /**

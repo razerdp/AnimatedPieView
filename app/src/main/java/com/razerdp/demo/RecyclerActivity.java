@@ -64,7 +64,7 @@ public class RecyclerActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void applyAdapter() {
-        int textGravity[] = {AnimatedPieViewConfig.ABOVE, AnimatedPieViewConfig.BELOW, AnimatedPieViewConfig.ALIGN, AnimatedPieViewConfig.DYSTOPY};
+        int textGravity[] = {AnimatedPieViewConfig.ABOVE, AnimatedPieViewConfig.BELOW, AnimatedPieViewConfig.ALIGN, AnimatedPieViewConfig.ECTOPIC};
         List<AnimatedPieViewConfig> configList = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
             AnimatedPieViewConfig config = new AnimatedPieViewConfig();

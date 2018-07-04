@@ -14,4 +14,6 @@ public interface IPieInfo {
     int getColor();
 
     String getDesc();
+
+    PieOption getPieOpeion();
 }
