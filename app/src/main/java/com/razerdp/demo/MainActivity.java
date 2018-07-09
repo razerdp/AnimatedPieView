@@ -58,14 +58,14 @@ public class MainActivity extends AppCompatActivity {
                 /**
                  * not done below!
                  */
-//                .addData(new SimplePieInfo(0.11943538617599236, getColor("FF446767")).setLabel(resourceToBitmap(R.mipmap.ic_test_1)), true)
-//                .addData(new SimplePieInfo(0.41780274681129415, getColor("FFFFD28C")).setLabel(resourceToBitmap(R.mipmap.ic_test_2)), true)
-//                .addData(new SimplePieInfo(0.722165651192247, getColor("FFbb76b4")).setLabel(resourceToBitmap(R.mipmap.ic_test_3)), true)
-                .addData(new SimplePieInfo(0.11943538617599236, getColor("FF446767")), true)
-                .addData(new SimplePieInfo(0.41780274681129415, getColor("FFFFD28C")), true)
-                .addData(new SimplePieInfo(0.722165651192247, getColor("FFbb76b4")), true)
+                .addData(new SimplePieInfo(0.11943538617599236, getColor("FF446767")).setLabel(resourceToBitmap(R.mipmap.ic_test_1)), true)
+                .addData(new SimplePieInfo(0.41780274681129415, getColor("FFFFD28C"),"测试一下~").setLabel(resourceToBitmap(R.mipmap.ic_test_2)), false)
+                .addData(new SimplePieInfo(0.722165651192247, getColor("FFbb76b4")).setLabel(resourceToBitmap(R.mipmap.ic_test_3)), true)
+//                .addData(new SimplePieInfo(0.11943538617599236, getColor("FF446767")), true)
+//                .addData(new SimplePieInfo(0.41780274681129415, getColor("FFFFD28C")), true)
+//                .addData(new SimplePieInfo(0.722165651192247, getColor("FFbb76b4")), true)
                 .addData(new SimplePieInfo(0.9184314356136125, getColor("FFFFD28C"), "长文字test").setLabel(resourceToBitmap(R.mipmap.ic_test_4)), false)
-                .addData(new SimplePieInfo(0.6028910840057398, getColor("ff2bbc80")), true)
+                .addData(new SimplePieInfo(0.6028910840057398, getColor("ff2bbc80")).setLabel(resourceToBitmap(R.mipmap.ic_test_5)), true)
                 .addData(new SimplePieInfo(0.6449620647212785, getColor("ff8be8ff")), true)
                 .addData(new SimplePieInfo(0.058853315195452116, getColor("fffa734d")), true)
                 .addData(new SimplePieInfo(0.6632297717331086, getColor("ff957de0")), true)

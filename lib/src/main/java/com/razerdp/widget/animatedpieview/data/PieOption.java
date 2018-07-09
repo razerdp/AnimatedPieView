@@ -11,11 +11,11 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Created by 大灯泡 on 2018/7/4.
  */
-public class PieOption implements Parcelable{
+public class PieOption implements Parcelable {
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({NEAR_PIE, FAR_FROM_PIE, ECTOPIC})
-    public @interface IconPosition {
+    public @interface LabelPosition {
     }
 
     public static final int NEAR_PIE = 0x10;
@@ -23,8 +23,9 @@ public class PieOption implements Parcelable{
     public static final int ECTOPIC = 0x12;
 
     Bitmap mLabelIcon;
-    @IconPosition
+    @LabelPosition
     int mLabelPosition = ECTOPIC;
+    int mLabelPadding = 10;
 
     public PieOption() {
     }
@@ -72,6 +73,15 @@ public class PieOption implements Parcelable{
 
     public PieOption setLabelPosition(int labelPosition) {
         mLabelPosition = labelPosition;
+        return this;
+    }
+
+    public int getLabelPadding() {
+        return mLabelPadding;
+    }
+
+    public PieOption setLabelPadding(int labelPadding) {
+        mLabelPadding = labelPadding;
         return this;
     }
 }

@@ -90,7 +90,7 @@ public class AnimatedPieViewConfig {
     private float textSize = DEFAULT_DESC_TEXT_SIZE;
     private boolean drawText = false;
     private float splitAngle = DEFAULT_SPLIT_ANGLE;
-    private boolean animPie = true;
+    private boolean animatePie = true;
     private boolean canTouch = true;
     private boolean animTouch = true;
     private OnPieSelectListener mSelectListener;
@@ -200,8 +200,8 @@ public class AnimatedPieViewConfig {
         return this;
     }
 
-    public AnimatedPieViewConfig animaPie(boolean animaPie) {
-        this.animPie = animaPie;
+    public AnimatedPieViewConfig animatePie(boolean animatePie) {
+        this.animatePie = animatePie;
         return this;
     }
 
@@ -296,7 +296,7 @@ public class AnimatedPieViewConfig {
                 .textSize(config.textSize)
                 .drawText(config.drawText)
                 .splitAngle(config.splitAngle)
-                .animaPie(config.animPie)
+                .animatePie(config.animatePie)
                 .strokeMode(config.strokeMode)
                 .canTouch(config.canTouch)
                 .animOnTouch(config.animTouch)
@@ -399,8 +399,8 @@ public class AnimatedPieViewConfig {
         return splitAngle;
     }
 
-    public boolean isAnimPie() {
-        return animPie;
+    public boolean isAnimatePie() {
+        return animatePie;
     }
 
     public boolean isStrokeMode() {

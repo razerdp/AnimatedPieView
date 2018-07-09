@@ -4,8 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Rect;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
@@ -145,26 +143,23 @@ final class PieInfoWrapper implements Serializable {
         return mPieInfo.getPieOpeion();
     }
 
-    public Bitmap getIcon(@Nullable Rect textRect) {
+    public Bitmap getIcon(int textWidth, int textHeight) {
+        if (textWidth == 0 || textHeight == 0) return null;
         if (icon != null) return icon;
         if (mPieInfo.getPieOpeion() == null || mPieInfo.getPieOpeion().getLabelIcon() == null)
             return null;
         Bitmap mIcon = mPieInfo.getPieOpeion().getLabelIcon();
-        if (textRect == null) {
-            icon = mIcon;
-            return icon;
-        }
         int iconWidth = mIcon.getWidth();
         int iconHeight = mIcon.getHeight();
-        if (iconWidth > textRect.width() || iconHeight > textRect.height()) {
+        if (iconWidth > textWidth || iconHeight > textHeight) {
             Matrix matrix = new Matrix();
             float sX = 1.0f;
             float sY = 1.0f;
-            if (iconWidth > textRect.width()) {
-                sX = (float) textRect.width() / iconWidth;
+            if (iconWidth > textWidth) {
+                sX = (float) textWidth / iconWidth;
             }
-            if (iconHeight > textRect.height()) {
-                sY = (float) textRect.height() / iconHeight;
+            if (iconHeight > textHeight) {
+                sY = (float) textHeight / iconHeight;
             }
             float scale = Math.min(sX, sY);
             matrix.postScale(scale, scale);
