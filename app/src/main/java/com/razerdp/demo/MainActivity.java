@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
                 .addData(new SimplePieInfo(0.6449620647212785, getColor("ff8be8ff")), true)
                 .addData(new SimplePieInfo(0.058853315195452116, getColor("fffa734d")), true)
                 .addData(new SimplePieInfo(0.6632297717331086, getColor("ff957de0")), true)
-                .addData(new SimplePieInfo(0.8226830459369171, getColor("FF446767")), true)
                 .selectListener(new OnPieSelectListener() {
                     @Override
                     public void onSelectPie(@NonNull IPieInfo pieInfo, boolean isFloatUp) {
@@ -85,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
                 .textGravity(AnimatedPieViewConfig.ABOVE)
                 .interpolator(new DecelerateInterpolator());
         mAnimatedPieView.applyConfig(config);
+
+        mAnimatedPieView.start();
 
         mPopupSetting.setOnOkButtonClickListener(new View.OnClickListener() {
             @Override

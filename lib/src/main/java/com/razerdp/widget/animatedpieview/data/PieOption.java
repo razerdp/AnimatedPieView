@@ -14,17 +14,16 @@ import java.lang.annotation.RetentionPolicy;
 public class PieOption implements Parcelable {
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({NEAR_PIE, FAR_FROM_PIE, ECTOPIC})
+    @IntDef({NEAR_PIE, FAR_FROM_PIE})
     public @interface LabelPosition {
     }
 
     public static final int NEAR_PIE = 0x10;
     public static final int FAR_FROM_PIE = 0x11;
-    public static final int ECTOPIC = 0x12;
 
     Bitmap mLabelIcon;
     @LabelPosition
-    int mLabelPosition = ECTOPIC;
+    int mLabelPosition = FAR_FROM_PIE;
     int mLabelPadding = 10;
 
     public PieOption() {

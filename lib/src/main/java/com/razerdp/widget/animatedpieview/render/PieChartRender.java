@@ -38,12 +38,21 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     }
 
     enum LineDirection {
-        TOP_RIGHT,
-        BOTTOM_RIGHT,
-        TOP_LEFT,
-        BOTTOM_LEFT,
-        CENTER_RIGHT,
-        CENTER_LEFT;
+        TOP_RIGHT(1, 0),
+        BOTTOM_RIGHT(1, 1),
+        TOP_LEFT(0, 0),
+        BOTTOM_LEFT(0, 1),
+        CENTER_RIGHT(1, -1),
+        CENTER_LEFT(0, -1);
+
+        int xDirection;//0:left 1:right
+        int yDirection;//-1:center 0:top 1:bottom
+
+        LineDirection(int xDirection, int yDirection) {
+            this.xDirection = xDirection;
+            this.yDirection = yDirection;
+        }
+
     }
 
     private List<PieInfoWrapper> mDataWrappers;
@@ -126,7 +135,21 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         for (PieInfoWrapper dataWrapper : mDataWrappers) {
             dataWrapper.prepare(mConfig);
             lastAngle = dataWrapper.calculateDegree(lastAngle, sum, mConfig);
-            maxDescTextLength = Math.max(maxDescTextLength, mPieManager.measureTextBounds(dataWrapper.getDesc(), (int) mConfig.getTextSize()).width());
+            int textWidth = mPieManager.measureTextBounds(dataWrapper.getDesc(), (int) mConfig.getTextSize()).width();
+            int textHeight = mPieManager.measureTextBounds(dataWrapper.getDesc(), (int) mConfig.getTextSize()).height();
+            int labelWidth = 0;
+            int labelHeight = 0;
+            int labelPadding = 0;
+            Bitmap label = dataWrapper.getIcon(textWidth, textHeight);
+            if (label != null) {
+                if (dataWrapper.getPieOption() != null) {
+                    labelPadding = dataWrapper.getPieOption().getLabelPadding();
+                }
+                labelWidth = label.getWidth();
+                labelHeight = label.getHeight();
+            }
+            textWidth += labelWidth + labelPadding * 2;
+            maxDescTextLength = Math.max(maxDescTextLength, textWidth);
             PLog.i("desc >> " + dataWrapper.getDesc() + "  maxDesTextSize >> " + maxDescTextLength);
         }
 
@@ -189,6 +212,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             if (mRenderAnimation != null && !isInAnimating && !animHasStart) {
                 animHasStart = true;
                 mIPieView.getPieView().startAnimation(mRenderAnimation);
+                return;
             }
             renderAnimaDraw(canvas);
         } else {
@@ -296,15 +320,18 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         int textBoundsWidth = textBounds.width();
         int textBoundsHeight = textBounds.height();
 
+        //label
         Bitmap icon = wrapper.getIcon(textBoundsWidth, textBoundsHeight);
         int labelWidth = 0;
+        int labelHeight = 0;
         int labelPadding = 0;
         if (icon != null) {
             labelWidth = icon.getWidth();
+            labelHeight = icon.getHeight();
             labelPadding = Math.max(0, wrapper.getPieOption() == null ? 0 : wrapper.getPieOption().getLabelPadding());
         }
 
-        float textLength = textBoundsWidth + mConfig.getTextMargin() + 2 * labelPadding;
+        float textLength = textBoundsWidth + mConfig.getTextMargin() + 2 * labelPadding + labelWidth;
 
         //计算拐角方向
         LineDirection direction = calculateLineGravity(cx, cy);
@@ -315,37 +342,37 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                 guideLineEndX1 = cx - guideMiddleLength * absMathCos(-45) - fixPos;
                 guideLineEndY1 = cy - guideMiddleLength * absMathCos(-45) - fixPos;
 
-                guideLineEndX2 = guideLineEndX1 - textLength - labelWidth;
+                guideLineEndX2 = guideLineEndX1 - textLength;
                 break;
             case TOP_RIGHT:
                 guideLineEndX1 = cx + guideMiddleLength * absMathCos(45) + fixPos;
                 guideLineEndY1 = cy - guideMiddleLength * absMathCos(45) - fixPos;
 
-                guideLineEndX2 = guideLineEndX1 + textLength + labelWidth;
+                guideLineEndX2 = guideLineEndX1 + textLength;
                 break;
             case CENTER_LEFT:
                 guideLineEndX1 = cx - guideMiddleLength - fixPos;
                 guideLineEndY1 = cy;
 
-                guideLineEndX2 = guideLineEndX1 - textLength - labelWidth;
+                guideLineEndX2 = guideLineEndX1 - textLength;
                 break;
             case CENTER_RIGHT:
                 guideLineEndX1 = cx + guideMiddleLength + fixPos;
                 guideLineEndY1 = cy;
 
-                guideLineEndX2 = guideLineEndX1 + textLength + labelWidth;
+                guideLineEndX2 = guideLineEndX1 + textLength;
                 break;
             case BOTTOM_LEFT:
                 guideLineEndX1 = cx - guideMiddleLength * absMathCos(-45) - fixPos;
                 guideLineEndY1 = cy + guideMiddleLength * absMathCos(-45) + fixPos;
 
-                guideLineEndX2 = guideLineEndX1 - textLength - labelWidth;
+                guideLineEndX2 = guideLineEndX1 - textLength;
                 break;
             case BOTTOM_RIGHT:
                 guideLineEndX1 = cx + guideMiddleLength * absMathCos(45) + fixPos;
                 guideLineEndY1 = cy + guideMiddleLength * absMathCos(45) + fixPos;
 
-                guideLineEndX2 = guideLineEndX1 + textLength + labelWidth;
+                guideLineEndX2 = guideLineEndX1 + textLength;
                 break;
 
         }
@@ -374,6 +401,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         float textStartY = calculateTextStartY(guideLineEndY1, guideLineEndY2, direction, textBoundsHeight);
 
         if (icon != null) {
+            textStartX = fitTextStartXWithLabel(textStartX, textBoundsWidth, labelWidth, direction, wrapper.getPieOption());
             float iconLeft;
             float iconTop;
             iconLeft = calculateLabelX(wrapper.getPieOption(), labelWidth, textStartX, direction, textBoundsWidth);
@@ -386,6 +414,24 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         //画文字
         canvas.drawText(desc, textStartX, textStartY, paint);
 
+    }
+
+
+    private float fitTextStartXWithLabel(float textStartX, int textBoundsWidth, int labelWidth, LineDirection direction, PieOption pieOption) {
+        if (pieOption != null) {
+            int labelPadding = pieOption.getLabelPadding();
+            switch (pieOption.getLabelPosition()) {
+                case PieOption.NEAR_PIE:
+                    if (direction.xDirection < 1) {
+                        //文字在左边，图片在文字右边时，需要针对文字位置适配
+                        textStartX -= labelPadding * 2 + labelWidth;
+                    } else {
+                        textStartX += labelPadding * 2 + labelWidth;
+                    }
+                    break;
+            }
+        }
+        return textStartX;
     }
 
     private float calculateLabelX(PieOption pieOption, int iconWidth, float textStartX, LineDirection direction, int textWidth) {
@@ -425,7 +471,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             case TOP_LEFT:
             case CENTER_LEFT:
             case BOTTOM_LEFT:
-                return textGravity == AnimatedPieViewConfig.ALIGN ? guideLineEndX2 - textWidth - textMargin : guideLineEndX1 - textWidth;
+                return textGravity == AnimatedPieViewConfig.ALIGN ? guideLineEndX2 - textWidth - textMargin : guideLineEndX1 - textWidth - textMargin;
             case TOP_RIGHT:
             case CENTER_RIGHT:
             case BOTTOM_RIGHT:
@@ -581,23 +627,23 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             pieBounds.set(-pieRadius, -pieRadius, pieRadius, pieRadius);
             return;
         }
-        final float minSize = Math.min(width, height);
+        final float minSize = Math.min(width / 2, height / 2);
         //最低0.5的最小高宽值
         float minPieRadius = minSize / 4;
         if (mConfig.isAutoSize()) {
-            if (mConfig.isStrokeMode()) {
-                //stroke模式跟pie模式测量不同
-                //按照最大的文字测量
-                pieRadius = minSize / 2
-                        - maxDescTextLength
-                        - (mConfig.isStrokeMode() ? (mConfig.getStrokeWidth() >> 1) : 0)
-                        - mConfig.getGuideLineMarginStart();
-
-                pieRadius = Math.max(minPieRadius, pieRadius);
-            } else {
-                //饼图只需要看外径
-                pieRadius = minSize / 2 - maxDescTextLength - mConfig.getGuideLineMarginStart();
+            //按照最大的文字测量
+            float radius = Integer.MAX_VALUE;
+            while (radius > minSize) {
+                if (radius == Integer.MAX_VALUE) {
+                    radius = minSize - maxDescTextLength
+                            - (mConfig.isStrokeMode() ? (mConfig.getStrokeWidth() >> 1) : 0)
+                            - mConfig.getGuideLineMarginStart();
+                } else {
+                    radius -= minSize / 10;
+                }
             }
+            pieRadius = Math.max(minPieRadius, radius);
+
         } else {
             //优先判定size
             if (mConfig.getPieRadius() > 0) {
