@@ -33,6 +33,7 @@ Develop Plan （Update Log->[Update Log](https://github.com/razerdp/AnimatedPieV
 
   > No plan now....I'm eagerly waiting for your great suggestions.
   
+  * ~~Support label for description text~~
   * ~~Project Optimization and Reconstruction, version 1.2.0 release~~
   * ~~Support alpha to highlight the selected pie~~ ---------- done
   * ~~Support the pies to have a space between them~~
