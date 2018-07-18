@@ -1,6 +1,10 @@
 # AnimatedPieView更新日志
 
-### 18/04/27 - ver 1.2.2(未发布)
+### 18/07/17 - ver 1.2.4
+ - 修复`autoSize`的问题
+ - 增加PieOption，允许添加标签
+ 
+### 18/04/27 - ver 1.2.2
  - 修复animPie(false)时文字没绘制的问题
 
 ### 18/03/01 - ver 1.2.1

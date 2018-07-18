@@ -23,10 +23,11 @@ Suggestion:
 
 **Thanks**
 
-### Appendix:
+### Update Log:
 
-**Deprecated methods/New methods comparison table : [**Revision Log**](https://github.com/razerdp/AnimatedPieView/blob/master/REVISION_LOG.md)**
-
+### 18/07/18 - ver 1.2.4
+ - fix `autoSize`
+ - support description label @see #[12](https://github.com/razerdp/AnimatedPieView/issues/12)
 
 Develop Plan （Update Log->[Update Log](https://github.com/razerdp/AnimatedPieView/blob/master/UPDATE_LOG.md)）
 -------------------------------------------------------------------------------------------------------------
@@ -35,7 +36,7 @@ Develop Plan （Update Log->[Update Log](https://github.com/razerdp/AnimatedPieV
   
   * ~~Support label for description text~~
   * ~~Project Optimization and Reconstruction, version 1.2.0 release~~
-  * ~~Support alpha to highlight the selected pie~~ ---------- done
+  * ~~Support alpha to highlight the selected pie~~ 
   * ~~Support the pies to have a space between them~~
   * ~~TextField adapt animation position changed~~
   * ~~Text Line show animation~~
@@ -57,6 +58,7 @@ Features:
 | click effect       | canTouch(true) / selectListener()    |   ![pie_click_effect](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_click_effect.gif)    |
 | alpha to highlight (reverse)      | focusAlphaType(<br>AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV,150<br>)    |   ![pie_click_with_focus_alpha_type_rev](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_click_with_focus_alpha_type_rev.gif)    |
 | alpha to highlight       | focusAlphaType(<br>AnimatedPieViewConfig.FOCUS_WITH_ALPHA,150<br>)    |   ![pie_click_with_focus_alpha_type](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_click_with_focus_alpha_type.gif)    |
+| description text label       | IPieInfo.PieOption    |   ![pie_option](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_option.png)    |
 
 Download:
 ---
@@ -92,6 +94,13 @@ public class Test implements IPieInfo {
     public String getDesc() {
         // description text, may not return
         return "这是一个测试";
+    }
+        
+    @Nullable
+    @Override
+    public PieOption getPieOpeion() {
+       // option for pie,example: descript label
+       return mPieOption;
     }
 }
 ```
@@ -134,6 +143,8 @@ mConfig.animOnTouch(true)// Animation when selected pie（default:true）
        .drawText(true)// Whether to draw a text description
        .textSize(12)// Text description size
        .textMargin(8)// Margin between text and guide line
+       .autoSize(true)// Auto fit chart radius
+       .pieRadius(100)// Set chart radius
        .pieRadiusRatio(0.8f)// Chart's radius ratio for parent ViewGroup
        .guidePointRadius(2)// Chart's radius
        .guideLineWidth(4)// Text guide line stroke width

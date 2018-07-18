@@ -50,6 +50,7 @@ AnimatedPieView
 | 点击效果       | canTouch(true) / selectListener()    |   ![pie_click_effect](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_click_effect.gif)    |
 | 焦点甜甜圈效果 (反向)      | focusAlphaType(<br>AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV,150<br>)    |   ![pie_click_with_focus_alpha_type_rev](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_click_with_focus_alpha_type_rev.gif)    |
 | 焦点甜甜圈效果       | focusAlphaType(<br>AnimatedPieViewConfig.FOCUS_WITH_ALPHA,150<br>)    |   ![pie_click_with_focus_alpha_type](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_click_with_focus_alpha_type.gif)    |
+| 甜甜圈标签       | IPieInfo.PieOption    |   ![pie_option](https://github.com/razerdp/AnimatedPieView/blob/master/art/pie_option.png)    |
 
 依赖
 ---
@@ -84,6 +85,13 @@ public class Test implements IPieInfo {
     public String getDesc() {
         //描述文字，可不返回
         return "这是一个测试";
+    }
+    
+    @Nullable
+    @Override
+    public PieOption getPieOpeion() {
+       //一些别的设置，比如标签
+       return mPieOption;
     }
 }
 ```
@@ -126,6 +134,8 @@ mConfig.animOnTouch(true)// 点击事件是否播放浮现动画/回退动画（
        .drawText(true)// 是否绘制文字描述
        .textSize(12)// 绘制的文字大小
        .textMargin(8)// 绘制文字与导航线的距离
+       .autoSize(true)// 自动测量甜甜圈半径
+       .pieRadius(100)// 甜甜圈半径
        .pieRadiusRatio(0.8f)// 甜甜圈半径占比
        .guidePointRadius(2)// 设置描述文字的开始小点的大小
        .guideLineWidth(4)// 设置描述文字的指示线宽度

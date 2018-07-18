@@ -1,6 +1,7 @@
 package com.razerdp.widget.animatedpieview.data;
 
 import android.graphics.Bitmap;
+import android.support.annotation.Nullable;
 
 /**
  * Created by 大灯泡 on 2017/11/7.
@@ -60,8 +61,10 @@ public class SimplePieInfo implements IPieInfo {
         return desc;
     }
 
+    @Nullable
     @Override
     public PieOption getPieOpeion() {
         return mPieOption;
     }
+
 }
