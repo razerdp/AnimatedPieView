@@ -4,8 +4,6 @@ AnimatedPieView
  
 [**English Doc**](https://github.com/razerdp/AnimatedPieView/blob/master/README_EN.md)
 
-[**Revision Log**](https://github.com/razerdp/AnimatedPieView/blob/master/REVISION_LOG.md)
-
 [![jcenter](https://api.bintray.com/packages/razerdp/maven/AnimatedPieView/images/download.svg)](https://bintray.com/razerdp/maven/AnimatedPieView/_latestVersion)
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/razerdp/AnimatedPieView/blob/master/LICENSE)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-AnimatedPieView-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/6507)
@@ -16,9 +14,6 @@ AnimatedPieView
 ---
 
 **1.2.0重构版正式发布，建议升级到该版本，1.2.0将整个项目由头到尾重构了一遍，更完善的注释和文档，以及针对一些命名和旧版本的bug统一修复，同时更加抽象，方便以后的功能添加。欢迎提交相关Bug~我会第一时间去解决问题的**
-
-**1.2.0弃用方法及对应新方法对照表：[**修订日志**](https://github.com/razerdp/AnimatedPieView/blob/master/REVISION_LOG.md)**
-
 
 开发进度 （更新日志->[日志](https://github.com/razerdp/AnimatedPieView/blob/master/UPDATE_LOG.md)）
 ---
@@ -58,7 +53,7 @@ AnimatedPieView
 添加依赖（请把{latestVersion}替换成上面的jcenter标签所示版本）
 ```xml
 	dependencies {
-	        compile 'com.github.razerdp:AnimatedPieView:{latestVersion}'
+	        implementation 'com.github.razerdp:AnimatedPieView:{latestVersion}'
 	}
 ```
 

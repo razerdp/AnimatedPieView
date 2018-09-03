@@ -4,8 +4,6 @@ AnimatedPieView
  
 [**Chinese Doc**](https://github.com/razerdp/AnimatedPieView/blob/master/README.md)
 
-[**Revision Log**](https://github.com/razerdp/AnimatedPieView/blob/master/REVISION_LOG.md)
-
 [![jcenter](https://api.bintray.com/packages/razerdp/maven/AnimatedPieView/images/download.svg)](https://bintray.com/razerdp/maven/AnimatedPieView/_latestVersion)
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/razerdp/AnimatedPieView/blob/master/LICENSE)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-AnimatedPieView-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/6507)
@@ -67,7 +65,7 @@ Use in gradle（please replace {latestVersion} to the download badge version）
 
 ```xml
 	dependencies {
-	        compile 'com.github.razerdp:AnimatedPieView:{latestVersion}'
+	        implementation 'com.github.razerdp:AnimatedPieView:{latestVersion}'
 	}
 ```
 

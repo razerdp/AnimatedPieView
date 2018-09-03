@@ -66,11 +66,12 @@ public class PieOption implements Parcelable {
         return this;
     }
 
+    @LabelPosition
     public int getLabelPosition() {
         return mLabelPosition;
     }
 
-    public PieOption setLabelPosition(int labelPosition) {
+    public PieOption setLabelPosition(@LabelPosition int labelPosition) {
         mLabelPosition = labelPosition;
         return this;
     }
