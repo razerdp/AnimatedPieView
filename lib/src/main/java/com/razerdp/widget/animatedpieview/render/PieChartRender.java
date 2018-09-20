@@ -72,6 +72,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     private TouchHelper mTouchHelper;
     private RenderAnimation mRenderAnimation;
     private volatile boolean animHasStart;
+    private volatile boolean hasRenderDefaultSelected;
 
     public PieChartRender(IPieView iPieView) {
         super(iPieView);
@@ -90,6 +91,8 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         animHasStart = false;
         isInAnimating = false;
         pieRadius = 0;
+
+        hasRenderDefaultSelected = false;
 
         mDataWrappers = mDataWrappers == null ? new ArrayList<PieInfoWrapper>() : mDataWrappers;
         mDataWrappers.clear();
@@ -583,6 +586,18 @@ public class PieChartRender extends BaseRender implements ITouchRender {
 
     }
 
+    private void onDrawFinish() {
+        PLog.i("drawFinish");
+        if (isInAnimating || hasRenderDefaultSelected) return;
+        for (PieInfoWrapper dataWrapper : mDataWrappers) {
+            if (dataWrapper.getPieOption() != null && dataWrapper.getPieOption().isDefaultSelected()) {
+                hasRenderDefaultSelected = true;
+                mTouchHelper.handleUp(dataWrapper);
+                break;
+            }
+        }
+    }
+
     //-----------------------------------------touch-----------------------------------------
 
     @Override
@@ -632,10 +647,11 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         float minPieRadius = minSize / 4;
         if (mConfig.isAutoSize()) {
             //按照最大的文字测量
-            float radius = Integer.MAX_VALUE;
+            float radius = Float.MAX_VALUE;
             while (radius > minSize) {
-                if (radius == Integer.MAX_VALUE) {
-                    radius = minSize - maxDescTextLength
+                if (radius == Float.MAX_VALUE) {
+                    radius = minSize
+                            - (mConfig.isDrawText() ? maxDescTextLength : 0)
                             - (mConfig.isStrokeMode() ? (mConfig.getStrokeWidth() >> 1) : 0)
                             - mConfig.getGuideLineMarginStart();
                 } else {
@@ -858,35 +874,39 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                 case MotionEvent.ACTION_UP:
                     PieInfoWrapper touchWrapper = pointToPieInfoWrapper(touchX, touchY);
                     if (touchWrapper == null) return false;
-                    setDrawMode(DrawMode.TOUCH);
-                    if (touchWrapper.equals(floatingWrapper)) {
-                        //如果点的是当前正在浮起的wrapper，则移到上一个，当前的置空
-                        lastFloatWrapper = touchWrapper;
-                        floatingWrapper = null;
-                        sameClick = true;
-                    } else {
-                        lastFloatWrapper = floatingWrapper;
-                        floatingWrapper = touchWrapper;
-                        sameClick = false;
-                    }
-
-                    if (mConfig.isAnimTouch()) {
-                        floatUpAnim.start();
-                        floatDownAnim.start();
-                    } else {
-                        floatUpTime = 1;
-                        floatDownTime = 1;
-                        callInvalidate();
-                    }
-
-                    if (mConfig.getSelectListener() != null) {
-                        mConfig.getSelectListener().onSelectPie(touchWrapper.getPieInfo(), touchWrapper.equals(floatingWrapper));
-                    }
+                    handleUp(touchWrapper);
 
                     return true;
             }
 
             return false;
+        }
+
+        private void handleUp(PieInfoWrapper touchWrapper) {
+            setDrawMode(DrawMode.TOUCH);
+            if (touchWrapper.equals(floatingWrapper)) {
+                //如果点的是当前正在浮起的wrapper，则移到上一个，当前的置空
+                lastFloatWrapper = touchWrapper;
+                floatingWrapper = null;
+                sameClick = true;
+            } else {
+                lastFloatWrapper = floatingWrapper;
+                floatingWrapper = touchWrapper;
+                sameClick = false;
+            }
+
+            if (mConfig.isAnimTouch()) {
+                floatUpAnim.start();
+                floatDownAnim.start();
+            } else {
+                floatUpTime = 1;
+                floatDownTime = 1;
+                callInvalidate();
+            }
+
+            if (mConfig.getSelectListener() != null) {
+                mConfig.getSelectListener().onSelectPie(touchWrapper.getPieInfo(), touchWrapper.equals(floatingWrapper));
+            }
         }
     }
 }

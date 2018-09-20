@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 /**
                  * not done below!
                  */
-                .addData(new SimplePieInfo(0.11943538617599236, getColor("FF446767")).setLabel(resourceToBitmap(R.mipmap.ic_test_1)), true)
+                .addData(new SimplePieInfo(0.11943538617599236, getColor("FF446767")).setLabel(resourceToBitmap(R.mipmap.ic_test_1)).setDefaultSelected(true), true)
                 .addData(new SimplePieInfo(0.41780274681129415, getColor("FFFFD28C"),"测试一下~").setLabel(resourceToBitmap(R.mipmap.ic_test_2)), false)
                 .addData(new SimplePieInfo(0.722165651192247, getColor("FFbb76b4")).setLabel(resourceToBitmap(R.mipmap.ic_test_3)), true)
 //                .addData(new SimplePieInfo(0.11943538617599236, getColor("FF446767")), true)

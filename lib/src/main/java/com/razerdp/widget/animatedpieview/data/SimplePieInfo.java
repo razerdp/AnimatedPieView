@@ -14,6 +14,7 @@ public class SimplePieInfo implements IPieInfo {
     private PieOption mPieOption;
 
     public SimplePieInfo() {
+        mPieOption = new PieOption();
     }
 
     public SimplePieInfo(double value, int color) {
@@ -24,6 +25,7 @@ public class SimplePieInfo implements IPieInfo {
         this.value = value;
         this.color = color;
         this.desc = desc;
+        mPieOption = new PieOption();
     }
 
     public void setValue(float value) {
@@ -39,10 +41,12 @@ public class SimplePieInfo implements IPieInfo {
     }
 
     public SimplePieInfo setLabel(Bitmap bm) {
-        if (mPieOption == null) {
-            mPieOption = new PieOption();
-        }
         mPieOption.setLabelIcon(bm);
+        return this;
+    }
+
+    public SimplePieInfo setDefaultSelected(boolean defaultSelected) {
+        mPieOption.setDefaultSelected(defaultSelected);
         return this;
     }
 

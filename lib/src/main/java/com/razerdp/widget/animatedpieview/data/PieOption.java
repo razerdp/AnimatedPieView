@@ -26,18 +26,24 @@ public class PieOption implements Parcelable {
     int mLabelPosition = FAR_FROM_PIE;
     int mLabelPadding = 10;
 
+    boolean defaultSelected;
+
     public PieOption() {
     }
 
     protected PieOption(Parcel in) {
         mLabelIcon = in.readParcelable(Bitmap.class.getClassLoader());
         mLabelPosition = in.readInt();
+        mLabelPadding = in.readInt();
+        defaultSelected = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(mLabelIcon, flags);
         dest.writeInt(mLabelPosition);
+        dest.writeInt(mLabelPadding);
+        dest.writeByte((byte) (defaultSelected ? 1 : 0));
     }
 
     @Override
@@ -82,6 +88,15 @@ public class PieOption implements Parcelable {
 
     public PieOption setLabelPadding(int labelPadding) {
         mLabelPadding = labelPadding;
+        return this;
+    }
+
+    public boolean isDefaultSelected() {
+        return defaultSelected;
+    }
+
+    public PieOption setDefaultSelected(boolean defaultSelected) {
+        this.defaultSelected = defaultSelected;
         return this;
     }
 }
