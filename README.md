@@ -168,15 +168,13 @@ mConfig.animOnTouch(true)// 点击事件是否播放浮现动画/回退动画（
 控件思路【按思路顺序更新】
 ---
 
- * [自定义控件——弄个甜甜圈吧（1）： 起源](http://www.jianshu.com/p/b2a2d82e107e)
- * [自定义控件——弄个甜甜圈吧（2）： 搭建](http://www.jianshu.com/p/562c525ff927)
- * [自定义控件——弄个甜甜圈吧（3）： 动画篇【生长动画】](http://www.jianshu.com/p/f7842a97cb3e)
- * 编写中...
+ [一起弄个甜甜圈吧](https://github.com/razerdp/Article/blob/master/%E4%B8%80%E8%B5%B7%E6%92%B8%E4%B8%AA%E7%94%9C%E7%94%9C%E5%9C%88.md)
+
 
 LICENSE
 ---
 
-Apache-2.0
+[Apache-2.0](https://github.com/razerdp/AnimatedPieView/blob/master/LICENSE)
    
    
 
