@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 .drawText(true)
                 .duration(1200)
                 .textSize(26)
+                .animatePie(false)
                 .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA)
                 .textGravity(AnimatedPieViewConfig.ABOVE)
                 .interpolator(new DecelerateInterpolator());

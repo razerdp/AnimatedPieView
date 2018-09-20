@@ -217,7 +217,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                 mIPieView.getPieView().startAnimation(mRenderAnimation);
                 return;
             }
-            renderAnimaDraw(canvas);
+            renderAnimDraw(canvas);
         } else {
             renderNormalDraw(canvas);
         }
@@ -238,9 +238,10 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             mCachedDrawWrappers.addAll(mDataWrappers);
         }
         drawCachedPie(canvas, null);
+        onDrawFinish();
     }
 
-    private void renderAnimaDraw(Canvas canvas) {
+    private void renderAnimDraw(Canvas canvas) {
         if (mDrawingPie != null) {
             drawCachedPie(canvas, mDrawingPie);
             canvas.drawArc(pieBounds,
@@ -259,7 +260,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         mTouchHelper.setTouchBounds(timeSet);
         Paint touchPaint = mTouchHelper.prepareTouchPaint(wrapper);
         touchPaint.setShadowLayer(mConfig.getFloatShadowRadius() * timeSet, 0, 0, touchPaint.getColor());
-        touchPaint.setStrokeWidth(mConfig.getStrokeWidth() + (10 * timeSet));
+        touchPaint.setStrokeWidth(mConfig.getStrokeWidth() + (mConfig.getFloatExpandSize() * timeSet));
         applyAlphaToPaint(wrapper, touchPaint);
         canvas.drawArc(mTouchHelper.touchBounds,
                 wrapper.getFromAngle() - (mConfig.getFloatExpandAngle() * timeSet),
@@ -588,7 +589,10 @@ public class PieChartRender extends BaseRender implements ITouchRender {
 
     private void onDrawFinish() {
         PLog.i("drawFinish");
-        if (isInAnimating || hasRenderDefaultSelected) return;
+        if (mConfig.isAnimatePie()) {
+            if (!animHasStart || isInAnimating) return;
+        }
+        if (hasRenderDefaultSelected) return;
         for (PieInfoWrapper dataWrapper : mDataWrappers) {
             if (dataWrapper.getPieOption() != null && dataWrapper.getPieOption().isDefaultSelected()) {
                 hasRenderDefaultSelected = true;
