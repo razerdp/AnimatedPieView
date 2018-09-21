@@ -144,26 +144,57 @@ final class PieInfoWrapper implements Serializable {
     }
 
     public Bitmap getIcon(int textWidth, int textHeight) {
-        if (textWidth == 0 || textHeight == 0) return null;
         if (icon != null) return icon;
-        if (mPieInfo.getPieOpeion() == null || mPieInfo.getPieOpeion().getLabelIcon() == null)
+        PieOption option = mPieInfo.getPieOpeion();
+        if (option == null || option.getLabelIcon() == null || option.getLabelIcon().isRecycled())
             return null;
-        Bitmap mIcon = mPieInfo.getPieOpeion().getLabelIcon();
-        int iconWidth = mIcon.getWidth();
-        int iconHeight = mIcon.getHeight();
-        if (iconWidth > textWidth || iconHeight > textHeight) {
-            Matrix matrix = new Matrix();
+
+        boolean disableAutoScaleWithText = option.getIconWidth() > 0
+                || option.getIconHeight() > 0
+                || option.getIconScaledWidth() > 0
+                || option.getIconScaledHeight() > 0
+                || TextUtils.isEmpty(desc);
+
+        Bitmap mIcon = option.getLabelIcon();
+        final int iconWidth = mIcon.getWidth();
+        final int iconHeight = mIcon.getHeight();
+
+        if (disableAutoScaleWithText) {
+            Matrix matrix = null;
             float sX = 1.0f;
             float sY = 1.0f;
-            if (iconWidth > textWidth) {
-                sX = (float) textWidth / iconWidth;
+
+            //优先取固定数值的，有需要的时候才缩放，。
+            if (option.getIconWidth() > 0 || option.getIconHeight() > 0) {
+                matrix = new Matrix();
+                sX = (option.getIconWidth() <= 0 ? option.getIconHeight() : option.getIconWidth()) / iconWidth;
+                sY = (option.getIconHeight() <= 0 ? option.getIconWidth() : option.getIconHeight()) / iconHeight;
+            } else if (option.getIconScaledWidth() > 0 || option.getIconScaledHeight() > 0) {
+                matrix = new Matrix();
+                sX = option.getIconScaledWidth() <= 0 ? option.getIconScaledHeight() : option.getIconScaledWidth();
+                sY = option.getIconScaledHeight() <= 0 ? option.getIconScaledWidth() : option.getIconScaledHeight();
             }
-            if (iconHeight > textHeight) {
-                sY = (float) textHeight / iconHeight;
+            if (matrix != null) {
+                matrix.postScale(sX, sY);
+                icon = Bitmap.createBitmap(mIcon, 0, 0, iconWidth, iconHeight, matrix, true);
+            } else {
+                icon = mIcon;
             }
-            float scale = Math.min(sX, sY);
-            matrix.postScale(scale, scale);
-            icon = Bitmap.createBitmap(mIcon, 0, 0, iconWidth, iconHeight, matrix, true);
+        } else {
+            if (iconWidth > textWidth || iconHeight > textHeight) {
+                Matrix matrix = new Matrix();
+                float sX = 1.0f;
+                float sY = 1.0f;
+                if (iconWidth > textWidth) {
+                    sX = (float) textWidth / iconWidth;
+                }
+                if (iconHeight > textHeight) {
+                    sY = (float) textHeight / iconHeight;
+                }
+                float scale = Math.min(sX, sY);
+                matrix.postScale(scale, scale);
+                icon = Bitmap.createBitmap(mIcon, 0, 0, iconWidth, iconHeight, matrix, true);
+            }
         }
         return icon;
     }

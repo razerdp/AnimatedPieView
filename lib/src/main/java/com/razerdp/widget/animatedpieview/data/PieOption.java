@@ -26,7 +26,13 @@ public class PieOption implements Parcelable {
     int mLabelPosition = FAR_FROM_PIE;
     int mLabelPadding = 10;
 
-    boolean defaultSelected;
+    float mIconWidth;
+    float mIconHeight;
+
+    float mIconScaledWidth;
+    float mIconScaledHeight;
+
+    boolean mDefaultSelected;
 
     public PieOption() {
     }
@@ -35,7 +41,11 @@ public class PieOption implements Parcelable {
         mLabelIcon = in.readParcelable(Bitmap.class.getClassLoader());
         mLabelPosition = in.readInt();
         mLabelPadding = in.readInt();
-        defaultSelected = in.readByte() != 0;
+        mIconWidth = in.readFloat();
+        mIconHeight = in.readFloat();
+        mIconScaledWidth = in.readFloat();
+        mIconScaledHeight = in.readFloat();
+        mDefaultSelected = in.readByte() != 0;
     }
 
     @Override
@@ -43,7 +53,11 @@ public class PieOption implements Parcelable {
         dest.writeParcelable(mLabelIcon, flags);
         dest.writeInt(mLabelPosition);
         dest.writeInt(mLabelPadding);
-        dest.writeByte((byte) (defaultSelected ? 1 : 0));
+        dest.writeFloat(mIconWidth);
+        dest.writeFloat(mIconHeight);
+        dest.writeFloat(mIconScaledWidth);
+        dest.writeFloat(mIconScaledHeight);
+        dest.writeByte((byte) (mDefaultSelected ? 1 : 0));
     }
 
     @Override
@@ -92,11 +106,47 @@ public class PieOption implements Parcelable {
     }
 
     public boolean isDefaultSelected() {
-        return defaultSelected;
+        return mDefaultSelected;
     }
 
     public PieOption setDefaultSelected(boolean defaultSelected) {
-        this.defaultSelected = defaultSelected;
+        this.mDefaultSelected = defaultSelected;
+        return this;
+    }
+
+    public float getIconWidth() {
+        return mIconWidth;
+    }
+
+    public PieOption setIconWidth(float iconWidth) {
+        mIconWidth = iconWidth;
+        return this;
+    }
+
+    public float getIconHeight() {
+        return mIconHeight;
+    }
+
+    public PieOption setIconHeight(float iconHeight) {
+        mIconHeight = iconHeight;
+        return this;
+    }
+
+    public float getIconScaledWidth() {
+        return mIconScaledWidth;
+    }
+
+    public PieOption setIconScaledWidth(float iconScaledWidth) {
+        mIconScaledWidth = iconScaledWidth;
+        return this;
+    }
+
+    public float getIconScaledHeight() {
+        return mIconScaledHeight;
+    }
+
+    public PieOption setIconScaledHeight(float iconScaledHeight) {
+        mIconScaledHeight = iconScaledHeight;
         return this;
     }
 }

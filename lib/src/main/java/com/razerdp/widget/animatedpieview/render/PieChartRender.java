@@ -8,7 +8,6 @@ import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
@@ -320,7 +319,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         float guideLineEndY2 = -1;
 
 
-        String desc = TextUtils.isEmpty(wrapper.getDesc()) ? "null" : wrapper.getDesc();
+        String desc = wrapper.getDesc();
         Rect textBounds = mPieManager.measureTextBounds(desc, (int) mConfig.getTextSize());
         int textBoundsWidth = textBounds.width();
         int textBoundsHeight = textBounds.height();
@@ -411,6 +410,23 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             float iconTop;
             iconLeft = calculateLabelX(wrapper.getPieOption(), labelWidth, textStartX, direction, textBoundsWidth);
             iconTop = textStartY - textBoundsHeight;
+            if (textBoundsHeight == 0) {
+                switch (mConfig.getTextGravity()) {
+                    case AnimatedPieViewConfig.ABOVE:
+                        iconTop = textStartY - icon.getHeight();
+                        break;
+                    case AnimatedPieViewConfig.ECTOPIC:
+                        if (direction.yDirection == 0) {
+                            iconTop = textStartY - icon.getHeight();
+                        }
+                        break;
+                    case AnimatedPieViewConfig.ALIGN:
+                        iconTop = textStartY - icon.getHeight() / 2;
+                        break;
+                    default:
+                        break;
+                }
+            }
             if (iconLeft != -1 && iconTop != -1) {
                 canvas.drawBitmap(icon, iconLeft, iconTop, wrapper.getIconPaint());
             }

@@ -65,6 +65,29 @@ public class SimplePieInfo implements IPieInfo {
         return desc;
     }
 
+
+    public SimplePieInfo setIconWidth(float iconWidth) {
+        mPieOption.setIconWidth(iconWidth);
+        return this;
+    }
+
+
+    public SimplePieInfo setIconHeight(float iconHeight) {
+        mPieOption.setIconHeight(iconHeight);
+        return this;
+    }
+
+    public SimplePieInfo setIconScaledWidth(float iconScaledWidth) {
+        mPieOption.setIconScaledWidth(iconScaledWidth);
+        return this;
+    }
+
+
+    public SimplePieInfo setIconScaledHeight(float iconScaledHeight) {
+        mPieOption.setIconScaledHeight(iconScaledHeight);
+        return this;
+    }
+
     @Nullable
     @Override
     public PieOption getPieOpeion() {
