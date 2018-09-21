@@ -174,6 +174,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     isInAnimating = false;
+                    onDrawFinish();
                 }
             });
         }
