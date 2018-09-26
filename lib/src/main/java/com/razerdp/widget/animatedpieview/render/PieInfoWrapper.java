@@ -140,12 +140,12 @@ final class PieInfoWrapper implements Serializable {
     }
 
     public PieOption getPieOption() {
-        return mPieInfo.getPieOpeion();
+        return mPieInfo.getPieOption();
     }
 
     public Bitmap getIcon(int textWidth, int textHeight) {
         if (icon != null) return icon;
-        PieOption option = mPieInfo.getPieOpeion();
+        PieOption option = mPieInfo.getPieOption();
         if (option == null || option.getLabelIcon() == null || option.getLabelIcon().isRecycled())
             return null;
 

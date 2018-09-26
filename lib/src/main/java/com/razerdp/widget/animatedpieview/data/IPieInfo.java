@@ -17,5 +17,5 @@ public interface IPieInfo {
     String getDesc();
 
     @Nullable
-    PieOption getPieOpeion();
+    PieOption getPieOption();
 }

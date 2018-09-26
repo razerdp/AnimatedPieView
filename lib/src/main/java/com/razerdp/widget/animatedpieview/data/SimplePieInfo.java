@@ -90,7 +90,7 @@ public class SimplePieInfo implements IPieInfo {
 
     @Nullable
     @Override
-    public PieOption getPieOpeion() {
+    public PieOption getPieOption() {
         return mPieOption;
     }
 

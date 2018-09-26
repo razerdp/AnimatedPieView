@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
@@ -90,7 +91,8 @@ public class MainActivity extends AppCompatActivity {
                 .textSize(26)
                 .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA)
                 .textGravity(AnimatedPieViewConfig.ABOVE)
-                .interpolator(new DecelerateInterpolator());
+                .interpolator(new DecelerateInterpolator())
+                .legendsWith((ViewGroup) findViewById(R.id.ll_legends));
         mAnimatedPieView.applyConfig(config);
 
         mAnimatedPieView.start();

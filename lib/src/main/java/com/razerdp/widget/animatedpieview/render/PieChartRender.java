@@ -8,15 +8,20 @@ import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.FloatRange;
 import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Transformation;
 
 import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
+import com.razerdp.widget.animatedpieview.BasePieLegendsView;
+import com.razerdp.widget.animatedpieview.DefaultPieLegendsView;
 import com.razerdp.widget.animatedpieview.IPieView;
+import com.razerdp.widget.animatedpieview.callback.OnPieLegendBindListener;
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
 import com.razerdp.widget.animatedpieview.data.PieOption;
 import com.razerdp.widget.animatedpieview.utils.AnimationCallbackUtils;
@@ -24,7 +29,9 @@ import com.razerdp.widget.animatedpieview.utils.PLog;
 import com.razerdp.widget.animatedpieview.utils.Util;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 大灯泡 on 2018/2/1.
@@ -69,6 +76,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     private float animAngle;
     //-----------------------------------------other-----------------------------------------
     private TouchHelper mTouchHelper;
+    private LegendsHelper mLegendsHelper;
     private RenderAnimation mRenderAnimation;
     private volatile boolean animHasStart;
     private volatile boolean hasRenderDefaultSelected;
@@ -80,12 +88,14 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         mPathMeasure = new PathMeasure();
         pieBounds = new RectF();
         mTouchHelper = new TouchHelper();
+        mLegendsHelper = new LegendsHelper();
         pieRadius = 0;
     }
 
     @Override
     public void reset() {
         mTouchHelper.reset();
+        mLegendsHelper.reset();
         pieBounds.setEmpty();
         animHasStart = false;
         isInAnimating = false;
@@ -130,7 +140,8 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             preWrapper = wrapper;
             mDataWrappers.add(wrapper);
         }
-
+        //图例
+        final boolean withLegends = mConfig.getLegendsParent() != null;
         //calculate degree for each pieInfoWrapper
         //计算每个wrapper的角度
         float lastAngle = mConfig.getStartAngle();
@@ -153,10 +164,31 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             textWidth += labelWidth + labelPadding * 2;
             maxDescTextLength = Math.max(maxDescTextLength, textWidth);
             PLog.i("desc >> " + dataWrapper.getDesc() + "  maxDesTextSize >> " + maxDescTextLength);
+
+            if (withLegends) {
+                mLegendsHelper.put(dataWrapper.getId(), getLegendsView(mConfig, dataWrapper.getPieInfo()));
+            }
+        }
+
+        if (withLegends) {
+            mLegendsHelper.prepare();
         }
 
         return true;
     }
+
+    private BasePieLegendsView getLegendsView(AnimatedPieViewConfig config, IPieInfo pieInfo) {
+        OnPieLegendBindListener legendBindListener = config.getPieLegendListener();
+        BasePieLegendsView result = null;
+        if (legendBindListener != null) {
+            result = legendBindListener.onCreateLegendView(pieInfo);
+        }
+        if (result == null) {
+            result = DefaultPieLegendsView.newInstance(mIPieView.getViewContext());
+        }
+        return result;
+    }
+
 
     private void prepareAnim() {
         if (mConfig.isAnimatePie()) {
@@ -226,10 +258,9 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     private void renderTouch(Canvas canvas) {
         drawCachedPie(canvas, mTouchHelper.sameClick ? mTouchHelper.lastFloatWrapper : mTouchHelper.floatingWrapper);
         renderTouchDraw(canvas, mTouchHelper.lastFloatWrapper, mTouchHelper.floatDownTime);
-        PLog.i("lastFloatWrapper id = " + (mTouchHelper.lastFloatWrapper == null ? "null" : mTouchHelper.lastFloatWrapper.getId()) + "  downTime = " + mTouchHelper.floatDownTime);
+        mLegendsHelper.onPieFloatDown(mTouchHelper.lastFloatWrapper, mTouchHelper.floatDownTime);
         renderTouchDraw(canvas, mTouchHelper.floatingWrapper, mTouchHelper.floatUpTime);
-        PLog.d("floatingWrapper id = " + (mTouchHelper.floatingWrapper == null ? "null" : mTouchHelper.floatingWrapper.getId()) + "  upTime = " + mTouchHelper.floatUpTime);
-
+        mLegendsHelper.onPieFloatUp(mTouchHelper.floatingWrapper, mTouchHelper.floatUpTime);
     }
 
     private void renderNormalDraw(Canvas canvas) {
@@ -238,6 +269,9 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             mCachedDrawWrappers.addAll(mDataWrappers);
         }
         drawCachedPie(canvas, null);
+        for (PieInfoWrapper cachedDrawWrapper : mCachedDrawWrappers) {
+            mLegendsHelper.onPieDrawFinish(cachedDrawWrapper);
+        }
         onDrawFinish();
     }
 
@@ -252,6 +286,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             if (mConfig.isDrawText() && animAngle >= mDrawingPie.getMiddleAngle() && animAngle <= mDrawingPie.getToAngle()) {
                 drawText(canvas, mDrawingPie);
             }
+            mLegendsHelper.onPieDrawing(mDrawingPie, angleToProgress(animAngle, mDrawingPie));
         }
     }
 
@@ -645,6 +680,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                     }
                     mCachedDrawWrappers.add(mDrawingPie);
                     mDrawingPie.setCached(true);
+                    mLegendsHelper.onPieDrawStart(mDrawingPie);
                 }
             }
         }
@@ -709,7 +745,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         return (angle - wrapper.getMiddleAngle()) / (wrapper.getToAngle() - wrapper.getMiddleAngle());
     }
 
-    //-----------------------------------------inner helper-----------------------------------------
+//-----------------------------------------inner helper-----------------------------------------
 
     private class RenderAnimation extends Animation {
         private PieInfoWrapper lastFoundWrapper;
@@ -738,6 +774,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             }
             for (PieInfoWrapper infoWrapper : mDataWrappers) {
                 if (infoWrapper.contains(angle)) {
+                    mLegendsHelper.onPieDrawFinish(lastFoundWrapper);
                     lastFoundWrapper = infoWrapper;
                     return infoWrapper;
                 }
@@ -929,5 +966,88 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                 mConfig.getSelectListener().onSelectPie(touchWrapper.getPieInfo(), touchWrapper.equals(floatingWrapper));
             }
         }
+    }
+
+
+    private class LegendsHelper {
+        //图例，懒加载
+        private LinkedHashMap<String, BasePieLegendsView> legendsViewBucket;
+        private PieInfoWrapper lastDrawingPieInfo;
+
+        void reset() {
+            if (legendsViewBucket != null) legendsViewBucket.clear();
+        }
+
+        void put(String id, BasePieLegendsView view) {
+            if (legendsViewBucket == null) {
+                legendsViewBucket = new LinkedHashMap<>();
+            }
+            legendsViewBucket.put(id, view);
+        }
+
+        void prepare() {
+            ViewGroup legendsParent = mConfig.getLegendsParent();
+            if (legendsParent != null) {
+                legendsParent.removeAllViewsInLayout();
+            }
+            if (legendsParent == null || legendsViewBucket == null || legendsViewBucket.isEmpty()) {
+                return;
+            }
+            for (Map.Entry<String, BasePieLegendsView> entry : legendsViewBucket.entrySet()) {
+                legendsParent.addView(entry.getValue());
+            }
+        }
+
+
+        void onPieDrawStart(PieInfoWrapper infoWrapper) {
+            if (infoWrapper == null || legendsViewBucket == null || legendsViewBucket.isEmpty()) {
+                return;
+            }
+            BasePieLegendsView target = legendsViewBucket.get(infoWrapper.getId());
+            if (target != null) {
+                target.onPieDrawStart(infoWrapper.getPieInfo());
+            }
+        }
+
+        void onPieDrawing(PieInfoWrapper infoWrapper, @FloatRange(from = 0, to = 1) float progress) {
+            if (infoWrapper == null || legendsViewBucket == null || legendsViewBucket.isEmpty()) {
+                return;
+            }
+            BasePieLegendsView target = legendsViewBucket.get(infoWrapper.getId());
+            if (target != null) {
+                target.onPieDrawing(infoWrapper.getPieInfo(), progress);
+            }
+        }
+
+        void onPieDrawFinish(PieInfoWrapper infoWrapper) {
+            if (infoWrapper == null || legendsViewBucket == null || legendsViewBucket.isEmpty()) {
+                return;
+            }
+            BasePieLegendsView target = legendsViewBucket.get(infoWrapper.getId());
+            if (target != null) {
+                target.onPieDrawFinish(infoWrapper.getPieInfo());
+            }
+        }
+
+        void onPieFloatUp(PieInfoWrapper infoWrapper, @FloatRange(from = 0, to = 1) float timeSet) {
+            if (infoWrapper == null || legendsViewBucket == null || legendsViewBucket.isEmpty()) {
+                return;
+            }
+            BasePieLegendsView target = legendsViewBucket.get(infoWrapper.getId());
+            if (target != null) {
+                target.onPieFloatUp(infoWrapper.getPieInfo(), timeSet);
+            }
+        }
+
+        void onPieFloatDown(PieInfoWrapper infoWrapper, @FloatRange(from = 0, to = 1) float timeSet) {
+            if (infoWrapper == null || legendsViewBucket == null || legendsViewBucket.isEmpty()) {
+                return;
+            }
+            BasePieLegendsView target = legendsViewBucket.get(infoWrapper.getId());
+            if (target != null) {
+                target.onPieFloatDown(infoWrapper.getPieInfo(), timeSet);
+            }
+        }
+
     }
 }

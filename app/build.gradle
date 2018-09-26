@@ -30,5 +30,6 @@ dependencies {
     //basepopup
     implementation 'com.github.razerdp:BasePopup:1.9.3'
     implementation 'com.android.support:design:26.1.0'
+    implementation 'org.apmem.tools:layouts:1.10@aar'
 
 }

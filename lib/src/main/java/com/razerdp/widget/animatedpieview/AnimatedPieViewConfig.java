@@ -6,15 +6,18 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.Pair;
+import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
+import com.razerdp.widget.animatedpieview.callback.OnPieLegendBindListener;
 import com.razerdp.widget.animatedpieview.callback.OnPieSelectListener;
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
 import com.razerdp.widget.animatedpieview.utils.Util;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,6 +114,9 @@ public class AnimatedPieViewConfig {
 
 
     private List<Pair<IPieInfo, Boolean>> mDatas;
+
+    private WeakReference<ViewGroup> legendsGroup;
+    private WeakReference<OnPieLegendBindListener> legendsListener;
 
     public AnimatedPieViewConfig() {
         this(null);
@@ -278,6 +284,21 @@ public class AnimatedPieViewConfig {
         return this;
     }
 
+    public AnimatedPieViewConfig legendsWith(ViewGroup legendsGroup) {
+        this.legendsGroup = new WeakReference<>(legendsGroup);
+        return this;
+    }
+
+    public AnimatedPieViewConfig legendsWith(ViewGroup legendsGroup, OnPieLegendBindListener listener) {
+        this.legendsGroup = new WeakReference<>(legendsGroup);
+        return legendsListener(listener);
+    }
+
+    public AnimatedPieViewConfig legendsListener(OnPieLegendBindListener legendsListener) {
+        this.legendsListener = new WeakReference<>(legendsListener);
+        return this;
+    }
+
     public AnimatedPieViewConfig copyFrom(AnimatedPieViewConfig config) {
         if (config == null) return this;
         this.mDatas.clear();
@@ -310,7 +331,9 @@ public class AnimatedPieViewConfig {
                 .cubicGuide(config.cubicGuide)
                 .guideLineWidth(config.guideLineWidth)
                 .textMargin(config.textMargin)
-                .interpolator(config.animationInterpolator);
+                .interpolator(config.animationInterpolator)
+                .legendsWith(config.getLegendsParent())
+                .legendsListener(config.getPieLegendListener());
     }
 
     //=============================================================data
@@ -459,6 +482,14 @@ public class AnimatedPieViewConfig {
 
     public Interpolator getAnimationInterpolator() {
         return animationInterpolator;
+    }
+
+    public ViewGroup getLegendsParent() {
+        return legendsGroup == null ? null : legendsGroup.get();
+    }
+
+    public OnPieLegendBindListener getPieLegendListener() {
+        return legendsListener == null ? null : legendsListener.get();
     }
 
     //=============================================================Deprecated methods

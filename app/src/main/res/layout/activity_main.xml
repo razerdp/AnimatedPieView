@@ -61,6 +61,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 />
+
+            <org.apmem.tools.layouts.FlowLayout
+                android:id="@+id/ll_legends"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
         </LinearLayout>
     </ScrollView>
 
