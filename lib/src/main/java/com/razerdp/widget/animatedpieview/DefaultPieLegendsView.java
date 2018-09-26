@@ -40,7 +40,6 @@ public class DefaultPieLegendsView extends BasePieLegendsView {
     }
 
     private void init(Context context) {
-        setVisibility(INVISIBLE);
         setContentView(R.layout.widget_default_pie_legends);
         viewTag = findViewById(R.id.view_tag);
         tvDesc = findViewById(R.id.tv_desc);
@@ -78,8 +77,6 @@ public class DefaultPieLegendsView extends BasePieLegendsView {
 
     @Override
     public void onPieDrawStart(@NonNull IPieInfo pie) {
-        if (getVisibility() != VISIBLE) setVisibility(VISIBLE);
-
         viewTag.setBackgroundColor(pie.getColor());
         tvDesc.setText(pie.getDesc());
 
@@ -110,6 +107,7 @@ public class DefaultPieLegendsView extends BasePieLegendsView {
 
     public void onPieFloatUp(@NonNull IPieInfo pie, float timeSet) {
         float scale = SCALE_RATIO * timeSet;
+
         viewTag.setScaleX(SCALE_MAX + scale);
         viewTag.setScaleY(SCALE_MAX + scale);
 

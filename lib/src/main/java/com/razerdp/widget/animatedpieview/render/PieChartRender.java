@@ -680,7 +680,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                     }
                     mCachedDrawWrappers.add(mDrawingPie);
                     mDrawingPie.setCached(true);
-                    mLegendsHelper.onPieDrawStart(mDrawingPie);
+                    mLegendsHelper.onPieDrawFinish(mDrawingPie);
                 }
             }
         }
@@ -751,6 +751,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         private PieInfoWrapper lastFoundWrapper;
 
         public RenderAnimation() {
+            lastFoundWrapper = null;
         }
 
         @Override
@@ -774,8 +775,8 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             }
             for (PieInfoWrapper infoWrapper : mDataWrappers) {
                 if (infoWrapper.contains(angle)) {
-                    mLegendsHelper.onPieDrawFinish(lastFoundWrapper);
                     lastFoundWrapper = infoWrapper;
+                    mLegendsHelper.onPieDrawStart(lastFoundWrapper);
                     return infoWrapper;
                 }
             }
@@ -1003,6 +1004,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             if (infoWrapper == null || legendsViewBucket == null || legendsViewBucket.isEmpty()) {
                 return;
             }
+            PLog.i("legends  >>  " + infoWrapper.getDesc());
             BasePieLegendsView target = legendsViewBucket.get(infoWrapper.getId());
             if (target != null) {
                 target.onPieDrawStart(infoWrapper.getPieInfo());
