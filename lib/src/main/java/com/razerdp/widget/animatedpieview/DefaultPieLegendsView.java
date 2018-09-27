@@ -86,12 +86,12 @@ public class DefaultPieLegendsView extends BasePieLegendsView {
     @Override
     public void onPieDrawing(@NonNull IPieInfo pie, float progress) {
         viewTag.setAlpha(progress);
-        viewTag.setScaleX(progress);
-        viewTag.setScaleY(progress);
+        viewTag.setScaleX(SCALE_MAX * progress);
+        viewTag.setScaleY(SCALE_MAX * progress);
 
         tvDesc.setAlpha(progress);
-        tvDesc.setScaleX(progress);
-        tvDesc.setScaleY(progress);
+        tvDesc.setScaleX(SCALE_MAX * progress);
+        tvDesc.setScaleY(SCALE_MAX * progress);
     }
 
     @Override

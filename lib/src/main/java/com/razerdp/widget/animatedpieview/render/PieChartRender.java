@@ -680,7 +680,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                     }
                     mCachedDrawWrappers.add(mDrawingPie);
                     mDrawingPie.setCached(true);
-                    mLegendsHelper.onPieDrawFinish(mDrawingPie);
+                    mLegendsHelper.onPieDrawFinish(preWrapper);
                 }
             }
         }
