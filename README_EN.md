@@ -176,6 +176,27 @@ mConfig.animOnTouch(true)// Animation when selected pie（default:true）
 
 ---
 
+Api in PieOption：
+---
+
+you can decide your pie with create `PieOption`
+```java
+    // IPieInfo.java#getPieOption()
+    @Nullable
+    @Override
+    public PieOption getPieOption() {
+        return new PieOption()
+                .setDefaultSelected(true) // Selected this pie by default
+                .setIconHeight(50) // Text icon height
+                .setIconWidth(50) // Text icon width
+                .setIconScaledHeight(0.5f) // Text icon height scaling
+                .setIconScaledWidth(0.5f) // Text icon width scaling
+                .setLabelIcon(bitmap) // Text icon bitmap resource
+                .setLabelPadding(5) // Icon and text distance
+                .setLabelPosition(PieOption.NEAR_PIE); // Decide which position of the icon in the pie
+    }
+```
+
 QQ Group：590777418
 ------------------
 

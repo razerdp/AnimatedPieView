@@ -20,6 +20,7 @@ AnimatedPieView
 
   > 如果您有别的需求，可以提交您的issue哦，当然，也可以直接修改源码-V-
 
+  * ~~增加默认选中支持~~
   * ~~增加图例支持~~
   * ~~增加删除数据的方法~~
   * ~~增加描述标签支持~~
@@ -164,6 +165,27 @@ mConfig.animOnTouch(true)// 点击事件是否播放浮现动画/回退动画（
 ```
 
 ---
+
+更多配置：
+-----
+
+在IPieInfo中，你可以配置`PieOption`以扩展每个甜甜圈的行为
+```java
+    @Nullable
+    @Override
+    public PieOption getPieOption() {
+        return new PieOption()
+                .setDefaultSelected(true) // 默认选中
+                .setIconHeight(50) // 图标的高度
+                .setIconWidth(50) //图标宽度
+                .setIconScaledHeight(0.5f) // 图标高度缩放
+                .setIconScaledWidth(0.5f) // 图标宽度缩放
+                .setLabelIcon(bitmap) // 图标资源
+                .setLabelPadding(5) // 图标与文字的距离
+                .setLabelPosition(PieOption.NEAR_PIE); // 图标在甜甜圈内侧
+    }
+```
+
 
 交流群：590777418
 ---
