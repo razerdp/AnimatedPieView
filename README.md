@@ -19,7 +19,9 @@ AnimatedPieView
 ---
 
   > 如果您有别的需求，可以提交您的issue哦，当然，也可以直接修改源码-V-
-  
+
+  * ~~增加图例支持~~
+  * ~~增加删除数据的方法~~
   * ~~增加描述标签支持~~
   * ~~项目优化/重构，1.2.0发布~~
   * ~~允许alpha突出选中的甜甜圈~~
@@ -145,7 +147,20 @@ mConfig.animOnTouch(true)// 点击事件是否播放浮现动画/回退动画（
        .splitAngle(1)// 甜甜圈间隙角度
        .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV,150)// 焦点甜甜圈的alpha表现形态及alpha削减值
        .interpolator(new DecelerateInterpolator())// 动画插值器
-       .focusAlpha(150);// 选中的/或者非选中的甜甜圈的alpha值（跟focusAlphaType挂钩）
+       .focusAlpha(150) // 选中的/或者非选中的甜甜圈的alpha值（跟focusAlphaType挂钩）
+       .legendsWith((ViewGroup) findViewById(R.id.ll_legends), new OnPieLegendBindListener<BasePieLegendsView>() {
+                                @Override
+                                public BasePieLegendsView onCreateLegendView(int position, IPieInfo info) {
+                                    return position % 2 == 0 ?
+                                            DefaultPieLegendsView.newInstance(MainActivity.this)
+                                            : DefaultCirclePieLegendsView.newInstance(MainActivity.this);
+                                }
+
+                                @Override
+                                public boolean onAddView(ViewGroup parent, BasePieLegendsView view) {
+                                    return false;
+                                }
+                            }); //图例支持
 ```
 
 ---

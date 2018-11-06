@@ -31,7 +31,8 @@ Develop Plan （Update Log->[Update Log](https://github.com/razerdp/AnimatedPieV
 -------------------------------------------------------------------------------------------------------------
 
   > No plan now....I'm eagerly waiting for your great suggestions.
-  
+
+  * ~~Support legends~~
   * ~~Support label for description text~~
   * ~~Project Optimization and Reconstruction, version 1.2.0 release~~
   * ~~Support alpha to highlight the selected pie~~ 
@@ -157,7 +158,20 @@ mConfig.animOnTouch(true)// Animation when selected pie（default:true）
        .splitAngle(1)// Clearance angle
        .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV)// Alpha change mode for selected pie
        .interpolator(new DecelerateInterpolator())// Set animation interpolator
-       .focusAlpha(150);// Alpha for selected pie (depend on focusAlphaType)
+       .focusAlpha(150) // Alpha for selected pie (depend on focusAlphaType)
+       .legendsWith((ViewGroup) findViewById(R.id.ll_legends), new OnPieLegendBindListener<BasePieLegendsView>() {
+                                       @Override
+                                       public BasePieLegendsView onCreateLegendView(int position, IPieInfo info) {
+                                           return position % 2 == 0 ?
+                                                   DefaultPieLegendsView.newInstance(MainActivity.this)
+                                                   : DefaultCirclePieLegendsView.newInstance(MainActivity.this);
+                                       }
+
+                                       @Override
+                                       public boolean onAddView(ViewGroup parent, BasePieLegendsView view) {
+                                           return false;
+                                       }
+                                   }); // Set a legends container to bind legends views
 ```
 
 ---

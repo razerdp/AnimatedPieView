@@ -145,6 +145,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         //calculate degree for each pieInfoWrapper
         //计算每个wrapper的角度
         float lastAngle = mConfig.getStartAngle();
+        int position = 0;
         for (PieInfoWrapper dataWrapper : mDataWrappers) {
             dataWrapper.prepare(mConfig);
             lastAngle = dataWrapper.calculateDegree(lastAngle, sum, mConfig);
@@ -166,8 +167,9 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             PLog.i("desc >> " + dataWrapper.getDesc() + "  maxDesTextSize >> " + maxDescTextLength);
 
             if (withLegends) {
-                mLegendsHelper.put(dataWrapper.getId(), getLegendsView(mConfig, dataWrapper.getPieInfo()));
+                mLegendsHelper.put(dataWrapper.getId(), getLegendsView(mConfig, position, dataWrapper.getPieInfo()));
             }
+            position++;
         }
 
         if (withLegends) {
@@ -177,11 +179,11 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         return true;
     }
 
-    private BasePieLegendsView getLegendsView(AnimatedPieViewConfig config, IPieInfo pieInfo) {
+    private BasePieLegendsView getLegendsView(AnimatedPieViewConfig config, int position, IPieInfo pieInfo) {
         OnPieLegendBindListener legendBindListener = config.getPieLegendListener();
         BasePieLegendsView result = null;
         if (legendBindListener != null) {
-            result = legendBindListener.onCreateLegendView(pieInfo);
+            result = legendBindListener.onCreateLegendView(position, pieInfo);
         }
         if (result == null) {
             result = DefaultPieLegendsView.newInstance(mIPieView.getViewContext());
@@ -641,6 +643,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
 
     private void onDrawFinish() {
         PLog.i("drawFinish");
+        mConfig.onFinish();
         if (mConfig.isAnimatePie()) {
             if (!animHasStart || isInAnimating) return;
         }
@@ -995,7 +998,11 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                 return;
             }
             for (Map.Entry<String, BasePieLegendsView> entry : legendsViewBucket.entrySet()) {
-                legendsParent.addView(entry.getValue());
+                OnPieLegendBindListener listener = mConfig.getPieLegendListener();
+                boolean prevent = listener != null && listener.onAddView(legendsParent, entry.getValue());
+                if (!prevent) {
+                    legendsParent.addView(entry.getValue());
+                }
             }
         }
 

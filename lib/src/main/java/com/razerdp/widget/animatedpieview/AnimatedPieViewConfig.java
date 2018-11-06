@@ -20,6 +20,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -51,6 +52,9 @@ public class AnimatedPieViewConfig {
     public static final int BELOW = 0x21;
     public static final int ALIGN = 0x22;
     public static final int ECTOPIC = 0x23;
+
+
+    boolean isRemoved;
 
 
     //=============================================================default
@@ -116,7 +120,7 @@ public class AnimatedPieViewConfig {
     private List<Pair<IPieInfo, Boolean>> mDatas;
 
     private WeakReference<ViewGroup> legendsGroup;
-    private WeakReference<OnPieLegendBindListener> legendsListener;
+    private OnPieLegendBindListener<? extends BasePieLegendsView> legendsListener;
 
     public AnimatedPieViewConfig() {
         this(null);
@@ -289,13 +293,13 @@ public class AnimatedPieViewConfig {
         return this;
     }
 
-    public AnimatedPieViewConfig legendsWith(ViewGroup legendsGroup, OnPieLegendBindListener listener) {
+    public <V extends BasePieLegendsView> AnimatedPieViewConfig legendsWith(ViewGroup legendsGroup, OnPieLegendBindListener<V> listener) {
         this.legendsGroup = new WeakReference<>(legendsGroup);
         return legendsListener(listener);
     }
 
-    public AnimatedPieViewConfig legendsListener(OnPieLegendBindListener legendsListener) {
-        this.legendsListener = new WeakReference<>(legendsListener);
+    public <V extends BasePieLegendsView> AnimatedPieViewConfig legendsListener(OnPieLegendBindListener<V> legendsListener) {
+        this.legendsListener = legendsListener;
         return this;
     }
 
@@ -337,6 +341,20 @@ public class AnimatedPieViewConfig {
     }
 
     //=============================================================data
+
+    /**
+     * 添加一个数据数组
+     * <p>see @{@link AnimatedPieViewConfig#addData(IPieInfo)}
+     *
+     * @param infos 数据实体数组
+     */
+    public AnimatedPieViewConfig addDatas(@NonNull List<? extends IPieInfo> infos) {
+        for (IPieInfo info : infos) {
+            addData(info);
+        }
+        return this;
+    }
+
     public AnimatedPieViewConfig addData(@NonNull IPieInfo info) {
         return addData(info, false);
     }
@@ -347,6 +365,19 @@ public class AnimatedPieViewConfig {
             return this;
         }
         mDatas.add(Pair.create(info, autoDesc));
+        return this;
+    }
+
+    public AnimatedPieViewConfig removeData(@NonNull IPieInfo info) {
+        if (info == null) return this;
+        Iterator iterator = mDatas.iterator();
+        while (iterator.hasNext()) {
+            Pair<IPieInfo, Boolean> data = (Pair<IPieInfo, Boolean>) iterator.next();
+            if (data.first == info) {
+                iterator.remove();
+                isRemoved = true;
+            }
+        }
         return this;
     }
 
@@ -423,7 +454,7 @@ public class AnimatedPieViewConfig {
     }
 
     public boolean isAnimatePie() {
-        return animatePie;
+        return animatePie && !isRemoved;
     }
 
     public boolean isStrokeMode() {
@@ -489,7 +520,13 @@ public class AnimatedPieViewConfig {
     }
 
     public OnPieLegendBindListener getPieLegendListener() {
-        return legendsListener == null ? null : legendsListener.get();
+        return legendsListener;
+    }
+
+    public void onFinish() {
+        if (isRemoved) {
+            isRemoved = false;
+        }
     }
 
     //=============================================================Deprecated methods

@@ -5,6 +5,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -12,6 +13,11 @@ import android.widget.RelativeLayout;
 
 import com.razerdp.animatedpieview.R;
 import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
+import com.razerdp.widget.animatedpieview.BasePieLegendsView;
+import com.razerdp.widget.animatedpieview.DefaultCirclePieLegendsView;
+import com.razerdp.widget.animatedpieview.DefaultPieLegendsView;
+import com.razerdp.widget.animatedpieview.callback.OnPieLegendBindListener;
+import com.razerdp.widget.animatedpieview.data.IPieInfo;
 
 import razerdp.basepopup.BasePopupWindow;
 import razerdp.blur.PopupBlurOption;
@@ -25,6 +31,7 @@ public class PopupSetting extends BasePopupWindow {
     public SwitchCompat switchText;
     public SwitchCompat switchTouchAnimation;
     public SwitchCompat switchCanTouch;
+    public SwitchCompat switchWithLegends;
     public TextInputLayout inputDuration;
     public TextInputLayout inputStartAngle;
     public TextInputLayout inputTouchScaleSize;
@@ -51,6 +58,9 @@ public class PopupSetting extends BasePopupWindow {
     public RelativeLayout popupAnima;
 
     AnimatedPieViewConfig viewConfig;
+
+    private ViewGroup legendsContainer;
+
 
     private View.OnClickListener mOnClickListener;
 
@@ -100,6 +110,7 @@ public class PopupSetting extends BasePopupWindow {
         this.switchText = (SwitchCompat) findViewById(R.id.switch_text);
         this.switchTouchAnimation = (SwitchCompat) findViewById(R.id.switch_touch_animation);
         this.switchCanTouch = (SwitchCompat) findViewById(R.id.switch_can_touch);
+        this.switchWithLegends = (SwitchCompat) findViewById(R.id.switch_with_legends);
         this.inputDuration = (TextInputLayout) findViewById(R.id.input_duration);
         this.inputStartAngle = (TextInputLayout) findViewById(R.id.input_start_angle);
         this.inputTouchScaleSize = (TextInputLayout) findViewById(R.id.input_touch_scale_size);
@@ -178,6 +189,23 @@ public class PopupSetting extends BasePopupWindow {
                 .guideLineWidth(getTextInt(inputTextLineStrokeWidth, viewConfig.getGuideLineWidth()))
                 .splitAngle(getTextFloat(inputSplitAngle, viewConfig.getSplitAngle()))
                 .focusAlpha(getTextInt(inputFocusAlphaType, viewConfig.getFocusAlpha()));
+        if (switchWithLegends.isChecked()) {
+            viewConfig.legendsWith(legendsContainer, new OnPieLegendBindListener<BasePieLegendsView>() {
+                @Override
+                public BasePieLegendsView onCreateLegendView(int position, IPieInfo info) {
+                    return position % 2 == 0 ?
+                            DefaultPieLegendsView.newInstance(getContext())
+                            : DefaultCirclePieLegendsView.newInstance(getContext());
+                }
+
+                @Override
+                public boolean onAddView(ViewGroup parent, BasePieLegendsView view) {
+                    return false;
+                }
+            });
+        } else {
+            viewConfig.legendsWith(null);
+        }
         if (radioFocusWithoutAlpha.isChecked()) {
             viewConfig.focusAlphaType(AnimatedPieViewConfig.FOCUS_WITHOUT_ALPHA);
         } else if (radioFocusWithAlpha.isChecked()) {
@@ -283,4 +311,8 @@ public class PopupSetting extends BasePopupWindow {
         }
     }
 
+    public PopupSetting setLegendsContainer(ViewGroup legendsContainer) {
+        this.legendsContainer = legendsContainer;
+        return this;
+    }
 }

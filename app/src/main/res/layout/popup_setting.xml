@@ -67,6 +67,15 @@
                     android:text="能否点击（touchable）"
                     android:textColor="#666666"/>
 
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_with_legends"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:padding="8dp"
+                    android:text="图例（lenends）"
+                    android:textColor="#666666"/>
+
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/input_duration"
                     android:layout_width="match_parent"

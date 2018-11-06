@@ -21,6 +21,10 @@ import com.razerdp.animatedpieview.R;
 import com.razerdp.popup.PopupSetting;
 import com.razerdp.widget.animatedpieview.AnimatedPieView;
 import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
+import com.razerdp.widget.animatedpieview.BasePieLegendsView;
+import com.razerdp.widget.animatedpieview.DefaultCirclePieLegendsView;
+import com.razerdp.widget.animatedpieview.DefaultPieLegendsView;
+import com.razerdp.widget.animatedpieview.callback.OnPieLegendBindListener;
 import com.razerdp.widget.animatedpieview.callback.OnPieSelectListener;
 import com.razerdp.widget.animatedpieview.data.IPieInfo;
 import com.razerdp.widget.animatedpieview.data.SimplePieInfo;
@@ -85,7 +89,19 @@ public class MainActivity extends AppCompatActivity {
                 .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA)
                 .textGravity(AnimatedPieViewConfig.ABOVE)
                 .interpolator(new DecelerateInterpolator())
-                .legendsWith((ViewGroup) findViewById(R.id.ll_legends));
+                .legendsWith((ViewGroup) findViewById(R.id.ll_legends), new OnPieLegendBindListener<BasePieLegendsView>() {
+                    @Override
+                    public BasePieLegendsView onCreateLegendView(int position, IPieInfo info) {
+                        return position % 2 == 0 ?
+                                DefaultPieLegendsView.newInstance(MainActivity.this)
+                                : DefaultCirclePieLegendsView.newInstance(MainActivity.this);
+                    }
+
+                    @Override
+                    public boolean onAddView(ViewGroup parent, BasePieLegendsView view) {
+                        return false;
+                    }
+                });
         mAnimatedPieView.applyConfig(config);
 
         mAnimatedPieView.start();
@@ -108,7 +124,9 @@ public class MainActivity extends AppCompatActivity {
         setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPopupSetting.showPopupWindow(mAnimatedPieView.getConfig());
+                mPopupSetting
+                        .setLegendsContainer((ViewGroup) findViewById(R.id.ll_legends))
+                        .showPopupWindow(mAnimatedPieView.getConfig());
             }
         });
 
