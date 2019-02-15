@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="#f5f5f5"
+    android:clipChildren="false"
     android:orientation="vertical"
     >
 
@@ -16,10 +17,14 @@
         android:text="back home"
         android:textAllCaps="false"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:clipToPadding="false"
+        android:clipChildren="false"
         />
 
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.razerdp.popup;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.SwitchCompat;
@@ -67,6 +68,7 @@ public class PopupSetting extends BasePopupWindow {
     public PopupSetting(Context context) {
         super(context);
         setBackPressEnable(false);
+        setAllowDismissWhenTouchOutside(false);
         setBlurBackgroundEnable(true, new OnBlurOptionInitListener() {
             @Override
             public void onCreateBlurOption(PopupBlurOption option) {
@@ -74,28 +76,26 @@ public class PopupSetting extends BasePopupWindow {
 
             }
         });
+        setBackgroundColor(Color.parseColor("#3F000000"));
         findView();
     }
 
     @Override
-    protected Animation initShowAnimation() {
-        return getDefaultAlphaAnimation();
+    protected Animation onCreateShowAnimation() {
+        return getDefaultAlphaAnimation(true);
+    }
+
+
+    @Override
+    protected Animation onCreateDismissAnimation() {
+        return getDefaultAlphaAnimation(false);
     }
 
     @Override
-    public View getClickToDismissView() {
-        return null;
-    }
-
-    @Override
-    public View onCreatePopupView() {
+    public View onCreateContentView() {
         return createPopupById(R.layout.popup_setting);
     }
 
-    @Override
-    public View initAnimaView() {
-        return findViewById(R.id.popup_anima);
-    }
 
     public View.OnClickListener getOnOkButtonClickListener() {
         return mOnClickListener;

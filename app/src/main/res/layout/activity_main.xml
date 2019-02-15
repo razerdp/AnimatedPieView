@@ -32,11 +32,27 @@
             android:text="setting"/>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_goto_recycler"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="use in recyclerview"/>
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_goto_recycler"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="in RecyclerView"
+            android:textAllCaps="false"/>
+
+        <Button
+            android:id="@+id/btn_goto_viewpager"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="in ViewPager"
+            android:textAllCaps="false"/>
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"

@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private Button start;
     private Button setting;
     private Button toRecycler;
+    private Button toViewPager;
     private PopupSetting mPopupSetting;
     private TextView desc;
 
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         setting = findViewById(R.id.setting);
         desc = findViewById(R.id.tv_desc);
         toRecycler = findViewById(R.id.btn_goto_recycler);
+        toViewPager = findViewById(R.id.btn_goto_viewpager);
         mAnimatedPieView = findViewById(R.id.animatedPieView);
         AnimatedPieViewConfig config = new AnimatedPieViewConfig();
         config.startAngle(0.9224089f)
@@ -136,7 +138,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, RecyclerActivity.class));
             }
         });
-
+        toViewPager.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, ViewPagerActivity.class));
+            }
+        });
     }
 
     private Bitmap resourceToBitmap(int resid) {
