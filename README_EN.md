@@ -25,6 +25,10 @@ Suggestion:
 
 ### Update Log:
 
+### 19/05/23
+ - Support tap label to select pie [#27](https://github.com/razerdp/AnimatedPieView/issues/27)
+ - add typeface for label [#26](https://github.com/razerdp/AnimatedPieView/issues/26)
+
 ### 18/07/18 - ver 1.2.4
  - fix `autoSize`
  - support description label @see #[12](https://github.com/razerdp/AnimatedPieView/issues/12)
