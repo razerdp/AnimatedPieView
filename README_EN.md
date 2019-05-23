@@ -34,6 +34,7 @@ Develop Plan （Update Log->[Update Log](https://github.com/razerdp/AnimatedPieV
 
   > No plan now....I'm eagerly waiting for your great suggestions.
 
+  * ~~Support tap label to select pie [#27](https://github.com/razerdp/AnimatedPieView/issues/27)~~
   * ~~Support legends~~
   * ~~Support label for description text~~
   * ~~Project Optimization and Reconstruction, version 1.2.0 release~~

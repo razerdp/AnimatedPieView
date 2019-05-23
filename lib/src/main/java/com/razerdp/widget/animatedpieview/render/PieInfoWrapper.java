@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RectF;
 import android.text.TextUtils;
 
 import com.razerdp.widget.animatedpieview.AnimatedPieViewConfig;
@@ -41,6 +42,7 @@ final class PieInfoWrapper implements Serializable {
     private float toAngle;
     private boolean autoDesc;
     private String desc;
+    RectF mTextArea;
 
     //============= 节点 =============
     private PieInfoWrapper preWrapper;
@@ -268,6 +270,12 @@ final class PieInfoWrapper implements Serializable {
     //=============================================================tools
     boolean contains(float angle) {
         return angle >= fromAngle && angle <= toAngle;
+    }
+
+    boolean containsLabelTouch(float x, float y) {
+        PLog.i("x = " + x + " y = " + y + "   rect = " + (mTextArea == null ? "null" : mTextArea.toString()));
+
+        return mTextArea != null && !mTextArea.isEmpty() && mTextArea.contains(x, y);
     }
 
     boolean containsTouch(float angle) {

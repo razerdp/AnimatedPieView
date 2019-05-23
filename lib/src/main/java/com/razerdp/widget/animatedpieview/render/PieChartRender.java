@@ -285,7 +285,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                     animAngle - mDrawingPie.getFromAngle() - mConfig.getSplitAngle(),
                     !mConfig.isStrokeMode(),
                     mDrawingPie.getDrawPaint());
-            if (mConfig.isDrawText() && animAngle >= mDrawingPie.getMiddleAngle() && animAngle <= mDrawingPie.getToAngle()) {
+            if (animAngle >= mDrawingPie.getMiddleAngle() && animAngle <= mDrawingPie.getToAngle()) {
                 drawText(canvas, mDrawingPie);
             }
             mLegendsHelper.onPieDrawing(mDrawingPie, angleToProgress(animAngle, mDrawingPie));
@@ -310,9 +310,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     private void drawCachedPie(Canvas canvas, PieInfoWrapper excluded) {
         if (!Util.isListEmpty(mCachedDrawWrappers)) {
             for (PieInfoWrapper cachedDrawWrapper : mCachedDrawWrappers) {
-                if (mConfig.isDrawText()) {
-                    drawText(canvas, cachedDrawWrapper);
-                }
+                drawText(canvas, cachedDrawWrapper);
                 Paint paint = cachedDrawWrapper.getAlphaDrawPaint();
                 applyAlphaToPaint(cachedDrawWrapper, paint);
                 if (cachedDrawWrapper.equals(excluded)) {
@@ -329,6 +327,15 @@ public class PieChartRender extends BaseRender implements ITouchRender {
 
     private void drawText(Canvas canvas, PieInfoWrapper wrapper) {
         if (wrapper == null) return;
+        if (!mConfig.isDrawText()) {
+            if (wrapper.mTextArea != null && !wrapper.mTextArea.isEmpty()) {
+                wrapper.mTextArea.setEmpty();
+            }
+            return;
+        }
+        if (wrapper.mTextArea == null) {
+            wrapper.mTextArea = new RectF();
+        }
 
         //根据touch扩大量修正指示线和描述文字的位置
         float fixPos = (wrapper.equals(mTouchHelper.floatingWrapper) ? getFixTextPos(wrapper) : 0) + (wrapper.equals(mTouchHelper.lastFloatWrapper) ? getFixTextPos(wrapper) : 0);
@@ -438,36 +445,48 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         paint.setTextSize(mConfig.getTextSize());
         paint.setAlpha((int) (255 * progress));
 
+
         float textStartX = calculateTextStartX(guideLineEndX1, guideLineEndX2, direction, textBoundsWidth);
         float textStartY = calculateTextStartY(guideLineEndY1, guideLineEndY2, direction, textBoundsHeight);
 
+
+        float textAreaLeft = direction.xDirection == 1 ? guideLineEndX1 : guideLineEndX2;
+        float textAreaTop = textStartY - textBoundsHeight - mConfig.getTextMargin();
+        float textAreaRight = direction.xDirection == 1 ? guideLineEndX2 : guideLineEndX1;
+        float textAreaBottom = textStartY;
+
+
         if (icon != null) {
             textStartX = fitTextStartXWithLabel(textStartX, textBoundsWidth, labelWidth, direction, wrapper.getPieOption());
-            float iconLeft;
-            float iconTop;
-            iconLeft = calculateLabelX(wrapper.getPieOption(), labelWidth, textStartX, direction, textBoundsWidth);
-            iconTop = textStartY - textBoundsHeight;
+            float iconLeft = calculateLabelX(wrapper.getPieOption(), labelWidth, textStartX, direction, textBoundsWidth);
+            if (Float.isNaN(iconLeft) && iconLeft <= textStartX) {
+                textAreaLeft = iconLeft;
+            }
+            float iconTop = textStartY - textBoundsHeight;
             if (textBoundsHeight == 0) {
                 switch (mConfig.getTextGravity()) {
                     case AnimatedPieViewConfig.ABOVE:
-                        iconTop = textStartY - icon.getHeight();
+                        textAreaTop = iconTop = textStartY - icon.getHeight();
                         break;
                     case AnimatedPieViewConfig.ECTOPIC:
                         if (direction.yDirection == 0) {
-                            iconTop = textStartY - icon.getHeight();
+                            textAreaTop = iconTop = textStartY - icon.getHeight();
                         }
                         break;
                     case AnimatedPieViewConfig.ALIGN:
-                        iconTop = textStartY - icon.getHeight() / 2;
+                        textAreaTop = iconTop = textStartY - icon.getHeight() / 2;
                         break;
                     default:
                         break;
                 }
             }
-            if (iconLeft != -1 && iconTop != -1) {
+            if (!Float.isNaN(iconLeft)) {
                 canvas.drawBitmap(icon, iconLeft, iconTop, wrapper.getIconPaint());
             }
         }
+
+        //text area
+        wrapper.mTextArea.set(textAreaLeft, textAreaTop, textAreaRight, textAreaBottom);
 
         //画文字
         canvas.drawText(desc, textStartX, textStartY, paint);
@@ -493,7 +512,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
     }
 
     private float calculateLabelX(PieOption pieOption, int iconWidth, float textStartX, LineDirection direction, int textWidth) {
-        if (pieOption == null) return -1;
+        if (pieOption == null) return Float.NaN;
         float result;
         int labelPosition = pieOption.getLabelPosition();
         int padding = pieOption.getLabelPadding();
@@ -517,7 +536,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
                 }
                 break;
             default:
-                return -1;
+                return Float.NaN;
         }
         return result;
     }
@@ -895,8 +914,26 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             //内圆半径<=直线距离<=外圆半径
             final boolean isTouchInRing = touchDistancePow >= expandClickRange + Math.pow(innerCircleRadius, 2)
                     && touchDistancePow <= expandClickRange + Math.pow(exCircleRadius, 2);
-            if (!isTouchInRing) return null;
+            if (!isTouchInRing) {
+                if (mConfig.isDrawText()) {
+                    return findLabelTouchWrapper(x - centerX, y - centerY);
+                }
+                return null;
+            }
             return findWrapper(x, y);
+        }
+
+        PieInfoWrapper findLabelTouchWrapper(float x, float y) {
+            if (lastTouchWrapper != null && lastTouchWrapper.containsLabelTouch(x, y)) {
+                return lastTouchWrapper;
+            }
+            for (PieInfoWrapper wrapper : mDataWrappers) {
+                if (wrapper.containsLabelTouch(x, y)) {
+                    lastTouchWrapper = wrapper;
+                    return wrapper;
+                }
+            }
+            return null;
         }
 
         PieInfoWrapper findWrapper(float x, float y) {
