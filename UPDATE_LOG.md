@@ -1,5 +1,9 @@
 # AnimatedPieView更新日志
 
+### 19/05/23
+ - 支持点选Label选中
+ - 增加Typeface
+
 ### 18/07/17 - ver 1.2.4
  - 修复`autoSize`的问题
  - 增加PieOption，允许添加标签

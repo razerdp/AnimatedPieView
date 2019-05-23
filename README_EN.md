@@ -34,6 +34,7 @@ Develop Plan （Update Log->[Update Log](https://github.com/razerdp/AnimatedPieV
 
   > No plan now....I'm eagerly waiting for your great suggestions.
 
+  * ~~Support typeface for label [#26](https://github.com/razerdp/AnimatedPieView/issues/26)~~
   * ~~Support tap label to select pie [#27](https://github.com/razerdp/AnimatedPieView/issues/27)~~
   * ~~Support legends~~
   * ~~Support label for description text~~
@@ -158,6 +159,7 @@ mConfig.animOnTouch(true)// Animation when selected pie（default:true）
             -AnimatedPieViewConfig.ECTOPIC：Text will be drawn above the line in the 1, 2 quadrants and below the line in the 3, 4 quadrants
        】
        .canTouch(true)// Whether to allow the pie click to enlarge
+       .typeFae(TypeFace)// Typeface of desc
        .splitAngle(1)// Clearance angle
        .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV)// Alpha change mode for selected pie
        .interpolator(new DecelerateInterpolator())// Set animation interpolator

@@ -1,6 +1,7 @@
 package com.razerdp.widget.animatedpieview.data;
 
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
@@ -33,6 +34,7 @@ public class PieOption implements Parcelable {
     float mIconScaledHeight;
 
     boolean mDefaultSelected;
+    Typeface mTypeFace;
 
     public PieOption() {
     }
@@ -147,6 +149,15 @@ public class PieOption implements Parcelable {
 
     public PieOption setIconScaledHeight(float iconScaledHeight) {
         mIconScaledHeight = iconScaledHeight;
+        return this;
+    }
+
+    public Typeface getTypeFace() {
+        return mTypeFace;
+    }
+
+    public PieOption setTypeFace(Typeface mTypeFace) {
+        this.mTypeFace = mTypeFace;
         return this;
     }
 }

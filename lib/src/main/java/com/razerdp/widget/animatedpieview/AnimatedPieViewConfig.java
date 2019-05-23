@@ -1,6 +1,7 @@
 package com.razerdp.widget.animatedpieview;
 
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
@@ -112,6 +113,7 @@ public class AnimatedPieViewConfig {
     private boolean cubicGuide = false;
     private int textMargin = DEFAULT_TEXT_MARGIN;
     private Interpolator animationInterpolator = DEFAULT_ANIMATION_INTERPOLATOR;
+    private Typeface mTypeFace;
 
 
     private boolean strokeMode = true;
@@ -303,6 +305,11 @@ public class AnimatedPieViewConfig {
         return this;
     }
 
+    public AnimatedPieViewConfig typeFae(Typeface typeface) {
+        this.mTypeFace = typeface;
+        return this;
+    }
+
     public AnimatedPieViewConfig copyFrom(AnimatedPieViewConfig config) {
         if (config == null) return this;
         this.mDatas.clear();
@@ -336,6 +343,7 @@ public class AnimatedPieViewConfig {
                 .guideLineWidth(config.guideLineWidth)
                 .textMargin(config.textMargin)
                 .interpolator(config.animationInterpolator)
+                .typeFae(config.mTypeFace)
                 .legendsWith(config.getLegendsParent())
                 .legendsListener(config.getPieLegendListener());
     }
@@ -521,6 +529,10 @@ public class AnimatedPieViewConfig {
 
     public OnPieLegendBindListener getPieLegendListener() {
         return legendsListener;
+    }
+
+    public Typeface getTypeFace() {
+        return mTypeFace;
     }
 
     public void onFinish() {

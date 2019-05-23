@@ -1,6 +1,7 @@
 package com.razerdp.widget.animatedpieview.data;
 
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 
 /**
@@ -85,6 +86,11 @@ public class SimplePieInfo implements IPieInfo {
 
     public SimplePieInfo setIconScaledHeight(float iconScaledHeight) {
         mPieOption.setIconScaledHeight(iconScaledHeight);
+        return this;
+    }
+
+    public SimplePieInfo setTypeFace(Typeface mTypeFace) {
+        mPieOption.setTypeFace(mTypeFace);
         return this;
     }
 

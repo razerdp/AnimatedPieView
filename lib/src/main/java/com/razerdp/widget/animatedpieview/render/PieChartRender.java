@@ -8,6 +8,7 @@ import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.support.annotation.FloatRange;
 import android.util.Log;
 import android.util.Pair;
@@ -333,6 +334,7 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             }
             return;
         }
+        PieOption pieOption = wrapper.getPieOption();
         if (wrapper.mTextArea == null) {
             wrapper.mTextArea = new RectF();
         }
@@ -488,8 +490,13 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         //text area
         wrapper.mTextArea.set(textAreaLeft, textAreaTop, textAreaRight, textAreaBottom);
 
+        Typeface defaultTypeFace = paint.getTypeface();
+        if (pieOption != null && pieOption.getTypeFace() != null) {
+            paint.setTypeface(pieOption.getTypeFace());
+        }
         //画文字
         canvas.drawText(desc, textStartX, textStartY, paint);
+        paint.setTypeface(defaultTypeFace);
 
     }
 

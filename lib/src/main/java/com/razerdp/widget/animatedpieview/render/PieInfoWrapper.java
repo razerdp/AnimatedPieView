@@ -77,6 +77,9 @@ final class PieInfoWrapper implements Serializable {
         mDrawPaint.setStyle(config.isStrokeMode() ? Paint.Style.STROKE : Paint.Style.FILL);
         mDrawPaint.setStrokeWidth(config.getStrokeWidth());
         mDrawPaint.setColor(mPieInfo.getColor());
+        if (config.getTypeFace() != null) {
+            mDrawPaint.setTypeface(config.getTypeFace());
+        }
         mAlphaDrawPaint.set(mDrawPaint);
 
         mTexPaint.setStyle(Paint.Style.FILL);

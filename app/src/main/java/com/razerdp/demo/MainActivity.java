@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -69,14 +70,15 @@ public class MainActivity extends AppCompatActivity {
                         .setLabel(resourceToBitmap(R.mipmap.ic_test_1)), false)
 
                 .addData(new SimplePieInfo(0.9184314356136125, getColor("FFFFD28C"), "长文字test")
-                        .setLabel(resourceToBitmap(R.mipmap.ic_test_4)), false)
+                        .setLabel(resourceToBitmap(R.mipmap.ic_test_4))
+                        .setTypeFace(Typeface.DEFAULT_BOLD), false)
 
                 .addData(new SimplePieInfo(0.6028910840057398, getColor("ff2bbc80"))
                         .setLabel(resourceToBitmap(R.mipmap.ic_test_5)), true)
 
                 .addData(new SimplePieInfo(0.6449620647212785, getColor("ff8be8ff")), true)
                 .addData(new SimplePieInfo(0.058853315195452116, getColor("fffa734d")), true)
-                .addData(new SimplePieInfo(0.6632297717331086, getColor("ff957de0")), true)
+                .addData(new SimplePieInfo(0.6632297717331086, getColor("ff957de0")).setTypeFace(Typeface.DEFAULT_BOLD), true)
                 .selectListener(new OnPieSelectListener() {
                     @Override
                     public void onSelectPie(@NonNull IPieInfo pieInfo, boolean isFloatUp) {

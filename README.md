@@ -20,6 +20,7 @@ AnimatedPieView
 
   > 如果您有别的需求，可以提交您的issue哦，当然，也可以直接修改源码-V-
 
+  * ~~支持TypeFace~~
   * ~~点选文字或图表选中甜甜圈~~
   * ~~增加默认选中支持~~
   * ~~增加图例支持~~
@@ -146,6 +147,7 @@ mConfig.animOnTouch(true)// 点击事件是否播放浮现动画/回退动画（
             -AnimatedPieViewConfig.ECTOPIC：文字在1、2象限部分绘制在线的上方，在3、4象限绘制在线的下方
        】
        .canTouch(true)// 是否允许甜甜圈点击放大
+       .typeFae(TypeFace)// 字体样式
        .splitAngle(1)// 甜甜圈间隙角度
        .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV,150)// 焦点甜甜圈的alpha表现形态及alpha削减值
        .interpolator(new DecelerateInterpolator())// 动画插值器
