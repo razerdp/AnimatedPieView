@@ -79,33 +79,24 @@ public class MainActivity extends AppCompatActivity {
                 .addData(new SimplePieInfo(0.6449620647212785, getColor("ff8be8ff")), true)
                 .addData(new SimplePieInfo(0.058853315195452116, getColor("fffa734d")), true)
                 .addData(new SimplePieInfo(0.6632297717331086, getColor("ff957de0")).setTypeFace(Typeface.DEFAULT_BOLD), true)
-                .selectListener(new OnPieSelectListener() {
-                    @Override
-                    public void onSelectPie(@NonNull IPieInfo pieInfo, boolean isFloatUp) {
-                        desc.setText(String.format(Locale.getDefault(),
-                                "touch pie >>> {\n  value = %s;\n  color = %d;\n  desc = %s;\n  isFloatUp = %s;\n }",
-                                pieInfo.getValue(), pieInfo.getColor(), pieInfo.getDesc(), isFloatUp));
-                    }
-                })
+                .animatePie(true)
                 .drawText(true)
-                .duration(1200)
-                .textSize(26)
-                .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA)
-                .textGravity(AnimatedPieViewConfig.ABOVE)
+                .canTouch(true)
+                .strokeMode(true)
+                .strokeWidth(8)
+                .duration(1000)
+                .startAngle(0F)
+                .textSize(32F)
+                .textMargin(8)
+                .splitAngle(0F)
                 .interpolator(new DecelerateInterpolator())
-                .legendsWith((ViewGroup) findViewById(R.id.ll_legends), new OnPieLegendBindListener<BasePieLegendsView>() {
-                    @Override
-                    public BasePieLegendsView onCreateLegendView(int position, IPieInfo info) {
-                        return position % 2 == 0 ?
-                                DefaultPieLegendsView.newInstance(MainActivity.this)
-                                : DefaultCirclePieLegendsView.newInstance(MainActivity.this);
-                    }
-
-                    @Override
-                    public boolean onAddView(ViewGroup parent, BasePieLegendsView view) {
-                        return false;
-                    }
-                });
+                .autoSize(true)
+                .pieRadiusRatio(1F)
+                .animOnTouch(true)
+                .focusAlphaType(AnimatedPieViewConfig.FOCUS_WITH_ALPHA_REV)
+                .focusAlpha(100)
+                .floatShadowRadius(4F)
+                .floatExpandSize(4F);
         mAnimatedPieView.applyConfig(config);
 
         mAnimatedPieView.start();
