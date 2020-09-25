@@ -8,7 +8,8 @@ AnimatedPieView
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/razerdp/AnimatedPieView/blob/master/LICENSE)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-AnimatedPieView-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/6507)
 [![Api](https://img.shields.io/badge/Api-14%2B-green.svg)](https://img.shields.io/badge/Api-14%2B-green.svg)
-[![Author](https://img.shields.io/badge/Author-razerdp-blue.svg)](https://github.com/razerdp) 
+[![Author](https://img.shields.io/badge/Author-razerdp-blue.svg)](https://github.com/razerdp) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Frazerdp%2FAnimatedPieView.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Frazerdp%2FAnimatedPieView?ref=badge_shield)
+
 
 使用建议:
 ---
@@ -222,3 +223,7 @@ LICENSE
 
 
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Frazerdp%2FAnimatedPieView.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Frazerdp%2FAnimatedPieView?ref=badge_large)
