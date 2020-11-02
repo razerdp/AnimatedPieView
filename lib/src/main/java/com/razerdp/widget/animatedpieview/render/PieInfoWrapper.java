@@ -26,6 +26,7 @@ final class PieInfoWrapper implements Serializable {
 
     private final String id;
     private volatile boolean hasCached;
+    private volatile boolean checkPrePieCached;
     private final IPieInfo mPieInfo;
 
     //============= 绘制设置 =============
@@ -210,7 +211,8 @@ final class PieInfoWrapper implements Serializable {
         toAngle = fromAngle + sweepAngle;
         if (autoDesc) {
             //自动填充描述auto
-            desc = String.format(config.getAutoDescStringFormat(), AnimatedPieViewConfig.sFormateRate.format((mPieInfo.getValue() / sum) * 100));
+            desc = String.format(config.getAutoDescStringFormat(), AnimatedPieViewConfig.sFormateRate
+                    .format((mPieInfo.getValue() / sum) * 100));
             if (mPieInfo instanceof SimplePieInfo) {
                 ((SimplePieInfo) mPieInfo).setDesc(desc);
             }
@@ -227,6 +229,15 @@ final class PieInfoWrapper implements Serializable {
 
     public void setCached(boolean hasCached) {
         this.hasCached = hasCached;
+    }
+
+    public boolean isCheckPrePieCached() {
+        return checkPrePieCached;
+    }
+
+    public PieInfoWrapper setCheckPrePieCached(boolean checkPrePieCached) {
+        this.checkPrePieCached = checkPrePieCached;
+        return this;
     }
 
     public PieInfoWrapper getPreWrapper() {
@@ -282,6 +293,7 @@ final class PieInfoWrapper implements Serializable {
     }
 
     boolean containsTouch(float angle) {
+        PLog.i("containsTouch" + " from = " + fromAngle + " to = " + toAngle + " angle = " + angle);
         //所有点击的角度都需要收归到0~360的范围，兼容任意角度
         final float tAngle = DegreeUtil.limitDegreeInTo360(angle);
         float tStart = DegreeUtil.limitDegreeInTo360(fromAngle);
@@ -291,7 +303,7 @@ final class PieInfoWrapper implements Serializable {
         if (tEnd < tStart) {
             if (tAngle > 180) {
                 //已经过界
-                result = tAngle >= tStart && (360 - tAngle) <= sweepAngle;
+                result = tAngle <= tEnd || tAngle >= tStart && (360 - tAngle) <= sweepAngle;
             } else {
                 result = tAngle + 360 >= tStart && tAngle <= tEnd;
             }

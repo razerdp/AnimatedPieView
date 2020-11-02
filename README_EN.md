@@ -25,13 +25,15 @@ Suggestion:
 
 ### Update Log:
 
-### 19/05/23
- - Support tap label to select pie [#27](https://github.com/razerdp/AnimatedPieView/issues/27)
- - add typeface for label [#26](https://github.com/razerdp/AnimatedPieView/issues/26)
+### 2020/11/02
+ - Fix the problem of losing data when the animation is too fast
+ - Fix the problem that the pie chart does not respond when clicked under special data.
+ - Fixed Bugs:
+   - [#35](https://github.com/razerdp/AnimatedPieView/issues/35)
+   - [#27](https://github.com/razerdp/AnimatedPieView/issues/27)
+   - [#25](https://github.com/razerdp/AnimatedPieView/issues/25)
+   - [#18](https://github.com/razerdp/AnimatedPieView/issues/18)
 
-### 18/07/18 - ver 1.2.4
- - fix `autoSize`
- - support description label @see #[12](https://github.com/razerdp/AnimatedPieView/issues/12)
 
 Develop Plan （Update Log->[Update Log](https://github.com/razerdp/AnimatedPieView/blob/master/UPDATE_LOG.md)）
 -------------------------------------------------------------------------------------------------------------

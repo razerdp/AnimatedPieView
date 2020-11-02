@@ -62,28 +62,19 @@ public class MainActivity extends AppCompatActivity {
         toViewPager = findViewById(R.id.btn_goto_viewpager);
         mAnimatedPieView = findViewById(R.id.animatedPieView);
         AnimatedPieViewConfig config = new AnimatedPieViewConfig();
-        config.startAngle(0.9224089f)
+        config.startAngle(30)
                 /**
                  * not done below!
                  */
-                .addData(new SimplePieInfo(0.11943538617599236, getColor("FF446767"))
-                        .setLabel(resourceToBitmap(R.mipmap.ic_test_1)), false)
+                .addData(new SimplePieInfo(61.08, getColor("1976D2"),"61.08"))
 
-                .addData(new SimplePieInfo(0.9184314356136125, getColor("FFFFD28C"), "长文字test")
-                        .setLabel(resourceToBitmap(R.mipmap.ic_test_4))
-                        .setTypeFace(Typeface.DEFAULT_BOLD), false)
+                .addData(new SimplePieInfo(38.92, getColor("64B5F6"), "38.92"))
 
-                .addData(new SimplePieInfo(0.6028910840057398, getColor("ff2bbc80"))
-                        .setLabel(resourceToBitmap(R.mipmap.ic_test_5)), true)
-
-                .addData(new SimplePieInfo(0.6449620647212785, getColor("ff8be8ff")), true)
-                .addData(new SimplePieInfo(0.058853315195452116, getColor("fffa734d")), true)
-                .addData(new SimplePieInfo(0.6632297717331086, getColor("ff957de0")).setTypeFace(Typeface.DEFAULT_BOLD), true)
                 .animatePie(true)
                 .drawText(true)
                 .canTouch(true)
                 .strokeMode(true)
-                .strokeWidth(8)
+                .strokeWidth(28)
                 .duration(1000)
                 .startAngle(0F)
                 .textSize(32F)

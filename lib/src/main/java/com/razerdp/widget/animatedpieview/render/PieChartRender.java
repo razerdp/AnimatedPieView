@@ -150,8 +150,10 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         for (PieInfoWrapper dataWrapper : mDataWrappers) {
             dataWrapper.prepare(mConfig);
             lastAngle = dataWrapper.calculateDegree(lastAngle, sum, mConfig);
-            int textWidth = mPieManager.measureTextBounds(dataWrapper.getDesc(), (int) mConfig.getTextSize()).width();
-            int textHeight = mPieManager.measureTextBounds(dataWrapper.getDesc(), (int) mConfig.getTextSize()).height();
+            int textWidth = mPieManager.measureTextBounds(dataWrapper.getDesc(), (int) mConfig.getTextSize())
+                    .width();
+            int textHeight = mPieManager.measureTextBounds(dataWrapper.getDesc(), (int) mConfig.getTextSize())
+                    .height();
             int labelWidth = 0;
             int labelHeight = 0;
             int labelPadding = 0;
@@ -168,7 +170,8 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             PLog.i("desc >> " + dataWrapper.getDesc() + "  maxDesTextSize >> " + maxDescTextLength);
 
             if (withLegends) {
-                mLegendsHelper.put(dataWrapper.getId(), getLegendsView(mConfig, position, dataWrapper.getPieInfo()));
+                mLegendsHelper.put(dataWrapper.getId(), getLegendsView(mConfig, position, dataWrapper
+                        .getPieInfo()));
             }
             position++;
         }
@@ -340,7 +343,8 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         }
 
         //根据touch扩大量修正指示线和描述文字的位置
-        float fixPos = (wrapper.equals(mTouchHelper.floatingWrapper) ? getFixTextPos(wrapper) : 0) + (wrapper.equals(mTouchHelper.lastFloatWrapper) ? getFixTextPos(wrapper) : 0);
+        float fixPos = (wrapper.equals(mTouchHelper.floatingWrapper) ? getFixTextPos(wrapper) : 0) + (wrapper
+                .equals(mTouchHelper.lastFloatWrapper) ? getFixTextPos(wrapper) : 0);
 
         final float pointMargins = fixPos
                 + pieRadius
@@ -378,7 +382,8 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         if (icon != null) {
             labelWidth = icon.getWidth();
             labelHeight = icon.getHeight();
-            labelPadding = Math.max(0, wrapper.getPieOption() == null ? 0 : wrapper.getPieOption().getLabelPadding());
+            labelPadding = Math.max(0, wrapper.getPieOption() == null ? 0 : wrapper.getPieOption()
+                    .getLabelPadding());
         }
 
         float textLength = textBoundsWidth + mConfig.getTextMargin() + 2 * labelPadding + labelWidth;
@@ -459,7 +464,8 @@ public class PieChartRender extends BaseRender implements ITouchRender {
 
 
         if (icon != null) {
-            textStartX = fitTextStartXWithLabel(textStartX, textBoundsWidth, labelWidth, direction, wrapper.getPieOption());
+            textStartX = fitTextStartXWithLabel(textStartX, textBoundsWidth, labelWidth, direction, wrapper
+                    .getPieOption());
             float iconLeft = calculateLabelX(wrapper.getPieOption(), labelWidth, textStartX, direction, textBoundsWidth);
             if (Float.isNaN(iconLeft) && iconLeft <= textStartX) {
                 textAreaLeft = iconLeft;
@@ -675,7 +681,8 @@ public class PieChartRender extends BaseRender implements ITouchRender {
         }
         if (hasRenderDefaultSelected) return;
         for (PieInfoWrapper dataWrapper : mDataWrappers) {
-            if (dataWrapper.getPieOption() != null && dataWrapper.getPieOption().isDefaultSelected()) {
+            if (dataWrapper.getPieOption() != null && dataWrapper.getPieOption()
+                    .isDefaultSelected()) {
                 hasRenderDefaultSelected = true;
                 mTouchHelper.handleUp(dataWrapper);
                 break;
@@ -699,23 +706,40 @@ public class PieChartRender extends BaseRender implements ITouchRender {
 
     private void setCurPie(PieInfoWrapper infoWrapper, float degree) {
         if (mDrawingPie != null) {
-            if (degree >= mDrawingPie.getToAngle() / 2) {
+            if (degree >= infoWrapper.getFromAngle()) {
+                checkAndInsertPrePie(infoWrapper);
+            }
+            if (degree >= mDrawingPie.getToAngle()) {
+                PLog.i("setCurPie  deg = " + degree + "  from = " + infoWrapper.getFromAngle() + "  to  = " + infoWrapper
+                        .getToAngle());
                 if (!mDrawingPie.isCached()) {
-                    // fix anim duration too short
-                    PieInfoWrapper preWrapper = mDrawingPie.getPreWrapper();
-                    if (preWrapper != null && !preWrapper.isCached()) {
-                        preWrapper.setCached(true);
-                        mCachedDrawWrappers.add(preWrapper);
-                    }
                     mCachedDrawWrappers.add(mDrawingPie);
                     mDrawingPie.setCached(true);
-                    mLegendsHelper.onPieDrawFinish(preWrapper);
                 }
             }
         }
         mDrawingPie = infoWrapper;
         animAngle = degree;
         callInvalidate();
+    }
+
+    // fix anim duration too short
+    private void checkAndInsertPrePie(PieInfoWrapper infoWrapper) {
+        if (infoWrapper == null || infoWrapper.isCheckPrePieCached()) return;
+        PieInfoWrapper preWrapper = infoWrapper.getPreWrapper();
+        PLog.i("lalalal  " + infoWrapper.getId());
+        if (preWrapper == null) {
+            //first node
+            infoWrapper.setCheckPrePieCached(true);
+            return;
+        }
+        if (mCachedDrawWrappers.lastIndexOf(preWrapper) == -1) {
+            mCachedDrawWrappers.add(preWrapper);
+            preWrapper.setCached(true);
+            mLegendsHelper.onPieDrawFinish(preWrapper);
+        }
+        infoWrapper.setCheckPrePieCached(true);
+        checkAndInsertPrePie(preWrapper);
     }
 
     private void setDrawMode(DrawMode drawMode) {
@@ -1011,7 +1035,8 @@ public class PieChartRender extends BaseRender implements ITouchRender {
             }
 
             if (mConfig.getSelectListener() != null) {
-                mConfig.getSelectListener().onSelectPie(touchWrapper.getPieInfo(), touchWrapper.equals(floatingWrapper));
+                mConfig.getSelectListener()
+                        .onSelectPie(touchWrapper.getPieInfo(), touchWrapper.equals(floatingWrapper));
             }
         }
     }
