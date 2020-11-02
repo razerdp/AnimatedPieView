@@ -3,6 +3,11 @@
 ### 2020/11/02
  - 修复动画过快时丢失数据的问题
  - 修复特殊数据下点击饼图无法响应的问题
+ - Fixed Bugs:
+   - [#35](https://github.com/razerdp/AnimatedPieView/issues/35)
+   - [#27](https://github.com/razerdp/AnimatedPieView/issues/27)
+   - [#25](https://github.com/razerdp/AnimatedPieView/issues/25)
+   - [#18](https://github.com/razerdp/AnimatedPieView/issues/18)
 
 ### 19/05/23
  - 支持点选Label选中

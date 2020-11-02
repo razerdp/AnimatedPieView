@@ -197,13 +197,6 @@ you can decide your pie with create `PieOption`
     }
 ```
 
-QQ Group：590777418
-------------------
-
-Welcome to join our QQ group for communication.
-
-![](https://github.com/razerdp/FriendCircle/blob/master/qqgroup.png)
-
 Buy me a coffee
 --------------------------------------
 
