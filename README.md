@@ -10,11 +10,6 @@ AnimatedPieView
 [![Api](https://img.shields.io/badge/Api-14%2B-green.svg)](https://img.shields.io/badge/Api-14%2B-green.svg)
 [![Author](https://img.shields.io/badge/Author-razerdp-blue.svg)](https://github.com/razerdp) 
 
-使用建议:
----
-
-**1.2.0重构版正式发布，建议升级到该版本，1.2.0将整个项目由头到尾重构了一遍，更完善的注释和文档，以及针对一些命名和旧版本的bug统一修复，同时更加抽象，方便以后的功能添加。欢迎提交相关Bug~我会第一时间去解决问题的**
-
 开发进度 （更新日志->[日志](https://github.com/razerdp/AnimatedPieView/blob/master/UPDATE_LOG.md)）
 ---
 
@@ -188,14 +183,6 @@ mConfig.animOnTouch(true)// 点击事件是否播放浮现动画/回退动画（
                 .setLabelPosition(PieOption.NEAR_PIE); // 图标在甜甜圈内侧
     }
 ```
-
-
-交流群：590777418
----
-
-因为目前还有朋友圈项目，建立了一个交流群，出于懒得管理那么多，所以如果有想法或者优化建议或者其他问题，欢迎加入“朋友圈交流群”
-
-![](https://github.com/razerdp/FriendCircle/blob/master/qqgroup.png)
 
 打赏（看在我那么努力维护的份上。。。给个零食呗~）
 ---

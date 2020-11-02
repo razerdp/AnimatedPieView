@@ -12,17 +12,6 @@ AnimatedPieView
 [![Backers on Open Collective](https://opencollective.com/AnimatedPieView/backers/badge.svg)](#backers)
 [![Sponsors on Open Collective](https://opencollective.com/AnimatedPieView/sponsors/badge.svg)](#sponsors)
 
-Suggestion:
----
-
-**Version 1.2.0 is released, it is recommended to upgrade to this version.**
-
-**This version was completely rewritten which has better comments and documentation.**
-
-**Welcome to submit the Bug ~ I will be the first time to solve the problem.**
-
-**Thanks**
-
 ### Update Log:
 
 ### 2020/11/02
